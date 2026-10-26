@@ -695,6 +695,17 @@ b,strong{font-weight:700}
 @keyframes tbIn{from{opacity:0;transform:translateY(-14px) scale(.92)}to{opacity:1;transform:none}}
 @keyframes tbOut{to{opacity:0;transform:translateY(-10px)}}
 @media (prefers-reduced-motion:reduce){.tban,.tban.out{animation-duration:.01s}}
+
+/* v0.75 equip prompts */
+.eqcmp{display:grid;grid-template-columns:auto auto auto 1fr;align-items:center;gap:8px;padding:8px 10px;margin:6px 0;border-radius:14px;background:rgba(255,255,255,.06);text-align:left}
+.eqcmp .itile{width:48px;height:48px}
+.eqarr{font-family:var(--display);font-size:20px;color:var(--mint)}
+.eqnone{font-size:12px;color:#a9a9cf;width:48px;text-align:center}
+.eqtx b{display:block;font-size:15px}.eqtx small{font-size:12.5px;color:#dcdef8}.eqtx em{font-style:normal;color:var(--mint);font-weight:700}
+.aeq{color:var(--mint);font-weight:700}
+.eqask{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;padding:8px 10px;border-radius:14px;background:rgba(143,240,214,.12);border:1.5px solid rgba(143,240,214,.5)}
+.eqask span{font-size:13px;color:#fff4e6;margin-right:auto;white-space:nowrap;line-height:1.3}
+.eqask button{font-size:13.5px;padding:7px 11px;white-space:nowrap;flex:none;min-width:0;line-height:1.2}
 </style>
 
 <div class="app">
@@ -888,7 +899,7 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <p class="ver">스플래시 파이터 v0.74 · 2026-10-26</p>
+            <p class="ver">스플래시 파이터 v0.75 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2089,7 +2100,14 @@ function tileHTML(it,o={}){const D=ITYPES[it.t],R=RARITY[it.g];return `<button t
 function addItem(t,g){if(prog.inv.length>=80){prog.coins+=40*(g+1);return null}const it={u:prog.iuid++,t,g,l:0,nw:1};prog.inv.push(it);prog.newItems=(prog.newItems||0)+1;return it}
 function gradeW(ch,b=0){return[Math.max(8,62-ch*4-b*30),26+Math.min(12,ch),8+ch*1.2+b*14,Math.max(0,(ch-2)*0.8)+b*5,Math.max(0,(ch-5)*0.3)+b*1.2]}
 function rollGrade(ch,b=0){const w=gradeW(ch,b);let x=Math.random()*w.reduce((a,c)=>a+c,0);for(let g=0;g<5;g++){if((x-=w[g])<0)return g}return 0}
-function dropItem(ch,b){const t=IKEYS[Math.floor(Math.random()*IKEYS.length)];const it=addItem(t,rollGrade(ch,b));if(it&&!itemBy(prog.eq[t]))prog.eq[t]=it.u;return it}
+function dropItem(ch,b){const t=IKEYS[Math.floor(Math.random()*IKEYS.length)];const it=addItem(t,rollGrade(ch,b));if(it&&!itemBy(prog.eq[t])){prog.eq[t]=it.u;autoEq.add(it.u)}return it}
+/* v0.75: an empty slot still auto-equips (and says so); a drop that beats what you wear asks "바로 장착 / 나중에" */
+const autoEq=new Set();
+function betterOf(items){const best={};for(const it of items||[]){if(!it||prog.eq[it.t]===it.u||!prog.inv.includes(it))continue;const cur=itemBy(prog.eq[it.t]);if(cur&&iVal(it)<=iVal(cur))continue;if(!best[it.t]||iVal(it)>iVal(best[it.t]))best[it.t]=it}return Object.values(best)}
+function equipNow(list){for(const it of list)prog.eq[it.t]=it.u;saveProg();try{SFX.pick()}catch(e){}updateTitle();toast('<b>장착했어요</b><br>전투력 '+power(baseStats()).toLocaleString('ko-KR'))}
+function askEquip(items,done){const list=betterOf(items);if(!list.length){done&&done();return}
+  const rows=list.map(it=>{const cur=itemBy(prog.eq[it.t]);return `<div class="eqcmp">${cur?tileHTML(cur,{eq:1}):'<span class="eqnone">없음</span>'}<span class="eqarr">→</span>${tileHTML(it)}<div class="eqtx"><b>${iName(it)}</b><small>${cur?iStat(cur)+' → ':''}<em>${iStat(it)}</em></small></div></div>`}).join('');
+  popup('더 좋은 장비!',`<p class="sub">지금 입은 장비보다 세요. 바로 갈아입을까요?</p>${rows}`,[[['바로 장착',()=>{equipNow(list);closePop(true);done&&done();return true}],['나중에',()=>{closePop(true);done&&done();return true},'ghost']]],()=>{done&&done()})}
 const canMerge=()=>IKEYS.some(t=>[0,1,2,3].some(g=>prog.inv.filter(i=>i.t===t&&i.g===g).length>=3));
 function mergeAll(){const made=[];let again=true;
   while(again){again=false;for(const t of IKEYS)for(let g=0;g<4;g++){
@@ -2919,7 +2937,7 @@ const attCan=()=>attData().last!==todayKey();
 const rwShort=r=>r.lab||rwText(r);
 function giveRw(r,label,title){const pw=power(baseStats());ecoTrack();ecoCtx=label;if(r.coins)prog.coins+=r.coins;if(r.gems)prog.gems+=r.gems;if(r.en)enAdd(r.en);
   let items=[];if(r.box){const it=dropItem(Math.max(3,prog.best),r.box);if(it)items.push(it)}
-  if(r.legend){const t=IKEYS[Math.floor(Math.random()*IKEYS.length)],it=addItem(t,4);if(it){items.push(it);if(!itemBy(prog.eq[t]))prog.eq[t]=it.u}}
+  if(r.legend){const t=IKEYS[Math.floor(Math.random()*IKEYS.length)],it=addItem(t,4);if(it){items.push(it);if(!itemBy(prog.eq[t])){prog.eq[t]=it.u;autoEq.add(it.u)}}}
   saveProg();SFX.clear();updateTitle();refreshDots();const txt=rwText(r);
   if(items.length)revealReward(items,{title:title||'보상',powerFrom:pw,extra:txt?txt+' 획득':''});else toast('<b>받았어요!</b><br>'+txt)}
 function msCanAny(){const M=msData();return MS_D.some(m=>!M.got[m.id]&&(M.c[m.k]||0)>=m.n)||(!M.got.all&&MS_D.every(m=>M.got[m.id]))||MS_W.some(m=>!M.gw[m.id]&&(M.cw[m.k]||0)>=m.n)||ACH.some(a=>!M.ach[a.id]&&a.v()>=a.n)}
@@ -2952,11 +2970,11 @@ let rvDone=null,rvState=0,rvAuto=null;
 let FX2=null;
 function fx2(){if(FX2||!window.RewardFX)return FX2;try{FX2=new RewardFX({container:$('frame'),zIndex:40,volume:1,reducedMotion:reduceMotion,chestColors:['#c0392b','#ffd166'],
   audio:()=>{auInit();return AU.c?{ctx:AU.c,out:AU.sfx}:null}})}catch(e){FX2=null}return FX2}
-const fxItem=it=>{const D=ITYPES[it.t],R=RARITY[it.g];return{tier:it.g,tierLabel:R.name,color:R.col,name:iName(it),sub:iStat(it),render:el=>{el.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true">'+D.svg+'</svg>';el.style.color=D.col}}};
+const fxItem=it=>{const D=ITYPES[it.t],R=RARITY[it.g],cur=it.u!=null?itemBy(prog.eq[it.t]):null;return{tier:it.g,tierLabel:R.name,color:R.col,name:iName(it),sub:iStat(it)+(it.u!=null&&autoEq.has(it.u)&&prog.eq[it.t]===it.u?' · 자동 장착됨':cur&&cur!==it&&prog.inv.includes(it)&&iVal(it)>iVal(cur)?' · 지금 장비보다 좋아요':''),render:el=>{el.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true">'+D.svg+'</svg>';el.style.color=D.col}}};
 function fxGrowth(from){if(from==null)return null;const to=power(baseStats());return to!==from?{label:'전투력',from,to}:null}
 function revealReward(items,opt={},done){const fx=fx2();
-  if(fx){fx.chest({title:opt.title||'보물 상자',items:items.map(fxItem),note:opt.extra||'',growth:fxGrowth(opt.powerFrom),chestColors:opt.chest==='half'?['#6b3fd1','#5ec8ff']:null}).then(()=>{done&&done();if(state==='title')updateTitle()});return}
-  revealOld(items,opt,done)}
+  if(fx){fx.chest({title:opt.title||'보물 상자',items:items.map(fxItem),note:opt.extra||'',growth:fxGrowth(opt.powerFrom),chestColors:opt.chest==='half'?['#6b3fd1','#5ec8ff']:null}).then(()=>{askEquip(items,()=>{done&&done();if(state==='title')updateTitle()})});return}
+  revealOld(items,opt,()=>askEquip(items,done))}
 function fxMerge(made,pw){const fx=fx2();if(!fx){revealOld(made,{title:'합성 완료!',chest:'half',extra:'같은 장비 3개가 하나로 뭉쳤어요'});return}
   made.forEach((it,i)=>{const src=fxItem({t:it.t,g:Math.max(0,it.g-1),l:0});fx.merge({title:'합성 성공!',from:[src,src,src],to:fxItem(it),note:made.length>1?'합성 '+(i+1)+'/'+made.length:'같은 장비 3개가 하나로 뭉쳤어요',growth:null}).then(()=>{if(i===made.length-1&&pw!=null){const g=fxGrowth(pw);if(g)toast('<b>전투력 '+g.from.toLocaleString('ko-KR')+' → '+g.to.toLocaleString('ko-KR')+'</b>')}})})}
 function fxScore(o,done){const fx=fx2();if(!fx){done();return}fx.score(Object.assign({dim:true},o)).then(done)}
@@ -4064,7 +4082,10 @@ function chestState(c,w){const N=stageN(),need=w==='clear'?N:Math.ceil(N/2);if(p
 function giveAcct(clear){const x=Math.max(1,run.kills*6+run.bosses*10+(clear?25+prog.stage*3:0));return{x,up:gainAcct(x)}}
 function bestCmp(el,txt,nb){el.textContent=txt||'';el.className='bestcmp'+(nb?' new':'')}
 function acctCard(el,a){const A=prog.acct,p=Math.round(A.xp/needAX(A.lv)*100);el.innerHTML=`<span>계정 Lv ${A.lv}</span><span class="xpb"><i style="width:${p}%"></i></span><b>+${a.x} EXP</b>`+(a.up?`<span class="lvup">레벨 업! Lv ${A.lv} · 보석 +${10*a.up} · 에너지 +${5*a.up}</span>`:'')}
-function dropsRow(el){if(!run.drops.length){el.innerHTML='';return}el.innerHTML='<span class="dl">획득한 장비</span><div class="dt">'+run.drops.map(it=>tileHTML(it)).join('')+'</div>'}
+function dropsRow(el){if(!run.drops.length){el.innerHTML='';return}const auto=run.drops.filter(it=>autoEq.has(it.u)&&prog.eq[it.t]===it.u).length,bt=betterOf(run.drops);
+  el.innerHTML='<span class="dl">획득한 장비'+(auto?' · <b class="aeq">'+auto+'개 자동 장착됨</b>':'')+'</span><div class="dt">'+run.drops.map(it=>tileHTML(it,{eq:prog.eq[it.t]===it.u})).join('')+'</div>'
+   +(bt.length?'<div class="eqask"><span>더 좋은 장비 '+bt.length+'개</span><button type="button" class="eqgo">바로 장착</button><button type="button" class="ghost eqlater">나중에</button></div>':'');
+  const g=el.querySelector('.eqgo');if(g)g.addEventListener('click',()=>{equipNow(betterOf(run.drops));dropsRow(el)});const l=el.querySelector('.eqlater');if(l)l.addEventListener('click',()=>{const a=el.querySelector('.eqask');if(a)a.remove()})}
 function dmgStats(el){const L=[['base','기본 물풍선','#8ff0d6'],['big','왕풍선','#5ec8ff'],['ex','추가 물풍선','#c39bff'],['self','제 발등','#ffd166']];const tot=L.reduce((a,[k])=>a+(run.dmg[k]||0),0);
   if(!tot){el.innerHTML='';return}
   el.innerHTML='<b class="dh">피해 통계 · 총 '+tot.toLocaleString('ko-KR')+'</b>'+L.filter(([k])=>run.dmg[k]).map(([k,n,c])=>{const v=run.dmg[k],p=Math.round(v/tot*100);return `<div class="drow"><span>${n}</span><span class="dbar"><i style="width:${p}%;background:${c}"></i></span><b>${v.toLocaleString('ko-KR')} · ${p}%</b></div>`}).join('')}
