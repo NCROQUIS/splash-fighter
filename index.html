@@ -733,6 +733,10 @@ b,strong{font-weight:700}
 .overlay.sheet.page.pgGhost .card{height:100%;max-height:100%!important;background:var(--pg,linear-gradient(180deg,#2b2f72,#1b1d4a));border-top:3px solid var(--ink)}
 .overlay.sheet.page.pgGhost .card{animation:pgOut .22s cubic-bezier(.4,0,.8,.4) forwards!important}
 @keyframes pgOut{to{transform:translateX(30%);opacity:0}}
+
+/* v0.79 full wipe */
+#popBtns .danger{background:linear-gradient(180deg,#ff7a6b 0%,#d9483b 100%);color:#fff;border:3px solid var(--ink)}
+.tst{font-style:normal;font-size:11px;padding:2px 6px;margin-left:6px;border-radius:8px;background:rgba(255,155,155,.18);color:#ff9b9b;vertical-align:2px}
 </style>
 
 <div class="app">
@@ -926,7 +930,8 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <p class="ver">스플래시 파이터 v0.78 · 2026-10-26</p>
+            <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
+            <p class="ver">스플래시 파이터 v0.79 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -4326,6 +4331,13 @@ $('setReset').addEventListener('click',()=>{const b=$('setReset');
   resetArm=0;b.classList.remove('armed');b.textContent='처음부터 시작';
   resetProg();lobbyMan=null;lobby.anim=null;updateTitle();
   $('setResetInfo').textContent='초기화했어요. 신규 유저 상태로 시작합니다.';SFX.clear&&SFX.clear()});
+/* v0.79: full wipe for testing — every key this game stores on the device, then a fresh start */
+$('setWipe').addEventListener('click',()=>{popup('완전 초기화','<p class="sub">이 기기에 저장된 <b style="color:#ff9b9b">모든 게임 데이터</b>를 지워요.<br>진행, 구매 기록, 광고 제거, 소리·화질, 게임 조정 값까지 모두 처음 설치한 상태로 돌아가요.<br><br>되돌릴 수 없어요.</p>',
+  [[['모두 지우고 다시 시작',()=>{wipeAll();return true},'danger'],['취소',null,'ghost']]])});
+function wipeAll(){try{const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&/^snack/.test(k))ks.push(k)}ks.forEach(k=>localStorage.removeItem(k))}catch(e){}
+  try{const ls=localStorage;ls.setItem=function(){}}catch(e){}/* nothing may write old state back before the reload */
+  try{sessionStorage.clear()}catch(e){}try{if(history.state&&history.state.sfPage)history.replaceState(null,'')}catch(e){}
+  closePop(true);toast('<b>모두 지웠어요</b><br>처음부터 다시 시작해요',1500);setTimeout(()=>{try{location.reload()}catch(e){}},700)}
 document.querySelectorAll('#setStyle button').forEach(b=>b.addEventListener('click',()=>{CHAR.style=b.dataset.st;try{localStorage.setItem('snackCharStyle',CHAR.style)}catch(e){}lobbyMan=null;renderSettings()}));
 
 /* ---------- tuning panel ---------- */
