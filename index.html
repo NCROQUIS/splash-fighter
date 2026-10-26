@@ -872,7 +872,7 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <p class="ver">스플래시 파이터 v0.72 · 2026-10-26</p>
+            <p class="ver">스플래시 파이터 v0.73 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1591,6 +1591,12 @@ try{const raw=localStorage.getItem('snackTune5');
   if(raw){const s=JSON.parse(raw);for(const k in s)if(k in T)T[k]=+s[k]}
   else if(loadOldFeel()){localStorage.setItem('snackTune5',JSON.stringify(T))}
 }catch(e){}
+/* v0.73: the throw feel the team settled on (power 800 set) is the default everywhere; volume is per device and never shared */
+const VOLK=['bgmVol','sfxVol'],FEEL800=['power','grav','headDmg','preview','interval','err','cool'];
+try{if(!localStorage.getItem('snackFeelV1')){localStorage.setItem('snackFeelV1','1');for(const k of FEEL800){const t=TUNE.find(t=>t.k===k);if(t)T[k]=t.d}localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
+function loadVol(){try{const v=JSON.parse(localStorage.getItem('snackVol')||'null');if(v)for(const k of VOLK)if(isFinite(+v[k]))T[k]=+v[k]}catch(e){}}
+function saveVol(){try{localStorage.setItem('snackVol',JSON.stringify({bgmVol:T.bgmVol,sfxVol:T.sfxVol}));localStorage.setItem('snackTune5',JSON.stringify(T))}catch(e){}}
+loadVol();
 try{if(!localStorage.getItem('snackCoolV2')){localStorage.setItem('snackCoolV2','1');localStorage.setItem('snackCoolV1','1');T.cool=Math.max(T.cool,1.65);localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
 try{if(!localStorage.getItem('snackCoolV1')){localStorage.setItem('snackCoolV1','1');T.cool=1.3;T.upCool=4;localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
 try{if(!localStorage.getItem('snackBal1')){localStorage.setItem('snackBal1','1');Object.assign(T,{"costGrow": 1.2, "coinKill": 8, "coinClear": 40, "eHpStage": 15, "upAtk": 7, "upHp": 15, "errStage": 0.004, "atkStage": 3, "coinKillStage": 3, "coinClearStage": 20});localStorage.setItem('snackTune5',JSON.stringify(T));localStorage.setItem('snackTune5t',String(Date.now()))}}catch(e){}
@@ -4180,8 +4186,8 @@ function renderSettings(){
 }
 $('setMute').addEventListener('click',()=>{auInit();setMute(!AU.muted);renderSettings()});
 $('setShake').addEventListener('click',()=>{FX.shakeOff=!FX.shakeOff;try{localStorage.setItem('snackShakeOff',FX.shakeOff?'1':'0')}catch(e){}renderSettings()});
-$('setBgm').addEventListener('input',e=>{T.bgmVol=+e.target.value;saveTune();auVol()});
-$('setSfx').addEventListener('input',e=>{T.sfxVol=+e.target.value;saveTune();auVol()});
+$('setBgm').addEventListener('input',e=>{T.bgmVol=+e.target.value;saveVol();auVol()});
+$('setSfx').addEventListener('input',e=>{T.sfxVol=+e.target.value;saveVol();auVol()});
 document.querySelectorAll('#setQ button').forEach(b=>b.addEventListener('click',()=>{setQuality(b.dataset.q);renderSettings()}));
 let resetArm=0;
 $('setReset').addEventListener('click',()=>{const b=$('setReset');
@@ -4197,11 +4203,11 @@ const fmt=(t,v)=>t.step<0.01?v.toFixed(4):t.step<1?(+v.toFixed(3)).toString():St
 function saveTune(){try{localStorage.setItem('snackTune5',JSON.stringify(T));localStorage.setItem('snackTune5t',String(Date.now()))}catch(e){}tunePush()}
 /* the owner's tuning is the game's tuning: kept in the shared db so it survives other devices, cleared storage and new versions */
 let tuneOwner=false,tunePushT=null;
-function tunePush(){if(!rdb||!tuneOwner)return;clearTimeout(tunePushT);tunePushT=setTimeout(()=>{const vals={};for(const t of TUNE)if(t.k)vals[t.k]=T[t.k];rdb.doc('config/tune').set({vals,t:Date.now()}).catch(()=>{})},800)}
+function tunePush(){if(!rdb||!tuneOwner)return;clearTimeout(tunePushT);tunePushT=setTimeout(()=>{const vals={};for(const t of TUNE)if(t.k&&!VOLK.includes(t.k))vals[t.k]=T[t.k];rdb.doc('config/tune').set({vals,t:Date.now()}).catch(()=>{})},800)}
 async function tuneSync(){if(!rdb)return;try{tuneOwner=!!(ruser&&await ruser.isOwner())}catch(e){}
   let lt=0;try{lt=+localStorage.getItem('snackTune5t')||0}catch(e){}
   try{const sn=await rdb.doc('config/tune').get();const d=sn&&sn.exists?sn.data():null;
-    if(d&&d.vals&&(+d.t||0)>lt){for(const k in d.vals)if(k in T&&isFinite(+d.vals[k]))T[k]=+d.vals[k];try{localStorage.setItem('snackTune5',JSON.stringify(T));localStorage.setItem('snackTune5t',String(d.t))}catch(e){}G=T.grav;auVol&&auVol();if(typeof buildSliders==='function'&&!tuneOv.hidden)buildSliders()}
+    if(d&&d.vals&&(+d.t||0)>lt){for(const k in d.vals)if(k in T&&!VOLK.includes(k)&&isFinite(+d.vals[k]))T[k]=+d.vals[k];try{localStorage.setItem('snackTune5',JSON.stringify(T));localStorage.setItem('snackTune5t',String(d.t))}catch(e){}G=T.grav;auVol&&auVol();if(typeof buildSliders==='function'&&!tuneOv.hidden)buildSliders()}
     else if(tuneOwner&&lt&&(!d||lt>(+d.t||0)))tunePush()}catch(e){}}
 let curTab='feel';
 const previewBox=$('preview');
