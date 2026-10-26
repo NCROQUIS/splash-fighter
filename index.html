@@ -706,12 +706,33 @@ b,strong{font-weight:700}
 .eqask{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;padding:8px 10px;border-radius:14px;background:rgba(143,240,214,.12);border:1.5px solid rgba(143,240,214,.5)}
 .eqask span{font-size:13px;color:#fff4e6;margin-right:auto;white-space:nowrap;line-height:1.3}
 .eqask button{font-size:13.5px;padding:7px 11px;white-space:nowrap;flex:none;min-width:0;line-height:1.2}
+
+/* v0.76 onboarding guide */
+.tutbox{display:grid;gap:6px;justify-items:center;text-align:center;margin:8px 0 4px;padding:12px 14px;border-radius:16px;background:linear-gradient(180deg,rgba(255,209,102,.18),rgba(255,209,102,.08));border:2px solid var(--mustard);animation:tutIn .4s cubic-bezier(.2,1.4,.4,1) both}
+.tutbox b{font-family:var(--title);font-size:20px;color:var(--mustard)}
+.tutbox span{font-size:14px;color:#fff4e6;line-height:1.45}.tutbox em{font-style:normal;color:var(--mint);font-weight:700}
+.tutbox .tutgo{font-size:17px;padding:10px 22px;animation:tutPulse 1.2s ease-in-out infinite}
+@keyframes tutIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes tutPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+#coach{position:absolute;inset:0;z-index:17;pointer-events:none;line-height:1.3}
+#coach .cring{position:absolute;left:var(--x);top:var(--y);width:var(--rw);height:var(--rh);transform:translate(-50%,-50%);border-radius:18px;border:3px solid var(--mustard);box-shadow:0 0 0 4px rgba(255,209,102,.25);animation:cRing 1s ease-in-out infinite}
+#coach .chand{position:absolute;left:var(--x);top:var(--y);width:46px;height:46px;transform:translate(-8px,6px);animation:cTap 1s ease-in-out infinite;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
+#coach.up .chand{transform:translate(-8px,-52px) rotate(180deg);animation-name:cTapUp}
+#coach .cbub{position:absolute;left:var(--bx);top:calc(var(--y) + var(--rh)/2 + 52px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 10px 8px 14px;border-radius:14px;background:rgba(21,18,43,.95);border:2px solid var(--mustard);white-space:nowrap;pointer-events:auto}
+#coach.up .cbub{top:auto;bottom:calc(100% - var(--y) + var(--rh)/2 + 56px)}
+#coach .ctx{font-family:var(--display);font-size:16px;color:#fff4e6}
+#coach .cskip{font-size:11.5px;padding:4px 8px;background:rgba(255,255,255,.1);color:#dcdef8;border:0;box-shadow:none;border-radius:8px}
+@keyframes cRing{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.06);opacity:.7}}
+@keyframes cTap{0%,100%{transform:translate(-8px,6px)}50%{transform:translate(-8px,14px)}}
+@keyframes cTapUp{0%,100%{transform:translate(-8px,-52px) rotate(180deg)}50%{transform:translate(-8px,-60px) rotate(180deg)}}
+.tutbox.hat{grid-template-columns:auto 1fr;text-align:left;justify-items:start}.tutbox.hat .hthumb{grid-row:1/3}.tutbox.hat .tutgo{grid-column:1/3;justify-self:center}
+.eqask.all{background:rgba(255,209,102,.12);border-color:rgba(255,209,102,.5)}
 </style>
 
 <div class="app">
   <div class="stage">
     <div class="frame" id="frame">
-      <canvas id="bgcv" aria-hidden="true"></canvas><canvas id="cv" aria-label="스플래시 파이터 게임 화면"></canvas><div id="vig" aria-hidden="true"></div><div id="tbStack" aria-live="polite"></div>
+      <canvas id="bgcv" aria-hidden="true"></canvas><canvas id="cv" aria-label="스플래시 파이터 게임 화면"></canvas><div id="vig" aria-hidden="true"></div><div id="tbStack" aria-live="polite"></div><div id="coach" hidden><i class="cring"></i><svg class="chand" viewBox="0 0 48 48" aria-hidden="true"><path d="M19 44c-3-4-9-10-10-13-1-2 1-4 3-3l5 4V10a3 3 0 0 1 6 0v12l1-1a3 3 0 0 1 5 1 3 3 0 0 1 5 1 3 3 0 0 1 5 2v8c0 4-2 7-4 11z" fill="#fff4e6" stroke="#15122b" stroke-width="2.6" stroke-linejoin="round"/></svg><div class="cbub"><span class="ctx"></span><button type="button" class="cskip">건너뛰기</button></div></div>
       <div class="overlay lobby" id="titleOv">
         <div class="topbar">
           <div class="wallet"><button type="button" class="chip en" id="enChip" aria-label="에너지"><span class="sr">에너지</span><b id="lbEn">30/30</b><em id="lbEnT"></em></button><span class="chip coin" title="코인"><span class="sr">코인</span><b id="lbCoins">0</b></span><button type="button" class="chip gem" id="gemChip" data-open="store" data-lock="store" aria-label="보석 충전"><span class="sr">보석</span><b id="lbGems">0</b><span class="plus">+</span></button></div>
@@ -735,7 +756,7 @@ b,strong{font-weight:700}
       <div class="overlay" id="overOv" hidden>
         <div class="card result">
           <div class="rbody">
-          <p class="sub" id="overStage">챕터 1 실패</p>
+          <p class="sub" id="overStage">챕터 1 실패</p><div class="tutbox" id="overTut" hidden></div>
           <div class="bestcmp" id="overBest"></div><div class="statline" id="overStats"></div><div class="acct" id="overAcct"></div><div class="rdrops" id="overDrops"></div><div class="dmgst" id="overDmg"></div>
           <div class="receipt" id="overReceipt"></div>
           <div class="tlist" id="overTitles"></div>
@@ -747,7 +768,7 @@ b,strong{font-weight:700}
       <div class="overlay" id="clearOv" hidden>
         <div class="card result">
           <div class="rbody">
-          <p class="sub" id="clearStage">챕터 1 클리어</p>
+          <p class="sub" id="clearStage">챕터 1 클리어</p><div class="tutbox" id="clearTut" hidden></div>
           <div class="bestcmp" id="clearBest"></div><div class="statline" id="clearStats"></div><div class="acct" id="clearAcct"></div><div class="rdrops" id="clearDrops"></div><div class="dmgst" id="clearDmg"></div>
           <div class="tlist" id="clearTitles"></div>
           <ul class="breakdown" id="clearCoins"></ul>
@@ -899,7 +920,7 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <p class="ver">스플래시 파이터 v0.75 · 2026-10-26</p>
+            <p class="ver">스플래시 파이터 v0.76 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1926,13 +1947,15 @@ const STARTERS=['power','rapid','tough','crit','regen'];
 function freshProg(){return{stage:1,best:1,coins:0,gems:T.gemStart,up:{hp:0,atk:0,cool:0,crit:0},
   mastery:Object.fromEntries(STARTERS.map(k=>[k,1])),owned:{},equip:{},titles:{},title:null,
   stat:{apples:0,helmets:0,fails:{}},bestShot:0,bestWave:0,plays:0,lastInter:0,adFree:false,purchases:{},pvp:{rating:1000,w:0,l:0,day:'',left:-1,ads:0,bought:0},unlocked:{},fresh:{},day:{key:'',kills:0},
-  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null}}
+  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0}}
 const prog=freshProg();
 try{const s=JSON.parse(localStorage.getItem('snackProg3')||'null');
   if(s)for(const k in prog){if(s[k]===undefined)continue;
     if(typeof prog[k]==='object'&&prog[k]&&!Array.isArray(prog[k]))Object.assign(prog[k],s[k]);else prog[k]=s[k]}
   else{const o=JSON.parse(localStorage.getItem('snackProg2')||'null');if(o){for(const k of ['stage','best','coins'])if(isFinite(o[k]))prog[k]=+o[k];if(o.up)Object.assign(prog.up,o.up)}}
 }catch(e){}
+/* v0.76 onboarding: existing players skip the new-user guide */
+if(prog.tut===0&&prog.plays>0)prog.tut=9;
 function saveProg(){try{ecoTrack()}catch(e){}try{localStorage.setItem('snackProg3',JSON.stringify(prog))}catch(e){}}
 function resetProg(){for(const k of Object.keys(prog))delete prog[k];Object.assign(prog,freshProg());saveProg();initMeta()}
 try{if(!localStorage.getItem('snackResetV1')){localStorage.setItem('snackResetV1','1');resetProg()}}catch(e){}
@@ -2101,6 +2124,35 @@ function addItem(t,g){if(prog.inv.length>=80){prog.coins+=40*(g+1);return null}c
 function gradeW(ch,b=0){return[Math.max(8,62-ch*4-b*30),26+Math.min(12,ch),8+ch*1.2+b*14,Math.max(0,(ch-2)*0.8)+b*5,Math.max(0,(ch-5)*0.3)+b*1.2]}
 function rollGrade(ch,b=0){const w=gradeW(ch,b);let x=Math.random()*w.reduce((a,c)=>a+c,0);for(let g=0;g<5;g++){if((x-=w[g])<0)return g}return 0}
 function dropItem(ch,b){const t=IKEYS[Math.floor(Math.random()*IKEYS.length)];const it=addItem(t,rollGrade(ch,b));if(it&&!itemBy(prog.eq[t])){prog.eq[t]=it.u;autoEq.add(it.u)}return it}
+/* v0.76 onboarding (new users only)
+   run 1 ends  -> top up coins for one upgrade, guide: result -> 강화 tab -> first upgrade button
+   run 2 ends  -> give a look-changing hat (야구 모자), guide: result -> 아바타 tab -> 장착
+   run 3+      -> result screens offer 자동 장착 for the whole bag */
+const TUT_HAT='cap';let tutBonus=0;
+function tutAfterRun(){tutBonus=0;
+  if(prog.tut===0){const need=upCost('hp',prog.up.hp);if(prog.coins<need){tutBonus=need-prog.coins;prog.coins=need}prog.tut=1}
+  else if(prog.tut<3&&prog.plays>=2){prog.owned[TUT_HAT]=1;prog.tut=3}}
+function tutCard(el){if(!el)return;const t=prog.tut;el.hidden=true;el.innerHTML='';
+  if(t===1&&prog.plays===1){el.innerHTML=`<b>강화를 해 볼까요?</b><span>${tutBonus?'첫 판 보너스로 <em>코인 +'+tutBonus+'</em>을 드렸어요. ':''}체력을 올리면 다음 판이 훨씬 쉬워요.</span><button type="button" class="tutgo">강화하러 가기</button>`;el.hidden=false;
+    el.querySelector('.tutgo').addEventListener('click',()=>afterResult(()=>{goLobby();shopTab='stat';openPanel('shop',titleOv);tutRefresh()}))}
+  else if(t===3&&prog.plays===2){el.innerHTML=`<canvas class="hthumb" width="88" height="88" aria-hidden="true"></canvas><b>새 모자를 얻었어요!</b><span><em>${GEARID[TUT_HAT].name}</em> · ${GEARID[TUT_HAT].bd}. 아바타에서 써 보세요.</span><button type="button" class="tutgo">아바타로 가기</button>`;el.hidden=false;el.classList.add('hat');
+    try{drawHatThumb(el.querySelector('.hthumb'),TUT_HAT)}catch(e){}
+    el.querySelector('.tutgo').addEventListener('click',()=>afterResult(()=>{goLobby();refreshLocks();avSlot='hat';openPanel('avatar',titleOv);tutRefresh()}))}
+  else el.classList.remove('hat')}
+function tutTarget(){const t=prog.tut;if(t!==1&&t!==3)return null;const vis=e=>e&&e.offsetParent!==null&&e.getBoundingClientRect().width>0;
+  if(!$('popOv').hidden||!$('revealOv').hidden)return null;
+  if(state!=='title')return null;
+  if(t===1){if(!shopOv.hidden){if(shopTab!=='stat')return[$('shopTabStat'),'능력치 탭을 눌러요'];const b=$('shopList').querySelector('.up button');return vis(b)?[b,'눌러서 강화해 보세요']:null}
+    if(Object.values(PANELS).some(o=>!o.hidden))return null;const tb=document.querySelector('.tabbar [data-tab=shop]');return vis(tb)?[tb,'강화를 눌러 보세요']:null}
+  if(!avatarOv.hidden){if(avSlot!=='hat'){const b=[...$('avSlots').children][0];return vis(b)?[b,'모자 탭을 눌러요']:null}const r=$('avList').querySelector('[data-g="'+TUT_HAT+'"] button');return vis(r)?[r,'눌러서 써 보세요']:null}
+  if(Object.values(PANELS).some(o=>!o.hidden))return null;const tb=document.querySelector('.tabbar [data-tab=avatar]');return vis(tb)?[tb,'아바타를 눌러 보세요']:null}
+function tutRefresh(){const c=$('coach');if(!c)return;const tg=tutTarget();if(!tg){c.hidden=true;return}
+  const fr=$('frame').getBoundingClientRect(),r=tg[0].getBoundingClientRect(),x=r.left-fr.left+r.width/2,y=r.top-fr.top+r.height/2;
+  c.hidden=false;c.style.setProperty('--x',x+'px');c.style.setProperty('--y',y+'px');c.style.setProperty('--rw',(r.width+14)+'px');c.style.setProperty('--rh',(r.height+14)+'px');
+  c.classList.toggle('up',y>fr.height*0.55);const tx=c.querySelector('.ctx');if(tx.textContent!==tg[1])tx.textContent=tg[1];
+  const bub=c.querySelector('.cbub'),hw=(bub.offsetWidth||180)/2+8;bub.style.setProperty('--bx',Math.max(hw,Math.min(fr.width-hw,x))+'px')}
+setTimeout(()=>{setInterval(()=>{if(prog.tut===1||prog.tut===3)tutRefresh();else{const c=$('coach');if(c&&!c.hidden)c.hidden=true}},200);
+  $('coach').querySelector('.cskip').addEventListener('click',()=>{prog.tut=9;saveProg();$('coach').hidden=true;toast('가이드를 껐어요')})},0);
 /* v0.75: an empty slot still auto-equips (and says so); a drop that beats what you wear asks "바로 장착 / 나중에" */
 const autoEq=new Set();
 function betterOf(items){const best={};for(const it of items||[]){if(!it||prog.eq[it.t]===it.u||!prog.inv.includes(it))continue;const cur=itemBy(prog.eq[it.t]);if(cur&&iVal(it)<=iVal(cur))continue;if(!best[it.t]||iVal(it)>iVal(best[it.t]))best[it.t]=it}return Object.values(best)}
@@ -3518,7 +3570,7 @@ const upSum=()=>Object.values(prog.up).reduce((a,b)=>a+b,0);
 const cleared=()=>prog.best-1;
 const UNLOCK={
   shop:{name:'강화',ok:()=>prog.plays>=1,hint:'첫 판을 끝내면 열려요'},
-  avatar:{name:'아바타',ok:()=>cleared()>=T.unAvatar,hint:()=>'챕터 '+T.unAvatar+' 클리어 시 열려요'},
+  avatar:{name:'아바타',ok:()=>cleared()>=T.unAvatar||prog.tut>=3,hint:()=>'챕터 '+T.unAvatar+' 클리어 시 열려요'},
   store:{name:'상점',ok:()=>cleared()>=T.unAvatar,hint:()=>'챕터 '+T.unAvatar+' 클리어 시 열려요'},
   equip:{name:'장비',ok:()=>cleared()>=1||prog.inv.length>0,hint:'챕터 1을 클리어하면 열려요'},
   dungeon:{name:'던전',ok:()=>cleared()>=2,hint:'챕터 2를 클리어하면 보스 던전이 열려요'},
@@ -3532,7 +3584,7 @@ function toast(html,ms=2200){const t=$('toast');t.innerHTML=html;t.hidden=false;
 function refreshLocks(){
   const news=[];
   for(const k in UNLOCK){const ok=UNLOCK[k].ok();if(ok&&!prog.unlocked[k]){prog.unlocked[k]=1;prog.fresh[k]=1;news.push(UNLOCK[k].name)}}
-  if(news.length){saveProg();setTimeout(()=>{toast('<b>새 메뉴가 열렸어요!</b><br>'+news.join(' · '),2800);SFX.level()},350)}
+  if(news.length){saveProg();if(prog.tut!==1&&prog.tut!==3)setTimeout(()=>{toast('<b>새 메뉴가 열렸어요!</b><br>'+news.join(' · '),2800);SFX.level()},350)}
   document.querySelectorAll('[data-tab],[data-lock]').forEach(b=>{const k=b.dataset.lock||b.dataset.tab;if(!UNLOCK[k])return;b.classList.toggle('locked',!isOpen(k));b.classList.toggle('fresh',!!prog.fresh[k]&&isOpen(k))});
   refreshDots();
 }
@@ -3585,11 +3637,11 @@ function gameOver(){
   if(mode==='endless'){const pb=prog.bestWave||0;prog.bestWave=Math.max(pb,stageIdx);nb=stageIdx>pb;cmp=nb?'신기록! '+stageIdx+'웨이브 (이전 '+pb+')':'최고 기록 '+pb+'웨이브 · 이번 '+stageIdx;}
   else{prog.stat.fails[prog.stage]=(prog.stat.fails[prog.stage]||0)+1;if(prog.stat.fails[prog.stage]>=5)award('never');
     const pb=chBestOf(prog.stage);nb=stageIdx>pb;if(nb)prog.chBest[prog.stage]=stageIdx;cmp=nb?'신기록! 웨이브 '+stageIdx+'/'+N+' (이전 '+pb+')':'최고 기록 '+pb+'/'+N+' · 이번 '+stageIdx;}
-  const kept=Math.round(run.coins*(mode==='endless'?100:T.failKeep)/100);prog.coins+=kept;const ax=giveAcct(false);saveProg();
+  const kept=Math.round(run.coins*(mode==='endless'?100:T.failKeep)/100);prog.coins+=kept;const ax=giveAcct(false);tutAfterRun();saveProg();
   $('overStage').textContent=mode==='endless'?'무한 모드 · 웨이브 '+stageIdx+' 돌파':'챕터 '+prog.stage+' 실패 · 웨이브 '+stageIdx+'/'+N;
   bestCmp($('overBest'),cmp,nb);statLine($('overStats'));acctCard($('overAcct'),ax);dropsRow($('overDrops'));dmgStats($('overDmg'));titleCards($('overTitles'));receipt($('overReceipt'));
   breakdown($('overCoins'),[[mode==='endless'?'획득 코인':'획득 코인 ('+T.failKeep+'% 유지)','+'+kept],['보유 코인',prog.coins]]);
-  overOv.hidden=false;pushRank();
+  tutCard($('overTut'));overOv.hidden=false;pushRank();
 }
 function stageClear(){
   anEnd('clear');if(mode==='chapter')msAdd('clear');
@@ -3601,9 +3653,9 @@ function stageClear(){
   prog.chBest[prog.stage]=N;
   for(let i=0;i<(first?2:1);i++){const it=dropItem(prog.stage,first?0.3:0);if(it)run.drops.push(it)}
   const ax=giveAcct(true);
-  prog.coins+=total;prog.gems+=gem;prog.stage++;prog.best=Math.max(prog.best,prog.stage);saveProg();
+  prog.coins+=total;prog.gems+=gem;prog.stage++;prog.best=Math.max(prog.best,prog.stage);tutAfterRun();saveProg();
   bestCmp($('clearBest'),first?'첫 클리어! 다음 챕터가 열렸어요':'다시 클리어 · 장비 '+run.drops.length+'개',first);
-  statLine($('clearStats'));acctCard($('clearAcct'),ax);dropsRow($('clearDrops'));dmgStats($('clearDmg'));titleCards($('clearTitles'));
+  statLine($('clearStats'));acctCard($('clearAcct'),ax);dropsRow($('clearDrops'));dmgStats($('clearDmg'));titleCards($('clearTitles'));tutCard($('clearTut'));
   const rows=[['격파 코인','+'+run.coins],['클리어 보너스','+'+bonus]];if(gem)rows.push(['첫 클리어 보석','+'+gem]);rows.push(['보유 코인',prog.coins]);
   breakdown($('clearCoins'),rows);
   pushRank();SFX.clear();
@@ -3660,7 +3712,7 @@ function renderShop(){
   if(shopTab==='stat'){
     for(const k in UPS){const u=UPS[k],l=prog.up[k],c=upCost(k,l);const row=document.createElement('div');row.className='up';
       row.innerHTML=`<b>${u.name} Lv${l}</b><button type="button"${prog.coins<c?' disabled':''}>${c} 코인</button><small>${u.eff(l)} → ${u.eff(l+1)}</small>`;
-      row.querySelector('button').addEventListener('click',()=>{if(prog.coins<c)return;prog.coins-=c;prog.up[k]++;msAdd('up');saveProg();renderShop();updateTitle()});
+      row.querySelector('button').addEventListener('click',()=>{if(prog.coins<c)return;prog.coins-=c;prog.up[k]++;msAdd('up');if(prog.tut===1){prog.tut=2;toast('<b>강화 완료!</b><br>'+u.name+'이(가) 올랐어요. 다음 판이 더 쉬워져요',2600)}saveProg();renderShop();updateTitle();tutRefresh()});
       list.appendChild(row)}
   }else{
     for(const k of SKILLS){const m=mastery(k.id),row=document.createElement('div');row.className='up';
@@ -3683,12 +3735,12 @@ function renderAvatar(){
   const tabs=$('avSlots');tabs.innerHTML='';
   for(const [id,nm] of SLOTS){const b=document.createElement('button');b.type='button';b.className='tab small';b.textContent=nm+(prog.equip[id]?' •':'');b.setAttribute('aria-selected',avSlot===id);b.addEventListener('click',()=>{avSlot=id;renderAvatar()});tabs.appendChild(b)}
   const list=$('avList');list.innerHTML='';
-  for(const g of GEAR.filter(g=>g.slot===avSlot&&(!g.iap||prog.owned[g.id]||prog.offer&&prog.offer.id===g.id))){const own=prog.owned[g.id],on=prog.equip[g.slot]===g.id;const row=document.createElement('div');row.className='up';
+  for(const g of GEAR.filter(g=>g.slot===avSlot&&(!g.iap||prog.owned[g.id]||prog.offer&&prog.offer.id===g.id))){const own=prog.owned[g.id],on=prog.equip[g.slot]===g.id;const row=document.createElement('div');row.className='up';row.dataset.g=g.id;
     const label=on?'해제':own?'장착':g.iap?'₩'+g.iap.toLocaleString('ko-KR'):g.price+' 보석';
     if(g.slot==='hat')row.classList.add('hatrow');row.innerHTML=`${g.slot==='hat'?'<canvas class="hthumb" width="88" height="88" aria-hidden="true"></canvas>':''}<b>${g.name}${on?' <span style="color:var(--mint);font-size:13px">장착 중</span>':''}</b><button type="button"${!own&&!g.iap&&prog.gems<g.price?' disabled':''}${on?' class="ghost"':''}>${label}</button><small>${g.bd}</small>`;
     row.querySelector('button').addEventListener('click',()=>{
       if(on)delete prog.equip[g.slot];
-      else if(own)prog.equip[g.slot]=g.id;
+      else if(own){prog.equip[g.slot]=g.id;if(prog.tut===3){prog.tut=4;setTimeout(()=>toast('<b>잘 어울려요!</b><br>모습이 바뀌었어요. 로비에서 확인해 보세요',2600),50)}}
       else if(g.iap){offerPop(true);return}
       else{if(prog.gems<g.price)return;prog.gems-=g.price;prog.owned[g.id]=1;prog.equip[g.slot]=g.id;SFX.level&&SFX.level()}
       if(!on&&SIG[g.id]){playAnim(SIG[g.id]);lobby.last=SIG[g.id]}
@@ -4082,10 +4134,11 @@ function chestState(c,w){const N=stageN(),need=w==='clear'?N:Math.ceil(N/2);if(p
 function giveAcct(clear){const x=Math.max(1,run.kills*6+run.bosses*10+(clear?25+prog.stage*3:0));return{x,up:gainAcct(x)}}
 function bestCmp(el,txt,nb){el.textContent=txt||'';el.className='bestcmp'+(nb?' new':'')}
 function acctCard(el,a){const A=prog.acct,p=Math.round(A.xp/needAX(A.lv)*100);el.innerHTML=`<span>계정 Lv ${A.lv}</span><span class="xpb"><i style="width:${p}%"></i></span><b>+${a.x} EXP</b>`+(a.up?`<span class="lvup">레벨 업! Lv ${A.lv} · 보석 +${10*a.up} · 에너지 +${5*a.up}</span>`:'')}
-function dropsRow(el){if(!run.drops.length){el.innerHTML='';return}const auto=run.drops.filter(it=>autoEq.has(it.u)&&prog.eq[it.t]===it.u).length,bt=betterOf(run.drops);
+function dropsRow(el){if(!run.drops.length&&!(prog.plays>=3&&betterOf(prog.inv).length)){el.innerHTML='';return}const auto=run.drops.filter(it=>autoEq.has(it.u)&&prog.eq[it.t]===it.u).length,bt=betterOf(run.drops);
   el.innerHTML='<span class="dl">획득한 장비'+(auto?' · <b class="aeq">'+auto+'개 자동 장착됨</b>':'')+'</span><div class="dt">'+run.drops.map(it=>tileHTML(it,{eq:prog.eq[it.t]===it.u})).join('')+'</div>'
    +(bt.length?'<div class="eqask"><span>더 좋은 장비 '+bt.length+'개</span><button type="button" class="eqgo">바로 장착</button><button type="button" class="ghost eqlater">나중에</button></div>':'');
-  const g=el.querySelector('.eqgo');if(g)g.addEventListener('click',()=>{equipNow(betterOf(run.drops));dropsRow(el)});const l=el.querySelector('.eqlater');if(l)l.addEventListener('click',()=>{const a=el.querySelector('.eqask');if(a)a.remove()})}
+  if(prog.plays>=3){const all=betterOf(prog.inv);if(all.length>bt.length)el.insertAdjacentHTML('beforeend','<div class="eqask all"><span>가방에 더 센 장비 '+all.length+'개</span><button type="button" class="eqauto">자동 장착</button></div>')}
+  const g=el.querySelector('.eqgo');if(g)g.addEventListener('click',()=>{equipNow(betterOf(run.drops));dropsRow(el)});const au=el.querySelector('.eqauto');if(au)au.addEventListener('click',()=>{equipNow(betterOf(prog.inv));dropsRow(el)});const l=el.querySelector('.eqlater');if(l)l.addEventListener('click',()=>{const a=el.querySelector('.eqask');if(a)a.remove()})}
 function dmgStats(el){const L=[['base','기본 물풍선','#8ff0d6'],['big','왕풍선','#5ec8ff'],['ex','추가 물풍선','#c39bff'],['self','제 발등','#ffd166']];const tot=L.reduce((a,[k])=>a+(run.dmg[k]||0),0);
   if(!tot){el.innerHTML='';return}
   el.innerHTML='<b class="dh">피해 통계 · 총 '+tot.toLocaleString('ko-KR')+'</b>'+L.filter(([k])=>run.dmg[k]).map(([k,n,c])=>{const v=run.dmg[k],p=Math.round(v/tot*100);return `<div class="drow"><span>${n}</span><span class="dbar"><i style="width:${p}%;background:${c}"></i></span><b>${v.toLocaleString('ko-KR')} · ${p}%</b></div>`}).join('')}
