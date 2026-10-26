@@ -872,7 +872,7 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <p class="ver">스플래시 파이터 v0.71 · 2026-10-25</p>
+            <p class="ver">스플래시 파이터 v0.72 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2260,6 +2260,20 @@ function drawItem(it){
 /* ---------- input ---------- */
 function toWorld(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left-offX)/scale,y:(e.clientY-r.top)/scale}}
 function throwOrigin(){const n=player.points.neck;return{x:n.x+8,y:n.y-6}}
+/* v0.72: pull strength as a percentage — big badge above the finger, small label above the head */
+function drawPowerUI(pw){const pct=Math.round(pw*100),max=pct>=100,col=cool>0?'#aab0d8':max?COL.mustard:COL.mint;
+  ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+  // finger badge: sits above the touch point so the thumb doesn't cover it
+  const bx=Math.max(46,Math.min(W-46,aim.cx)),by=Math.max(34,aim.cy-62),txt=max?'최대!':pct+'%';
+  ctx.font='26px '+TFONT;const tw=Math.max(66,ctx.measureText(txt).width+26);
+  ctx.fillStyle='rgba(21,18,43,0.82)';ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx-tw/2,by-20,tw,40,20);else ctx.rect(bx-tw/2,by-20,tw,40);ctx.fill();ctx.stroke();
+  // fill bar under the number
+  ctx.fillStyle='rgba(255,255,255,0.14)';ctx.fillRect(bx-tw/2+12,by+12,tw-24,4);ctx.fillStyle=col;ctx.fillRect(bx-tw/2+12,by+12,(tw-24)*pw,4);
+  ctx.fillStyle=col;ctx.fillText(txt,bx,by-2);
+  ctx.font='14px '+FONT;ctx.lineWidth=4;ctx.strokeStyle='rgba(21,18,43,0.85)';const sub=cool>0?'충전 중':'놓으면 발사';ctx.strokeText(sub,bx,by+34);ctx.fillStyle=cool>0?'#aab0d8':'#fff4e6';ctx.fillText(sub,bx,by+34);
+  // head label
+  if(player&&player.alive){const h=player.points.head;ctx.font='18px '+TFONT;ctx.lineWidth=5;ctx.strokeStyle='#15122b';const hy=h.y-48;ctx.strokeText(txt,h.x,hy);ctx.fillStyle=col;ctx.fillText(txt,h.x,hy)}
+  ctx.restore()}
 function aimVel(){const dx=aim.sx-aim.cx,dy=aim.sy-aim.cy,L=Math.hypot(dx,dy);if(L<1)return null;const k=Math.min(L,T.pull)/L*(T.power/T.pull);return{vx:dx*k,vy:dy*k,L}}
 document.addEventListener('pointerdown',()=>{lobby.idle=0},{capture:true});
 cv.addEventListener('pointerdown',e=>{
@@ -3388,8 +3402,7 @@ function render(){
     let o=throwOrigin(),x=o.x,y=o.y,vx=v.vx,vy=v.vy;
     for(let i=0;i<previewLen();i++){vx+=wind*DT;vy+=G*DT;x+=vx*DT;y+=vy*DT;if(i%2)continue;
       ctx.fillStyle=cool>0?`rgba(170,175,210,${0.45-i/48})`:`rgba(255,244,230,${0.85-i/24})`;ctx.beginPath();ctx.arc(x,y,cool>0?2.4:3,0,Math.PI*2);ctx.fill()}
-    const pw=Math.min(1,v.L/T.pull);ctx.font='16px '+FONT;ctx.textAlign='center';
-    if(cool>0){ctx.fillStyle='#aab0d8';ctx.fillText('충전 중',aim.cx,aim.cy-18)}else{ctx.fillStyle=pw>=1?COL.mustard:COL.mint;ctx.fillText((pw>=1?'최대 · ':'')+'놓으면 발사',aim.cx,aim.cy-18)}
+    const pw=Math.min(1,v.L/T.pull);drawPowerUI(pw)
   }}
   // floats
   ctx.textAlign='center';
