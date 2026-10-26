@@ -679,12 +679,28 @@ b,strong{font-weight:700}
 #dunOv.page #dunGo{min-width:70%;font-size:20px}
 .tabbar button[aria-selected="true"]{background:rgba(143,240,214,.18);color:var(--mint);box-shadow:inset 0 -3px 0 var(--mint)}
 @media (prefers-reduced-motion:reduce){.overlay.sheet.page .card,.lobby.lbIn>*{animation:none!important}}
+
+/* v0.74 title unlock banners */
+#tbStack{position:absolute;left:0;right:0;top:6px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:16;pointer-events:none;line-height:1.25}
+.tban{min-width:52%;max-width:84%;box-sizing:border-box;padding:4px 14px 5px;border-radius:14px;background:rgba(21,18,43,.94);border:2.5px solid var(--mustard);box-shadow:0 4px 0 rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.35);text-align:center;animation:tbIn .34s cubic-bezier(.2,1.4,.4,1) both}
+.tban.hid{border-color:#c79bff}
+.tban small{font-family:var(--display);font-size:12px;color:var(--mustard);letter-spacing:.02em}
+.tban.hid small{color:#d9b8ff}
+.tban b{display:block;font-family:var(--title);font-size:18px;color:#fff4e6;text-shadow:0 2px 0 #15122b;margin:0}
+.tban em{font-style:normal;font-family:var(--body);font-size:11.5px;color:#dcdef8}
+.tban .tl{display:block}
+.tban{position:relative}
+.tban .cnt{position:absolute;top:-7px;right:-7px;font-style:normal;font-family:var(--display);font-size:11px;line-height:1;padding:3px 6px;border-radius:9px;background:var(--mustard);color:#15122b;border:2px solid #15122b}
+.tban.out{animation:tbOut .32s ease-in forwards}
+@keyframes tbIn{from{opacity:0;transform:translateY(-14px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes tbOut{to{opacity:0;transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.tban,.tban.out{animation-duration:.01s}}
 </style>
 
 <div class="app">
   <div class="stage">
     <div class="frame" id="frame">
-      <canvas id="bgcv" aria-hidden="true"></canvas><canvas id="cv" aria-label="스플래시 파이터 게임 화면"></canvas><div id="vig" aria-hidden="true"></div>
+      <canvas id="bgcv" aria-hidden="true"></canvas><canvas id="cv" aria-label="스플래시 파이터 게임 화면"></canvas><div id="vig" aria-hidden="true"></div><div id="tbStack" aria-live="polite"></div>
       <div class="overlay lobby" id="titleOv">
         <div class="topbar">
           <div class="wallet"><button type="button" class="chip en" id="enChip" aria-label="에너지"><span class="sr">에너지</span><b id="lbEn">30/30</b><em id="lbEnT"></em></button><span class="chip coin" title="코인"><span class="sr">코인</span><b id="lbCoins">0</b></span><button type="button" class="chip gem" id="gemChip" data-open="store" data-lock="store" aria-label="보석 충전"><span class="sr">보석</span><b id="lbGems">0</b><span class="plus">+</span></button></div>
@@ -872,7 +888,7 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <p class="ver">스플래시 파이터 v0.73 · 2026-10-26</p>
+            <p class="ver">스플래시 파이터 v0.74 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2026,10 +2042,20 @@ const TITLE=Object.fromEntries(TITLES.map(t=>[t.id,t]));
 function award(id){
   if(prog.titles[id])return;const t=TITLE[id];const g=Math.round(t.gem*T.gemTitle);
   prog.titles[id]=todayKey();prog.gems+=g;run.newTitles.push(id);if(!prog.title)prog.title=id;ecoTrack();ecoCtx='칭호';saveProg();
-  if(state==='title'||state==='over'||state==='clear'){try{toast('<b>'+(t.hidden?'숨은 칭호 발견!':'칭호 획득!')+'</b><br>「'+t.name+'」 · 보석 +'+g+(t.hidden?'<br><span style="font-size:12px;opacity:.8">숨은 칭호 '+TITLES.filter(x=>x.hidden&&prog.titles[x.id]).length+' / '+TITLES.filter(x=>x.hidden).length+'</span>':''),2800);SFX.level()}catch(e){}return}
-  floats.push({x:W/2,y:200,text:t.hidden?'숨은 칭호 발견!':'칭호 획득!',color:COL.mustard,t:0,size:22,life:2.2});
-  floats.push({x:W/2,y:232,text:'「'+t.name+'」',color:COL.ink,t:0,size:28,life:2.2});
+  titleBanner(t,g);
+  if(state==='title'||state==='over'||state==='clear'){try{SFX.level()}catch(e){}}
 }
+/* v0.74: title unlocks show as a banner pinned at the very top, above popups (level-up, results).
+   Several unlocks at once play one after another (1/2, 2/2) so they never overlap or cover a window */
+let tbQ=[],tbOn=false,tbN=0,tbI=0;
+function titleBanner(t,g){tbQ.push([t,g]);tbN++;if(!tbOn)tbNext();else{const el=document.querySelector('#tbStack .tban');if(!el)return;let c=el.querySelector('.cnt');if(!c){c=document.createElement('i');c.className='cnt';el.appendChild(c)}c.textContent=tbI+'/'+tbN}}
+function tbNext(){const st=document.getElementById('tbStack');if(!st)return;const it=tbQ.shift();if(!it){tbOn=false;tbN=0;tbI=0;return}tbOn=true;tbI++;const [t,g]=it;
+  const el=document.createElement('div');el.className='tban'+(t.hidden?' hid':'');
+  const b=document.createElement('b');b.textContent='「'+t.name+'」';
+  const ln=document.createElement('span');ln.className='tl';const sm=document.createElement('small');sm.textContent=t.hidden?'숨은 칭호 발견!':'칭호 획득!';
+  const em=document.createElement('em');em.textContent=' · 보석 +'+g+(t.hidden?' · 숨은 칭호 '+TITLES.filter(x=>x.hidden&&prog.titles[x.id]).length+' / '+TITLES.filter(x=>x.hidden).length:'');
+  ln.appendChild(sm);ln.appendChild(em);el.appendChild(b);el.appendChild(ln);if(tbN>1){const c=document.createElement('i');c.className='cnt';c.textContent=tbI+'/'+tbN;el.appendChild(c)}
+  while(st.firstChild)st.removeChild(st.firstChild);st.appendChild(el);setTimeout(()=>{el.classList.add('out');setTimeout(()=>{el.remove();tbNext()},300)},tbQ.length?2300:3200)}
 function onMiss(){run.streak=0;run.misses++;if(run.misses>=20)award('wind2')}
 const sk=id=>run.skills[id]||0;
 const skLv=id=>(run.skLv&&run.skLv[id])||0;
