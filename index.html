@@ -931,7 +931,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래시 파이터 v0.79 · 2026-10-26</p>
+            <p class="ver">스플래시 파이터 v0.80 · 2026-10-26</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2423,7 +2423,7 @@ function earlyRelease(){const h=player.points.hF;player.earlyT=0.45;SFX.early();
 function readyPop(aiming){const h=player.points.hF;player.readyPulse=0.4;SFX.ready();if(aiming){vib(18)}
   ring(h.x,h.y-4,34,COL.mint,0.35,4);sparks(h.x,h.y-4,10,COL.mint,260)}
 function doThrow(v){
-  run.thrown=(run.thrown||0)+1;const o=throwOrigin();
+  run.thrown=(run.thrown||0)+1;if(run.thrown===1&&prog.plays===0&&enemy)enemy.throwT=Math.max(enemy.throwT||0,1.6);const o=throwOrigin();
   let big=player.bigShots>0;if(big)player.bigShots--;else if(Math.random()<sk('bigc')*0.15*em('bigc')+AV().big/100)big=true;
   const n=(player.triple>0?3:1)+skLv('twin');if(player.triple>0)player.triple--;
   const angs=[];for(let i=0;i<n;i++)angs.push((i-(n-1)/2)*0.11);
@@ -2568,7 +2568,8 @@ function update(dt){
   // enemy AI
   if(enemy.frozen>0)enemy.frozen-=dt;
   if(mode==='dungeon')bossAI(dt);
-  else if(state==='play'&&enemy.alive&&eRoof.t>=0.6&&player.alive&&!(enemy.frozen>0)){
+  /* v0.80: in the very first run the enemy holds fire until the player has thrown once (while the drag hint is shown) */
+  else if(state==='play'&&enemy.alive&&eRoof.t>=0.6&&player.alive&&!(enemy.frozen>0)&&!(prog.plays===0&&!run.thrown)){
     const prev=enemy.throwT;enemy.throwT-=dt;
     if(enemy.throwT<0.35&&enemy.throwT>0)enemy.armDir=norm(-enemy.face,-0.5);
     if(prev>0&&enemy.throwT<=0){
