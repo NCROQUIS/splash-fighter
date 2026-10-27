@@ -749,6 +749,27 @@ b,strong{font-weight:700}
 .stpow span{font-size:11px;color:#dcdef8}.stpow b{font-family:var(--title);font-size:20px;color:#ffd166}.stpow small{font-size:11px;color:#dcdef8}
 .stpop{position:absolute;top:46%;transform:translateX(-50%);font-family:var(--title);font-size:22px;color:#fff;text-shadow:0 2px 0 #15122b,0 0 8px rgba(0,0,0,.4);white-space:nowrap;animation:stPop 1.25s cubic-bezier(.2,.8,.3,1) forwards}
 @keyframes stPop{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.08)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-56px) scale(1)}}
+
+/* v0.84 costume room */
+#avatarOv.staged .card>p.sub{display:none}
+#avList.cards{flex:none;display:flex;gap:12px;overflow-x:auto;overflow-y:visible;padding:16px 6px 12px;margin:0 -14px;padding-left:14px;padding-right:14px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.ccard{flex:0 0 104px;position:relative;scroll-snap-align:start;display:grid;justify-items:center;align-content:start;gap:3px;padding:14px 6px 9px;border-radius:10px;border:2.5px solid var(--ink);background:linear-gradient(180deg,#fffaf0,#f1e6d2);color:#2a2340;box-shadow:0 4px 0 rgba(0,0,0,.3);transition:transform .15s;font:inherit;line-height:1.2}
+.ccard::before{content:"";position:absolute;top:-10px;left:50%;width:24px;height:14px;transform:translateX(-50%);border-radius:4px 4px 3px 3px;border:2px solid var(--ink);background:linear-gradient(180deg,#d9e1f0,#8e9ab3)}
+.ccard canvas{width:64px;height:64px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#353a7a,#1f2350)}
+.ccard b{font-family:var(--display);font-weight:400;font-size:13px;text-align:center;color:#2a2340}
+.ccard small{font-size:10.5px;color:#6a6080;text-align:center;min-height:2.4em}
+.ccard .cp{font-family:var(--display);font-size:12px;padding:2px 9px;border-radius:9px;background:#2a2340;color:#ffd166}
+.ccard.own .cp{background:#3aa58a;color:#fff}.ccard.on{border-color:var(--mint);box-shadow:0 0 0 3px rgba(143,240,214,.5),0 4px 0 rgba(0,0,0,.3)}.ccard.on .cp{background:var(--mint);color:#15122b}
+.ccard.sel{transform:translateY(-6px) rotate(-1.5deg)}
+.ccard .chk{position:absolute;top:4px;right:5px;font-style:normal;font-size:12px;width:18px;height:18px;border-radius:50%;background:#3aa58a;color:#fff;display:grid;place-items:center}
+.ccard.lock canvas,.ccard.lock b,.ccard.lock small{filter:grayscale(1);opacity:.6}
+.ccard .lkb{position:absolute;left:-3px;right:-3px;bottom:34px;font-style:normal;font-size:11px;font-family:var(--display);padding:2px 0;background:#d9483b;color:#fff;text-align:center;transform:rotate(-4deg);border:2px solid var(--ink)}
+#avatarOv .pgstage .avbonus{position:absolute;right:10px;top:10px;display:grid;gap:1px;justify-items:end;padding:7px 11px 8px;border-radius:14px;background:rgba(21,18,43,.78);border:2px solid rgba(255,255,255,.14);line-height:1.2}
+.avbonus span{font-size:11px;color:#dcdef8}.avbonus b{font-family:var(--display);font-weight:400;font-size:14px;color:#ffd166}
+#avatarOv .pgstage .avtag{position:absolute;left:10px;bottom:14px;display:grid;gap:2px;padding:8px 10px;border-radius:14px;background:rgba(21,18,43,.86);border:2px solid var(--mustard);max-width:46%;line-height:1.2;pointer-events:auto}
+.avtag b{font-family:var(--display);font-weight:400;font-size:15px;color:#fff4e6}.avtag small{font-size:11px;color:#dcdef8}
+.avtag button{margin-top:4px;font-size:13.5px;padding:6px 10px}.avtag button.buy{background:linear-gradient(180deg,#ffe07a,#ffb627);color:#15122b}
+#avatarOv .pgstage .avreset{position:absolute;right:10px;bottom:14px;font-size:12px;padding:6px 10px;pointer-events:auto;background:rgba(21,18,43,.8);color:#fff4e6;border:2px solid rgba(255,255,255,.2);box-shadow:none}
 </style>
 
 <div class="app">
@@ -831,13 +852,13 @@ b,strong{font-weight:700}
           <button type="button" class="closeBtn">돌아가기</button>
         </div>
       </div>
-      <div class="overlay sheet" id="avatarOv" hidden>
+      <div class="overlay sheet staged" id="avatarOv" hidden><div class="pgstage" aria-hidden="false"><div class="avbonus" id="avBonus"></div><div class="avtag" id="avTag" hidden><b id="avTagName"></b><small id="avTagBd"></small><button type="button" id="avAct">장착</button></div><button type="button" class="avreset" id="avReset" aria-label="원래대로" hidden>↺ 원래대로</button></div>
         <div class="card">
           <button type="button" class="xBtn" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
           <h1 style="font-size:28px">아바타</h1>
           <div class="gems" id="avGems">보석 0</div>
           <div class="subtabs" id="avSlots"></div>
-          <div class="ups" id="avList"></div>
+          <div class="cards" id="avList"></div>
           <p class="sub">보석은 나중에 유료로 판매할 재화예요. 지금은 칭호와 첫 클리어로 얻어요.</p>
           <button type="button" class="closeBtn">돌아가기</button>
         </div>
@@ -943,7 +964,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.83 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.84 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2037,7 +2058,10 @@ const GEAR=[
   {id:'knight',slot:'hat',name:'기사 투구',price:130,buff:{hp:15},bd:'최대 체력 +15'},
   {id:'samurai',slot:'hat',name:'사무라이 투구',price:140,buff:{atk:6},bd:'공격력 +6%'},
   {id:'reaper',slot:'hat',name:'사신 후드',price:160,buff:{crit:5},bd:'치명타 +5%'},
-  {id:'diver',slot:'hat',name:'물풍선 잠수 헬멧',price:180,buff:{big:5},bd:'왕풍선 확률 +5%'},
+  {id:'diver',slot:'hat',name:'물풍선 잠수 헬멧',price:180,buff:{big:5},bd:'왕풍선 확률 +5%',lock:6},
+  {id:'bucket',slot:'hat',name:'양동이 투구',price:60,buff:{guard:4},bd:'받는 피해 -4%',lock:3},
+  {id:'duck',slot:'hat',name:'고무 오리 모자',price:90,buff:{item:10},bd:'아이템 등장 +10%',lock:5},
+  {id:'wmelon',slot:'hat',name:'수박 투구',price:110,buff:{hp:12},bd:'최대 체력 +12',lock:8},
   {id:'rage',slot:'hat',name:'분노 폭발 헤어',price:0,iap:1500,buff:{crit:5},bd:'치명타 +5% · 로비에서 황금 오라'},
   {id:'shades',slot:'face',name:'선글라스',price:40,buff:{preview:3},bd:'궤적 미리보기 +3칸'},
   {id:'whisker',slot:'face',name:'고양이 수염',price:60,buff:{crit:3},bd:'치명타 +3%'},
@@ -2046,14 +2070,17 @@ const GEAR=[
   {id:'tie',slot:'neck',name:'넥타이',price:30,buff:{coin:5},bd:'코인 +5%'},
   {id:'cape',slot:'back',name:'망토',price:70,buff:{atk:4},bd:'공격력 +4%'},
   {id:'bag',slot:'back',name:'배낭',price:50,buff:{item:15},bd:'아이템 등장 +15%'},
-  {id:'wings',slot:'back',name:'천사 날개',price:100,buff:{head:10},bd:'헤드샷 피해 +10%'},
+  {id:'wings',slot:'back',name:'천사 날개',price:100,buff:{head:10},bd:'헤드샷 피해 +10%',lock:4},
   {id:'melon',slot:'ball',name:'수박 풍선',price:40,buff:{big:3},bd:'왕풍선 확률 +3%'},
   {id:'goldb',slot:'ball',name:'황금 풍선',price:90,buff:{coin:8},bd:'코인 +8%'},
   {id:'heart',slot:'ball',name:'하트 풍선',price:70,buff:{vamp:3},bd:'준 피해 3% 회복'},
 ];
 const GEARID=Object.fromEntries(GEAR.map(g=>[g.id,g]));
 function AV(){const a={hp:0,apple:0,coin:0,preview:0,crit:0,guard:0,cool:0,atk:0,item:0,head:0,big:0,vamp:0};
-  for(const sl in prog.equip){const g=GEARID[prog.equip[sl]];if(g)for(const k in g.buff)a[k]+=g.buff[k]}return a}
+  for(const sl in prog.equip){const g=GEARID[prog.equip[sl]];if(g)for(const k in g.buff)a[k]+=g.buff[k]}
+  /* v0.84 collection bonus: every owned avatar piece adds a little, worn or not */
+  const n=ownedCount();a.atk+=n*0.5;a.hp+=n;return a}
+function ownedCount(){let n=0;for(const g of GEAR)if(prog.owned[g.id])n++;return n}
 /* ---------- titles ---------- */
 const TITLES=[
   {id:'oneshot',name:'원샷 원킬의 달인',cond:'한 판에 한 방 격파 3번',hint:'한 방이면 충분해요',gem:20},
@@ -2205,7 +2232,7 @@ function tutTarget(){const t=prog.tut;if(t!==1&&t!==3)return null;const vis=e=>e
   if(state!=='title')return null;
   if(t===1){if(!shopOv.hidden){if(shopTab!=='stat')return[$('shopTabStat'),'능력치 탭을 눌러요'];const b=$('shopList').querySelector('.up button');return vis(b)?[b,'눌러서 강화해 보세요']:null}
     if(Object.values(PANELS).some(o=>!o.hidden))return null;const tb=document.querySelector('.tabbar [data-tab=shop]');return vis(tb)?[tb,'강화를 눌러 보세요']:null}
-  if(!avatarOv.hidden){if(avSlot!=='hat'){const b=[...$('avSlots').children][0];return vis(b)?[b,'모자 탭을 눌러요']:null}const r=$('avList').querySelector('[data-g="'+TUT_HAT+'"] button');return vis(r)?[r,'눌러서 써 보세요']:null}
+  if(!avatarOv.hidden){if(avSlot!=='hat'){const b=[...$('avSlots').children][0];return vis(b)?[b,'모자 탭을 눌러요']:null}if(avPrev!==TUT_HAT){const r=$('avList').querySelector('[data-g="'+TUT_HAT+'"]');return vis(r)?[r,'눌러서 입어 봐요']:null}const a=$('avAct');return vis(a)?[a,'눌러서 써 보세요']:null}
   if(Object.values(PANELS).some(o=>!o.hidden))return null;const tb=document.querySelector('.tabbar [data-tab=avatar]');return vis(tb)?[tb,'아바타를 눌러 보세요']:null}
 function tutRefresh(){const c=$('coach');if(!c)return;const tg=tutTarget();if(!tg){c.hidden=true;return}
   const fr=$('frame').getBoundingClientRect(),r=tg[0].getBoundingClientRect(),x=r.left-fr.left+r.width/2,y=r.top-fr.top+r.height/2;
@@ -3347,6 +3374,15 @@ function drawDanglesStatic(c,id,f){for(const sp of DANG[id]||[]){const ch=[];for
 function drawHat(c,id,f,t,stat){
   const X=x=>x*f;c.save();c.lineJoin='round';c.lineCap='round';
   if(stat)drawDanglesStatic(c,id,f);
+  if(id==='bucket'){c.beginPath();c.moveTo(-15,-3);c.lineTo(15,-3);c.lineTo(11,-26);c.lineTo(-11,-26);c.closePath();hFill(c,hGrad(c,-26,-3,'#8fdcff','#2f86d6'));
+    c.beginPath();c.rect(-16,-6,32,4.5);hFill(c,'#2569b3');c.strokeStyle=HINK;c.lineWidth=1.6;c.beginPath();c.arc(X(16),-14,6,-1.2,1.3);c.stroke();
+    c.fillStyle='rgba(255,255,255,.55)';c.fillRect(-8,-22,3,14);c.fillStyle='#bfefff';c.beginPath();c.moveTo(X(-12),0);c.quadraticCurveTo(X(-14),5,X(-12),7);c.quadraticCurveTo(X(-10),5,X(-12),0);c.fill();c.restore();return}
+  if(id==='duck'){c.beginPath();c.ellipse(0,-17,14,8.5,0,0,7);hFill(c,hGrad(c,-26,-8,'#fff27a','#ffc21a'));c.beginPath();c.arc(X(6),-28,7.5,0,7);hFill(c,'#ffe14d');
+    c.beginPath();c.ellipse(X(14),-27.5,4.6,2.4,0,0,7);hFill(c,'#ff8a3d');c.fillStyle=HINK;c.beginPath();c.arc(X(8),-30,1.4,0,7);c.fill();
+    c.strokeStyle=HINK;c.lineWidth=1.4;c.beginPath();c.moveTo(X(-6),-18);c.quadraticCurveTo(X(-1),-13,X(4),-18);c.stroke();c.beginPath();c.moveTo(X(-14),-17);c.lineTo(X(-19),-21);c.lineTo(X(-15),-14);c.stroke();c.restore();return}
+  if(id==='wmelon'){c.beginPath();c.arc(0,-2,15.5,Math.PI,0);c.closePath();hFill(c,'#2f9e44');c.beginPath();c.arc(0,-2,13,Math.PI,0);c.closePath();c.fillStyle='#f4ffe0';c.fill();
+    c.beginPath();c.arc(0,-2,11.2,Math.PI,0);c.closePath();c.fillStyle='#ff5a6e';c.fill();c.fillStyle=HINK;for(const [sx,sy] of [[-6,-6],[0,-9],[6,-6],[-3,-4],[3,-4]]){c.beginPath();c.ellipse(X(sx),sy,1,1.6,0,0,7);c.fill()}
+    c.strokeStyle='#1d6b2c';c.lineWidth=1.3;for(let i=-2;i<=2;i++){c.beginPath();c.arc(0,-2,15.5,Math.PI+0.35+i*0.15+0.9,Math.PI+0.5+i*0.15+0.9);c.stroke()}c.restore();return}
   if(id==='cap'){c.beginPath();c.arc(0,-2,13.4,Math.PI,0);c.closePath();hFill(c,hGrad(c,-16,-2,'#6aa2ff','#2f62c9'));
     c.beginPath();c.ellipse(X(13),-2.2,10,2.8,0,0,7);hFill(c,'#244fa8');c.fillStyle='#fff';c.beginPath();c.arc(0,-15.6,1.8,0,7);c.fill();
     c.fillStyle='rgba(255,255,255,.35)';c.beginPath();c.ellipse(X(-5),-10,4,2,-.5*f,0,7);c.fill()}
@@ -3777,6 +3813,7 @@ document.querySelectorAll('.overlay.sheet>.card').forEach(c=>{c.insertAdjacentHT
   c.querySelectorAll('.pgback,.pghome').forEach(b=>b.addEventListener('click',()=>closePanel(c.closest('.overlay'))))});
 let panelReturn=null,shopTab='stat',avSlot='hat',rankBoard='day';
 function openPanel(name,from){
+  if(name==='avatar'){avPrev=null;if(lobbyMan)lobbyMan.equip=undefined}
   if(name==='equip'){eqShowNew=new Set(prog.inv.filter(i=>i.nw).map(i=>i.u));prog.inv.forEach(i=>delete i.nw);prog.newItems=0;saveProg()}
   for(const k in PANELS)PANELS[k].hidden=true;
   const inLobby=from===titleOv;panelReturn=inLobby?null:from;
@@ -3792,7 +3829,7 @@ document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',(
 function stagedOpen(){for(const k in PANELS){const o=PANELS[k];if(!o.hidden&&o.classList.contains('page')&&o.classList.contains('staged'))return o}return null}
 function stagePop(txt,col,dy){const st=document.querySelector('#shopOv .pgstage');if(!st||shopOv.hidden)return;const e=document.createElement('b');e.className='stpop';e.textContent=txt;if(col)e.style.color=col;e.style.left=(44+Math.random()*12)+'%';if(dy)e.style.marginTop=dy+'px';st.appendChild(e);setTimeout(()=>e.remove(),1300)}
 function stageInfo(){const e=$('stPow');if(!e)return;const st=baseStats();e.innerHTML='<span>전투력</span><b>'+power(st).toLocaleString('ko-KR')+'</b><small>체력 '+st.hp+' · 공격 '+Math.round(st.dmg*100)+'%</small>'}
-function closePanel(ov,fromPop){if(!ov||ov.hidden)return;
+function closePanel(ov,fromPop){if(!ov||ov.hidden)return;if(ov===avatarOv){avPrev=null;if(lobbyMan)lobbyMan.equip=undefined}
   if(ov.classList.contains('page')&&!reduceMotion){const c=ov.querySelector('.card');if(c){const g=ov.cloneNode(true);g.removeAttribute('id');g.style.setProperty('--pg',getComputedStyle(ov).getPropertyValue('--pg'));g.classList.add('pgGhost');g.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));const gc=g.querySelector('.card');if(gc)gc.scrollTop=c.scrollTop;ov.parentNode.insertBefore(g,ov.nextSibling);setTimeout(()=>g.remove(),240)}}
   ov.hidden=true;if(panelReturn)panelReturn.hidden=false;setLobbyTab(null);updateTitle();
   if(pgHist&&!fromPop&&!Object.values(PANELS).some(o=>!o.hidden&&o.classList.contains('page'))){pgHist=false;try{history.back()}catch(e){}}}
@@ -3829,24 +3866,46 @@ $('shopTabStat').addEventListener('click',()=>{shopTab='stat';renderShop()});
 $('shopTabSkill').addEventListener('click',()=>{shopTab='skill';renderShop()});
 $('shopTabEquip').addEventListener('click',()=>{if(!isOpen('equip')){toast('<b>장비</b> 잠김<br>'+UNLOCK.equip.hint);return}if(prog.fresh.equip){delete prog.fresh.equip;saveProg();refreshLocks()}
   eqShowNew=new Set(prog.inv.filter(i=>i.nw).map(i=>i.u));prog.inv.forEach(i=>delete i.nw);prog.newItems=0;saveProg();shopTab='equip';renderShop()});
+/* v0.84 avatar as a costume room: tap a card to try it on the stage character, then buy / wear from the stage tag */
+let avPrev=null;
+function avPreviewApply(){if(!lobbyMan)return;if(avPrev){const g=GEARID[avPrev];lobbyMan.equip={...prog.equip,[g.slot]:g.id}}else lobbyMan.equip=undefined}
+function avReset(){avPrev=null;avPreviewApply();renderAvatar()}
+function gearThumb(cv,g){if(g.slot==='hat'){drawHatThumb(cv,g.id);return}
+  const c=cv.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,cv.width,cv.height);const prev=ctx;
+  try{ctx=c;if(g.slot==='ball'){const k=cv.width/44;ctx.setTransform(k,0,0,k,cv.width/2,cv.height/2+4);drawPBalloon(0,0,12,{ball:g.id});return}
+    const m=makeMan(0,0,1,1,COL.mint,100);m.gear=true;m.equip={[g.slot]:g.id};const P=m.points,cx=(P.head.x+P.neck.x)/2,cy=g.slot==='back'?(P.neck.y+P.hip.y)/2-6:g.slot==='neck'?P.neck.y-4:P.head.y+2,sc=cv.width/(g.slot==='back'?78:g.slot==='neck'?54:44);
+    ctx.setTransform(sc,0,0,sc,cv.width/2-cx*sc,cv.height/2-cy*sc);drawMan(m)}catch(e){}finally{ctx=prev}}
+function avLocked(g){return g.lock&&cleared()<g.lock&&!prog.owned[g.id]}
 function renderAvatar(){
   $('avGems').textContent='보석 '+prog.gems;
   const tabs=$('avSlots');tabs.innerHTML='';
-  for(const [id,nm] of SLOTS){const b=document.createElement('button');b.type='button';b.className='tab small';b.textContent=nm+(prog.equip[id]?' •':'');b.setAttribute('aria-selected',avSlot===id);b.addEventListener('click',()=>{avSlot=id;renderAvatar()});tabs.appendChild(b)}
+  for(const [id,nm] of SLOTS){const b=document.createElement('button');b.type='button';b.className='tab small';b.textContent=nm+(prog.equip[id]?' •':'');b.setAttribute('aria-selected',avSlot===id);b.addEventListener('click',()=>{avSlot=id;avPrev=null;avPreviewApply();renderAvatar()});tabs.appendChild(b)}
+  {const n=ownedCount();$('avBonus').innerHTML='<span>보유 효과 · '+n+'개</span><b>공격 +'+(n*0.5).toFixed(1).replace('.0','')+'%</b><b>체력 +'+n+'</b>'}
   const list=$('avList');list.innerHTML='';
-  for(const g of GEAR.filter(g=>g.slot===avSlot&&(!g.iap||prog.owned[g.id]||prog.offer&&prog.offer.id===g.id))){const own=prog.owned[g.id],on=prog.equip[g.slot]===g.id;const row=document.createElement('div');row.className='up';row.dataset.g=g.id;
-    const label=on?'해제':own?'장착':g.iap?'₩'+g.iap.toLocaleString('ko-KR'):g.price+' 보석';
-    if(g.slot==='hat')row.classList.add('hatrow');row.innerHTML=`${g.slot==='hat'?'<canvas class="hthumb" width="88" height="88" aria-hidden="true"></canvas>':''}<b>${g.name}${on?' <span style="color:var(--mint);font-size:13px">장착 중</span>':''}</b><button type="button"${!own&&!g.iap&&prog.gems<g.price?' disabled':''}${on?' class="ghost"':''}>${label}</button><small>${g.bd}</small>`;
-    row.querySelector('button').addEventListener('click',()=>{
-      if(on)delete prog.equip[g.slot];
-      else if(own){prog.equip[g.slot]=g.id;if(prog.tut===3){prog.tut=4;setTimeout(()=>toast('<b>잘 어울려요!</b><br>모습이 바뀌었어요. 로비에서 확인해 보세요',2600),50)}}
-      else if(g.iap){offerPop(true);return}
-      else{if(prog.gems<g.price)return;prog.gems-=g.price;prog.owned[g.id]=1;prog.equip[g.slot]=g.id;SFX.level&&SFX.level()}
-      if(!on&&SIG[g.id]){playAnim(SIG[g.id]);lobby.last=SIG[g.id]}
-      saveProg();if(player&&player.alive){player.maxHp=playerMaxHp()}renderAvatar();updateTitle()});
-    if(g.slot==='hat')drawHatThumb(row.querySelector('.hthumb'),g.id);
-    list.appendChild(row)}
+  for(const g of GEAR.filter(g=>g.slot===avSlot&&(!g.iap||prog.owned[g.id]||prog.offer&&prog.offer.id===g.id))){
+    const own=!!prog.owned[g.id],on=prog.equip[g.slot]===g.id,lk=avLocked(g);
+    const card=document.createElement('button');card.type='button';card.className='ccard'+(own?' own':'')+(on?' on':'')+(lk?' lock':'')+(avPrev===g.id?' sel':'');card.dataset.g=g.id;
+    card.innerHTML=`${own?'<i class="chk">✓</i>':''}<canvas width="128" height="128" aria-hidden="true"></canvas><b>${g.name}</b><small>${g.bd}</small><span class="cp">${on?'장착 중':own?'보유':g.iap?'₩'+g.iap.toLocaleString('ko-KR'):g.price+' 보석'}</span>${lk?'<em class="lkb">챕터 '+g.lock+' 클리어</em>':''}`;
+    card.addEventListener('click',()=>{avPrev=avPrev===g.id&&on?null:g.id;avPreviewApply();if(SIG[g.id]&&avPrev){playAnim(SIG[g.id]);lobby.last=SIG[g.id]}renderAvatar();tutRefresh()});
+    list.appendChild(card);gearThumb(card.querySelector('canvas'),g)}
+  const sel=avPrev&&list.querySelector('.sel');if(sel)list.scrollLeft=Math.max(0,sel.offsetLeft-list.clientWidth/2+sel.clientWidth/2);
+  // stage tag
+  const tag=$('avTag'),act=$('avAct');$('avReset').hidden=!avPrev;
+  if(!avPrev){tag.hidden=true;return}
+  const g=GEARID[avPrev],own=!!prog.owned[g.id],on=prog.equip[g.slot]===g.id,lk=avLocked(g);tag.hidden=false;
+  $('avTagName').textContent=g.name;$('avTagBd').textContent=g.bd;act.className='';act.disabled=false;
+  if(on){act.textContent='해제';act.className='ghost'}else if(own)act.textContent='장착';else if(lk){act.textContent='챕터 '+g.lock+' 클리어 필요';act.disabled=true}
+  else if(g.iap)act.textContent='₩'+g.iap.toLocaleString('ko-KR');else{act.textContent=g.price+' 보석 · 구매';act.disabled=prog.gems<g.price;act.className='buy'}
 }
+function avAction(){const id=avPrev;if(!id)return;const g=GEARID[id],own=!!prog.owned[g.id],on=prog.equip[g.slot]===g.id;
+  if(on)delete prog.equip[g.slot];
+  else if(own){prog.equip[g.slot]=g.id;if(prog.tut===3){prog.tut=4;setTimeout(()=>toast('<b>잘 어울려요!</b><br>모습이 바뀌었어요. 로비에서 확인해 보세요',2600),50)}}
+  else if(avLocked(g))return;
+  else if(g.iap){offerPop(true);return}
+  else{if(prog.gems<g.price)return;prog.gems-=g.price;prog.owned[g.id]=1;prog.equip[g.slot]=g.id;SFX.level&&SFX.level();toast('<b>'+g.name+'</b> 구매·장착!<br>보유 효과도 올랐어요',2000)}
+  if(!on&&SIG[g.id]){playAnim(SIG[g.id]);lobby.last=SIG[g.id]}
+  avPrev=on?null:avPrev;saveProg();if(player&&player.alive){player.maxHp=playerMaxHp()}avPreviewApply();renderAvatar();updateTitle();tutRefresh()}
+$('avAct').addEventListener('click',avAction);$('avReset').addEventListener('click',avReset);
 const PACKS=[
   {id:'adfree',name:'광고 제거 패키지',price:15000,gems:600,adFree:true,once:true,desc:'배너·전면 광고 영구 제거 + 보석 600'},
   {id:'g1',name:'보석 한 줌',price:1200,gems:60,desc:'보석 60'},
