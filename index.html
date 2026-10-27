@@ -171,7 +171,11 @@ button:active{transform:translateY(1px)}
 .chsel span{font-size:12px;color:var(--muted)}
 .playrow{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px}
 .playrow .play{grid-column:2}
-.playrow .endless{grid-column:3;justify-self:start;white-space:nowrap;padding:6px 10px;font-size:12.5px}
+.playrow .sweep{grid-column:1;justify-self:end;display:grid;justify-items:center;gap:1px;position:relative}
+.playrow .sweep svg{width:20px;height:20px}.playrow .sweep em{position:absolute;top:-6px;right:-6px;font-style:normal;font-size:10.5px;min-width:16px;padding:1px 4px;border-radius:8px;background:var(--mustard);color:#15122b;border:2px solid #15122b;line-height:1.2}
+.playrow .sweep.off{opacity:.55}
+.swbox{display:grid;gap:8px;justify-items:center;text-align:center}.swbox .swch{font-family:var(--title);font-size:22px;color:#ffd166}
+.playrow .endless:not(.sweep){grid-column:3;justify-self:start;white-space:nowrap;padding:6px 10px;font-size:12.5px}
 .endless{display:grid;place-items:center;font-size:13px;line-height:1.2;padding:6px 14px;background:rgba(20,18,45,.72)}
 .iconbtn.snd{color:var(--mint)}
 .adbox{width:100%;display:grid;gap:8px;padding:12px;border-radius:12px;background:#12142e;border:1px dashed #3b3f72}
@@ -542,6 +546,7 @@ body{color:#fff4e6}
 .ic-gem{background:linear-gradient(160deg,#e9fbff,#5ec8ff 55%,#2a7fc4);clip-path:polygon(50% 0,100% 38%,50% 100%,0 38%)}
 .ic-en{background:linear-gradient(180deg,#f4ff9e,#7fd34a);clip-path:polygon(62% 0,0 58%,44% 58%,34% 100%,100% 38%,56% 38%)}
 .ic-xp{border-radius:8px;box-sizing:border-box;border:2.5px solid var(--ink);background:linear-gradient(180deg,#d2fff4,#8ff0d6);position:relative}
+.ic-box{border-radius:8px;box-sizing:border-box;border:2.5px solid var(--ink);background:linear-gradient(180deg,#e0a35c,#9a5b2a);position:relative}
 .mrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:10px 12px;border-radius:12px;border:2.5px solid var(--ink);background:linear-gradient(180deg,#323879,#232862);box-shadow:0 3px 0 var(--edge)}
 .mrow b{font-family:var(--display);font-weight:400;font-size:16px;color:#fff4e6}
 .mrow small{grid-column:1;font-size:12px;color:#d4d6f5;line-height:1.4}
@@ -786,7 +791,7 @@ b,strong{font-weight:700}
         <button type="button" class="heroinfo prof" id="profBtn" data-open="titles" aria-label="프로필"><i class="lvb">Lv<b id="lbLv">1</b></i><span class="pmid"><span id="lbTitle">칭호 없음</span><span class="xpb"><i id="lbXp"></i></span></span><b id="lbStats">전투력 0</b></button><div class="sidebtns left"><button type="button" class="sbtn" id="sbMail" aria-label="우편함"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></button><button type="button" class="sbtn" id="sbAttend" aria-label="출석 체크"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg></button><button type="button" class="sbtn" id="sbMission" aria-label="미션"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg></button><button type="button" class="sbtn" id="sbNotice" aria-label="공지"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14"/></svg></button><button type="button" class="sbtn offer" id="sbOffer" aria-label="기간 한정 상품" hidden><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-5 1 1 2 2 3 2 0-2-1-3 0-5z"/><path d="M7 15.5C5.5 16.5 5 18 5 20h14c0-2-.5-3.5-2-4.5"/></svg><em id="offerT"></em></button></div><div class="sidebtns right"><button type="button" class="sbtn" id="sbPatrol" aria-label="순찰 보상" hidden><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="M12 8v5l3 2"/></svg><span>순찰</span><em id="patrolT"></em></button><button type="button" class="sbtn" data-open="rank" data-lock="rank" aria-label="랭킹"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></button><button type="button" class="sbtn evt" id="sbEvent" aria-label="이벤트"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.3 0 6 2.6 6 6 0 3.8-3.4 6.6-6 7.5C9.4 15.6 6 12.8 6 9c0-3.4 2.7-6 6-6z"/><path d="M12 16.5 11 19h2l-1 2.5"/><path d="M9.5 7.5a3 3 0 0 1 2-1.5"/></svg><em id="evtT"></em></button></div>
         <div class="spacer"></div>
         <div class="chsel"><button type="button" id="chPrev" aria-label="이전 챕터">‹</button><div class="chmid"><button type="button" class="chinfo" id="chInfo" aria-label="챕터 정보">i</button><b id="chName">챕터 1</b><span id="chTheme">노을 지붕</span><div class="chprog"><span class="cbar"><i id="chBar"></i></span><button type="button" class="chest" id="chest5" data-w="half" aria-label="중간 상자"></button><button type="button" class="chest" id="chest10" data-w="clear" aria-label="클리어 상자"></button></div></div><button type="button" id="chNext" aria-label="다음 챕터">›</button></div>
-        <div class="playrow"><button id="startBtn" type="button" class="play"><span class="plrow">PLAY<i class="plen" aria-label="에너지"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2 4 14h7l-2 8 11-13h-7z" fill="#ffe14d" stroke="#15122b" stroke-width="2.2" stroke-linejoin="round"/></svg><b id="lbStage">5</b></i></span></button><button id="endlessBtn" type="button" class="ghost endless" data-lock="endless">무한<br>모드</button></div>
+        <div class="playrow"><button id="sweepBtn" type="button" class="ghost endless sweep" aria-label="소탕"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 6 6 6-6 6M13 6l6 6-6 6"/></svg>소탕<em id="sweepN"></em></button><button id="startBtn" type="button" class="play"><span class="plrow">PLAY<i class="plen" aria-label="에너지"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2 4 14h7l-2 8 11-13h-7z" fill="#ffe14d" stroke="#15122b" stroke-width="2.2" stroke-linejoin="round"/></svg><b id="lbStage">5</b></i></span></button><button id="endlessBtn" type="button" class="ghost endless" data-lock="endless">무한<br>모드</button></div>
         <nav class="tabbar" aria-label="메뉴">
           <button type="button" data-open="store" data-tab="store"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h16l-1.5 11h-13z"/><path d="M8 9V7a4 4 0 0 1 8 0v2"/></svg>상점<svg class="lk" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
           <button type="button" data-open="shop" data-tab="shop"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8.5 11.5 12 8l3.5 3.5"/></svg>강화<svg class="lk" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
@@ -964,7 +969,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.84 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.85 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1991,7 +1996,7 @@ const STARTERS=['power','rapid','tough','crit','regen'];
 function freshProg(){return{stage:1,best:1,coins:0,gems:T.gemStart,up:{hp:0,atk:0,cool:0,crit:0},
   mastery:Object.fromEntries(STARTERS.map(k=>[k,1])),owned:{},equip:{},titles:{},title:null,
   stat:{apples:0,helmets:0,fails:{}},bestShot:0,bestWave:0,plays:0,lastInter:0,adFree:false,purchases:{},pvp:{rating:1000,w:0,l:0,day:'',left:-1,ads:0,bought:0},unlocked:{},fresh:{},day:{key:'',kills:0},
-  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0}}
+  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3}}}
 const prog=freshProg();
 try{const s=JSON.parse(localStorage.getItem('snackProg3')||'null');
   if(s)for(const k in prog){if(s[k]===undefined)continue;
@@ -3679,7 +3684,7 @@ function updateTitle(){$('lbCoins').textContent=prog.coins;$('lbGems').textConte
   $('chBar').setAttribute('style','width:'+Math.round(best/N*100)+'%');
   for(const [id,w] of [['chest5','half'],['chest10','clear']]){const st=chestState(c,w),b=$(id);b.className='chest '+st;if(b.dataset.svg!==st){b.dataset.svg=st;b.innerHTML=chestSVG(st==='got',w==='clear')}}
   ADS.banner(!prog.adFree&&state!=='title');refreshLocks();
-  $('chPrev').disabled=prog.stage<=1;$('chNext').disabled=prog.stage>=prog.best;
+  $('chPrev').disabled=prog.stage<=1;$('chNext').disabled=prog.stage>=prog.best;try{sweepRefresh()}catch(e){}
   $('lbTitle').textContent=prog.title&&TITLE[prog.title]?'「'+TITLE[prog.title].name+'」':'칭호 없음';
   $('lbLv').textContent=prog.acct.lv;$('lbXp').setAttribute('style','width:'+Math.round(prog.acct.xp/needAX(prog.acct.lv)*100)+'%');
   $('lbStats').textContent='전투력 '+power(baseStats()).toLocaleString('ko-KR');lobbyTick(true)}
@@ -4427,6 +4432,19 @@ function onEnter(){updateTitle();{const hr=new Date().getHours();if(hr<5)setTime
   ov.addEventListener('click',()=>{if(gone)return;gone=true;const seen=(performance.now()-t0)/1000;auInit();try{SFX.kill()}catch(e){}ov.classList.add('out');setTimeout(()=>{ov.hidden=true;bootSeen=seen;onEnter()},380)})})();
 
 $('startBtn').addEventListener('click',()=>spendEn(()=>startGame(true,'chapter')));
+/* v0.85 소탕: replay a cleared chapter instantly for its rewards (energy 5, 3 times a day) */
+const SWEEP_N=3;
+function sweepDay(){const k=todayKey();if(!prog.sweep||prog.sweep.day!==k)prog.sweep={day:k,left:SWEEP_N}}
+const sweepCh=()=>Math.max(1,Math.min(prog.stage,prog.best-1));
+const sweepRw=ch=>({coins:Math.round(fullClearCoins(ch)*0.8*coinMul()),xp:25+ch*3});
+function sweepRefresh(){const b=$('sweepBtn');if(!b)return;sweepDay();const ok=cleared()>=1;b.classList.toggle('off',!ok||prog.sweep.left<=0);$('sweepN').textContent=ok?prog.sweep.left:'';$('sweepN').hidden=!ok}
+function sweepPop(){if(cleared()<1){toast('<b>소탕</b> 잠김<br>챕터 1을 클리어하면 열려요');return}sweepDay();const ch=sweepCh(),r=sweepRw(ch),left=prog.sweep.left;
+  popup('소탕',`<div class="swbox"><span class="swch">챕터 ${ch}</span><p class="sub">이미 깬 챕터를 바로 끝내고 보상을 받아요</p><div class="rwds"><span class="rwd"><i class="ic-coin"></i><b>${r.coins.toLocaleString('ko-KR')}</b>코인</span><span class="rwd"><i class="ic-xp"></i><b>${r.xp}</b>경험치</span><span class="rwd"><i class="ic-box"></i><b>30%</b>장비</span></div><p class="sub">오늘 남은 횟수 <b style="color:#ffd166">${left} / ${SWEEP_N}</b> · 매일 0시 충전</p></div>`,
+    [[left>0?'소탕하기 ⚡'+EN_COST:'오늘 소탕 끝',()=>{if(prog.sweep.left<=0)return true;closePop(true);spendEn(()=>doSweep(ch));return true},null,left<=0],['닫기',null,'ghost']])}
+function doSweep(ch){sweepDay();if(prog.sweep.left<=0)return;prog.sweep.left--;const r=sweepRw(ch);ecoCtx='소탕';prog.coins+=r.coins;const up=gainAcct(r.xp);const it=Math.random()<0.3?dropItem(ch,0):null;msAdd&&msAdd('play');saveProg();SFX.clear&&SFX.clear();updateTitle();
+  const txt='코인 +'+r.coins.toLocaleString('ko-KR')+' · 경험치 +'+r.xp+(up?' · 계정 레벨 업!':'');
+  if(it)revealReward([it],{title:'챕터 '+ch+' 소탕 보상',extra:txt});else toast('<b>챕터 '+ch+' 소탕 완료!</b><br>'+txt,2400)}
+$('sweepBtn').addEventListener('click',sweepPop);
 $('againBtn').addEventListener('click',()=>afterResult(()=>spendEn(()=>startGame(false),resFail)));
 $('endlessBtn').addEventListener('click',()=>{if(!isOpen('endless')){toast('<b>무한 모드</b> 잠김<br>'+UNLOCK.endless.hint());return}if(prog.fresh.endless){delete prog.fresh.endless;saveProg();refreshLocks()}spendEn(()=>startGame(true,'endless'))});
 $('chPrev').addEventListener('click',()=>{if(prog.stage>1){prog.stage--;saveProg();updateTitle()}});
