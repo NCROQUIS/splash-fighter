@@ -737,6 +737,18 @@ b,strong{font-weight:700}
 /* v0.79 full wipe */
 #popBtns .danger{background:linear-gradient(180deg,#ff7a6b 0%,#d9483b 100%);color:#fff;border:3px solid var(--ink)}
 .tst{font-style:normal;font-size:11px;padding:2px 6px;margin-left:6px;border-radius:8px;background:rgba(255,155,155,.18);color:#ff9b9b;vertical-align:2px}
+
+/* v0.83 character stage on the 강화 page */
+.pgstage{display:none}
+.overlay.sheet.page.staged{background:transparent;border-top:0}
+.overlay.sheet.page.staged .pgstage{display:block;position:absolute;left:0;right:0;top:0;height:clamp(170px,36%,300px);pointer-events:none}
+.overlay.sheet.page.staged .card{position:absolute;left:0;right:0;top:clamp(170px,36%,300px);height:auto;bottom:86px;max-height:none!important;background:var(--pg);border-top:3px solid var(--ink);border-radius:22px 22px 0 0;box-shadow:0 -8px 22px rgba(8,6,24,.45)}
+.overlay.sheet.page.staged .pghead{border-radius:20px 20px 0 0}
+.overlay.sheet.page.staged.pgGhost .card{top:clamp(170px,36%,300px)}
+.stpow{position:absolute;left:10px;top:10px;display:grid;gap:1px;padding:7px 11px 8px;border-radius:14px;background:rgba(21,18,43,.78);border:2px solid rgba(255,255,255,.14);line-height:1.15}
+.stpow span{font-size:11px;color:#dcdef8}.stpow b{font-family:var(--title);font-size:20px;color:#ffd166}.stpow small{font-size:11px;color:#dcdef8}
+.stpop{position:absolute;top:46%;transform:translateX(-50%);font-family:var(--title);font-size:22px;color:#fff;text-shadow:0 2px 0 #15122b,0 0 8px rgba(0,0,0,.4);white-space:nowrap;animation:stPop 1.25s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes stPop{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.08)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-56px) scale(1)}}
 </style>
 
 <div class="app">
@@ -803,7 +815,7 @@ b,strong{font-weight:700}
           <div class="skills" id="pickList"></div>
         </div>
       </div>
-      <div class="overlay sheet" id="shopOv" hidden>
+      <div class="overlay sheet staged" id="shopOv" hidden><div class="pgstage" aria-hidden="true"><div class="stpow" id="stPow"></div></div>
         <div class="card">
           <button type="button" class="xBtn" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
           <h1 style="font-size:32px">강화</h1>
@@ -931,7 +943,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.82 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.83 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2578,6 +2590,7 @@ function stepLobby(dt){
   stepMan(lobbyMan,[]);
   const open=Object.values(PANELS).some(o=>!o.hidden);
   let tz=open?1.35:2.1,tf=open?240:490;
+  {const st=stagedOpen();if(st){try{const fr=cv.getBoundingClientRect(),r=st.querySelector('.pgstage').getBoundingClientRect(),k=1/scale;if(r.height>0){tf=(r.bottom-fr.top)*k-22;tz=Math.max(0.6,Math.min(1.6,((r.height*k)-40)/132*0.82))}}catch(e){}}}
   if(!open&&lobby.mT>0){lobby.mT-=dt;if(lobby.fit){tf=lobby.fit[0];tz=lobby.fit[1]}}
   else if(!open){lobby.mT=0.25;try{const fr=cv.getBoundingClientRect(),cs=document.querySelector('.chsel').getBoundingClientRect(),hi=document.querySelector('.heroinfo').getBoundingClientRect();
     if(fr.height>0&&cs.height>0){const k=1/scale,foot=(cs.top-fr.top)*k-14,top=(hi.bottom-fr.top)*k+16;tf=Math.min(tallView?H-40:490,foot);tz=Math.max(0.6,Math.min(1.75,(tf-top)/(lobbyMan&&lobbyMan.style==='plus'?134:132)*0.8));lobby.fit=[tf,tz];lobby.top=top;const ovr=titleOv.getBoundingClientRect();document.querySelectorAll('.sidebtns').forEach(e=>{e.style.top=Math.round(hi.bottom-ovr.top+18)+'px'})}}catch(e){}}
@@ -3524,7 +3537,7 @@ function render(){
   ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
   ctx.setTransform(dpr*scale,0,0,dpr*scale,dpr*offX,0);
   {const fr=cv.parentNode,ig=state!=='title';if(fr&&fr.classList.contains('ingame')!==ig)fr.classList.toggle('ingame',ig)}
-  if(state==='title'){setBgShake(0,0);if(!titleOv.classList.contains('paged'))renderLobby();return}
+  if(state==='title'){setBgShake(0,0);if(!titleOv.classList.contains('paged')||stagedOpen())renderLobby();return}
   ctx.save();
   let shx=0,shy=0;if(shake>0&&!FX.shakeOff){shx=rand(-shake,shake);shy=rand(-shake,shake);ctx.translate(shx,shy)}
   const ik=state==='intro'?easeIO(Math.min(1,introT/INTRO)):1;
@@ -3775,6 +3788,10 @@ function openPanel(name,from){
   PANELS[name].hidden=false;setLobbyTab(inLobby&&TAB_ORDER.includes(name)?name:null);
   ({equip:renderEquip,settings:renderSettings,shop:renderShop,avatar:renderAvatar,titles:renderTitles,rank:renderRank,store:renderStore,pvp:renderPvp,dungeon:renderDungeon})[name]()}
 document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{const lk=b.dataset.lock||b.dataset.tab||b.dataset.open;if(UNLOCK[lk]&&!isOpen(lk)){const h=UNLOCK[lk].hint;toast('<b>'+UNLOCK[lk].name+'</b> 잠김<br>'+(typeof h==='function'?h():h));return}if(prog.fresh[lk]){delete prog.fresh[lk];saveProg();refreshLocks()}const ov=PANELS[b.dataset.open];if(b.dataset.tab&&!ov.hidden){ov.hidden=true;setLobbyTab(null);updateTitle();return}openPanel(b.dataset.open,b.closest('.overlay'))}));
+/* v0.83: pages with a character stage (강화) keep the lobby hero visible above the panel */
+function stagedOpen(){for(const k in PANELS){const o=PANELS[k];if(!o.hidden&&o.classList.contains('page')&&o.classList.contains('staged'))return o}return null}
+function stagePop(txt,col,dy){const st=document.querySelector('#shopOv .pgstage');if(!st||shopOv.hidden)return;const e=document.createElement('b');e.className='stpop';e.textContent=txt;if(col)e.style.color=col;e.style.left=(44+Math.random()*12)+'%';if(dy)e.style.marginTop=dy+'px';st.appendChild(e);setTimeout(()=>e.remove(),1300)}
+function stageInfo(){const e=$('stPow');if(!e)return;const st=baseStats();e.innerHTML='<span>전투력</span><b>'+power(st).toLocaleString('ko-KR')+'</b><small>체력 '+st.hp+' · 공격 '+Math.round(st.dmg*100)+'%</small>'}
 function closePanel(ov,fromPop){if(!ov||ov.hidden)return;
   if(ov.classList.contains('page')&&!reduceMotion){const c=ov.querySelector('.card');if(c){const g=ov.cloneNode(true);g.removeAttribute('id');g.style.setProperty('--pg',getComputedStyle(ov).getPropertyValue('--pg'));g.classList.add('pgGhost');g.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));const gc=g.querySelector('.card');if(gc)gc.scrollTop=c.scrollTop;ov.parentNode.insertBefore(g,ov.nextSibling);setTimeout(()=>g.remove(),240)}}
   ov.hidden=true;if(panelReturn)panelReturn.hidden=false;setLobbyTab(null);updateTitle();
@@ -3786,6 +3803,7 @@ document.querySelectorAll('.closeBtn,.xBtn').forEach(b=>b.id!=='popX'&&b.id!=='p
 document.querySelectorAll('.overlay.sheet').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)closePanel(ov)}));
 document.querySelectorAll('.homeBtn').forEach(b=>b.addEventListener('click',()=>afterResult(goLobby)));
 function renderShop(){
+  stageInfo();
   if(shopTab==='equip'&&!isOpen('equip'))shopTab='stat';
   $('shopCoins').textContent=prog.coins+' 코인';$('shopTabStat').setAttribute('aria-selected',shopTab==='stat');$('shopTabSkill').setAttribute('aria-selected',shopTab==='skill');$('shopTabEquip').setAttribute('aria-selected',shopTab==='equip');
   const list=$('shopList');list.innerHTML='';list.hidden=shopTab==='equip';$('shopEquip').hidden=shopTab!=='equip';refreshDots();
@@ -3793,7 +3811,7 @@ function renderShop(){
   if(shopTab==='stat'){
     for(const k in UPS){const u=UPS[k],l=prog.up[k],c=upCost(k,l);const row=document.createElement('div');row.className='up';
       row.innerHTML=`<b>${u.name} Lv${l}</b><button type="button"${prog.coins<c?' disabled':''}>${c} 코인</button><small>${u.eff(l)} → ${u.eff(l+1)}</small>`;
-      row.querySelector('button').addEventListener('click',()=>{if(prog.coins<c)return;prog.coins-=c;prog.up[k]++;msAdd('up');if(prog.tut===1){prog.tut=2;toast('<b>강화 완료!</b><br>'+u.name+'이(가) 올랐어요. 다음 판이 더 쉬워져요',2600)}saveProg();renderShop();updateTitle();tutRefresh()});
+      row.querySelector('button').addEventListener('click',()=>{if(prog.coins<c)return;const pw0=power(baseStats());prog.coins-=c;prog.up[k]++;msAdd('up');{const d=power(baseStats())-pw0;stagePop(u.name+' UP!','#ffd166');setTimeout(()=>stagePop('전투력 +'+d,'#8ff0d6',30),380);try{playAnim('flex')}catch(e){}try{SFX.level()}catch(e){}}if(prog.tut===1){prog.tut=2;toast('<b>강화 완료!</b><br>'+u.name+'이(가) 올랐어요. 다음 판이 더 쉬워져요',2600)}saveProg();renderShop();updateTitle();tutRefresh()});
       list.appendChild(row)}
   }else{
     for(const k of SKILLS){const m=mastery(k.id),row=document.createElement('div');row.className='up';
