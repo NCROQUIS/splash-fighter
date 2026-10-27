@@ -1,6 +1,6 @@
 {
- "name": "스플래시 파이터",
- "short_name": "스플래시",
+ "name": "스플래쉬 맨",
+ "short_name": "스플래쉬 맨",
  "start_url": "./",
  "scope": "./",
  "display": "fullscreen",

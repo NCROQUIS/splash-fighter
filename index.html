@@ -8,11 +8,11 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="스플래시 파이터">
+<meta property="og:title" content="스플래쉬 맨">
 <meta property="og:url" content="https://ncroquis.github.io/splash-fighter/">
 <meta property="og:image" content="https://ncroquis.github.io/splash-fighter/icon-512.png">
 <style>body{margin:0}html{touch-action:manipulation}</style>
-<title>스플래시 파이터</title>
+<title>스플래쉬 맨</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -742,14 +742,14 @@ b,strong{font-weight:700}
 <div class="app">
   <div class="stage">
     <div class="frame" id="frame">
-      <canvas id="bgcv" aria-hidden="true"></canvas><canvas id="cv" aria-label="스플래시 파이터 게임 화면"></canvas><div id="vig" aria-hidden="true"></div><div id="tbStack" aria-live="polite"></div><div id="coach" hidden><i class="cring"></i><svg class="chand" viewBox="0 0 48 48" aria-hidden="true"><path d="M19 44c-3-4-9-10-10-13-1-2 1-4 3-3l5 4V10a3 3 0 0 1 6 0v12l1-1a3 3 0 0 1 5 1 3 3 0 0 1 5 1 3 3 0 0 1 5 2v8c0 4-2 7-4 11z" fill="#fff4e6" stroke="#15122b" stroke-width="2.6" stroke-linejoin="round"/></svg><div class="cbub"><span class="ctx"></span><button type="button" class="cskip">건너뛰기</button></div></div>
+      <canvas id="bgcv" aria-hidden="true"></canvas><canvas id="cv" aria-label="스플래쉬 맨 게임 화면"></canvas><div id="vig" aria-hidden="true"></div><div id="tbStack" aria-live="polite"></div><div id="coach" hidden><i class="cring"></i><svg class="chand" viewBox="0 0 48 48" aria-hidden="true"><path d="M19 44c-3-4-9-10-10-13-1-2 1-4 3-3l5 4V10a3 3 0 0 1 6 0v12l1-1a3 3 0 0 1 5 1 3 3 0 0 1 5 1 3 3 0 0 1 5 2v8c0 4-2 7-4 11z" fill="#fff4e6" stroke="#15122b" stroke-width="2.6" stroke-linejoin="round"/></svg><div class="cbub"><span class="ctx"></span><button type="button" class="cskip">건너뛰기</button></div></div>
       <div class="overlay lobby" id="titleOv">
         <div class="topbar">
           <div class="wallet"><button type="button" class="chip en" id="enChip" aria-label="에너지"><span class="sr">에너지</span><b id="lbEn">30/30</b><em id="lbEnT"></em></button><span class="chip coin" title="코인"><span class="sr">코인</span><b id="lbCoins">0</b></span><button type="button" class="chip gem" id="gemChip" data-open="store" data-lock="store" aria-label="보석 충전"><span class="sr">보석</span><b id="lbGems">0</b><span class="plus">+</span></button></div>
           <div class="btnrow" style="gap:6px;flex-wrap:nowrap"><button type="button" class="iconbtn snd" data-open="settings" aria-label="설정"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
           </div>
         </div>
-        <p class="logo"><span>SPLASH</span>스플래시 파이터</p>
+        <p class="logo"><span>SPLASH</span>스플래쉬 맨</p>
         <button type="button" class="heroinfo prof" id="profBtn" data-open="titles" aria-label="프로필"><i class="lvb">Lv<b id="lbLv">1</b></i><span class="pmid"><span id="lbTitle">칭호 없음</span><span class="xpb"><i id="lbXp"></i></span></span><b id="lbStats">전투력 0</b></button><div class="sidebtns left"><button type="button" class="sbtn" id="sbMail" aria-label="우편함"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></button><button type="button" class="sbtn" id="sbAttend" aria-label="출석 체크"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg></button><button type="button" class="sbtn" id="sbMission" aria-label="미션"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg></button><button type="button" class="sbtn" id="sbNotice" aria-label="공지"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14"/></svg></button><button type="button" class="sbtn offer" id="sbOffer" aria-label="기간 한정 상품" hidden><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-5 1 1 2 2 3 2 0-2-1-3 0-5z"/><path d="M7 15.5C5.5 16.5 5 18 5 20h14c0-2-.5-3.5-2-4.5"/></svg><em id="offerT"></em></button></div><div class="sidebtns right"><button type="button" class="sbtn" id="sbPatrol" aria-label="순찰 보상" hidden><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="M12 8v5l3 2"/></svg><span>순찰</span><em id="patrolT"></em></button><button type="button" class="sbtn" data-open="rank" data-lock="rank" aria-label="랭킹"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></button><button type="button" class="sbtn evt" id="sbEvent" aria-label="이벤트"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.3 0 6 2.6 6 6 0 3.8-3.4 6.6-6 7.5C9.4 15.6 6 12.8 6 9c0-3.4 2.7-6 6-6z"/><path d="M12 16.5 11 19h2l-1 2.5"/><path d="M9.5 7.5a3 3 0 0 1 2-1.5"/></svg><em id="evtT"></em></button></div>
         <div class="spacer"></div>
         <div class="chsel"><button type="button" id="chPrev" aria-label="이전 챕터">‹</button><div class="chmid"><button type="button" class="chinfo" id="chInfo" aria-label="챕터 정보">i</button><b id="chName">챕터 1</b><span id="chTheme">노을 지붕</span><div class="chprog"><span class="cbar"><i id="chBar"></i></span><button type="button" class="chest" id="chest5" data-w="half" aria-label="중간 상자"></button><button type="button" class="chest" id="chest10" data-w="clear" aria-label="클리어 상자"></button></div></div><button type="button" id="chNext" aria-label="다음 챕터">›</button></div>
@@ -931,7 +931,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래시 파이터 v0.80 · 2026-10-26</p>
+            <p class="ver">스플래쉬 맨 v0.81 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -982,7 +982,7 @@ b,strong{font-weight:700}
       <button type="button" class="pausebtn" id="pauseBtn" aria-label="일시정지" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg></button>
       <div class="overlay boot" id="bootOv">
         <canvas id="bootCv" aria-hidden="true"></canvas>
-        <p class="sr" id="bootTap" aria-live="polite">스플래시 파이터 불러오는 중</p>
+        <p class="sr" id="bootTap" aria-live="polite">스플래쉬 맨 불러오는 중</p>
       </div>
     </div>
   </div>
@@ -4031,9 +4031,9 @@ function logo(c,cx,cy,s=1,banner=false){c.save();c.translate(cx,cy);c.scale(s,s)
     const g=c.createLinearGradient(0,-36,0,30);g.addColorStop(0,'#3c2f88');g.addColorStop(1,'#1d1a4a');c.fillStyle=g;c.beginPath();c.moveTo(-154,-33);c.lineTo(160,-40);c.lineTo(154,26);c.lineTo(-160,33);c.closePath();c.fill();
     c.fillStyle='rgba(143,227,255,.18)';for(let i=0;i<6;i++){c.fillRect(-150+i*58,-34,20,62)}c.restore()}
   c.font='22px '+TFONT;c.letterSpacing='10px';c.lineWidth=6;c.strokeStyle=INK;c.strokeText('SPLASH',6,-30);const g1=c.createLinearGradient(0,-48,0,-24);g1.addColorStop(0,'#e9fbff');g1.addColorStop(1,'#5ec8ff');c.fillStyle=g1;c.fillText('SPLASH',6,-30);c.letterSpacing='0px';
-  c.font='54px '+TFONT;c.lineWidth=12;c.strokeStyle=INK;c.strokeText('스플래시 파이터',0,22);c.fillStyle=INK;c.fillText('스플래시 파이터',0,28);
-  const g=c.createLinearGradient(0,-18,0,24);g.addColorStop(0,'#fff6c9');g.addColorStop(0.5,'#ffd166');g.addColorStop(1,'#ff9f43');c.fillStyle=g;c.fillText('스플래시 파이터',0,22);
-  c.globalAlpha=0.55;c.fillStyle='#fff';c.save();c.beginPath();c.rect(-200,-20,400,14);c.clip();c.fillText('스플래시 파이터',0,22);c.restore();c.restore()}
+  c.font='54px '+TFONT;c.lineWidth=12;c.strokeStyle=INK;c.strokeText('스플래쉬 맨',0,22);c.fillStyle=INK;c.fillText('스플래쉬 맨',0,28);
+  const g=c.createLinearGradient(0,-18,0,24);g.addColorStop(0,'#fff6c9');g.addColorStop(0.5,'#ffd166');g.addColorStop(1,'#ff9f43');c.fillStyle=g;c.fillText('스플래쉬 맨',0,22);
+  c.globalAlpha=0.55;c.fillStyle='#fff';c.save();c.beginPath();c.rect(-200,-20,400,14);c.clip();c.fillText('스플래쉬 맨',0,22);c.restore();c.restore()}
 function loadBar(c,y,k,txt){const x0=60,x1=340,h=16;c.save();c.fillStyle=INK;c.beginPath();c.roundRect(x0-4,y-4,x1-x0+8,h+8,12);c.fill();c.fillStyle='#2a2756';c.beginPath();c.roundRect(x0,y,x1-x0,h,8);c.fill();
   const g=c.createLinearGradient(x0,0,x1,0);g.addColorStop(0,'#8ff0d6');g.addColorStop(0.6,'#5ec8ff');g.addColorStop(1,'#ffd166');c.fillStyle=g;c.beginPath();c.roundRect(x0,y,Math.max(h,(x1-x0)*k),h,8);c.fill();
   c.fillStyle='rgba(255,255,255,.45)';c.fillRect(x0+6,y+3,Math.max(0,(x1-x0)*k-12),3);
@@ -4174,7 +4174,7 @@ function acctCard(el,a){const A=prog.acct,p=Math.round(A.xp/needAX(A.lv)*100);el
 function dropsRow(el){if(!run.drops.length&&!(prog.plays>=3&&betterOf(prog.inv).length)){el.innerHTML='';return}const auto=run.drops.filter(it=>autoEq.has(it.u)&&prog.eq[it.t]===it.u).length,bt=betterOf(run.drops);
   el.innerHTML='<span class="dl">획득한 장비'+(auto?' · <b class="aeq">'+auto+'개 자동 장착됨</b>':'')+'</span><div class="dt">'+run.drops.map(it=>tileHTML(it,{eq:prog.eq[it.t]===it.u})).join('')+'</div>'
    +(bt.length?'<div class="eqask"><span>더 좋은 장비 '+bt.length+'개</span><button type="button" class="eqgo">바로 장착</button><button type="button" class="ghost eqlater">나중에</button></div>':'');
-  if(prog.plays>=3){const all=betterOf(prog.inv);if(all.length>bt.length)el.insertAdjacentHTML('beforeend','<div class="eqask all"><span>가방에 더 센 장비 '+all.length+'개</span><button type="button" class="eqauto">자동 장착</button></div>')}
+  if(prog.plays>=3){const all=betterOf(prog.inv);if(all.length>bt.length)el.innerHTML+='<div class="eqask all"><span>가방에 더 센 장비 '+all.length+'개</span><button type="button" class="eqauto">자동 장착</button></div>'}
   const g=el.querySelector('.eqgo');if(g)g.addEventListener('click',()=>{equipNow(betterOf(run.drops));dropsRow(el)});const au=el.querySelector('.eqauto');if(au)au.addEventListener('click',()=>{equipNow(betterOf(prog.inv));dropsRow(el)});const l=el.querySelector('.eqlater');if(l)l.addEventListener('click',()=>{const a=el.querySelector('.eqask');if(a)a.remove()})}
 function dmgStats(el){const L=[['base','기본 물풍선','#8ff0d6'],['big','왕풍선','#5ec8ff'],['ex','추가 물풍선','#c39bff'],['self','제 발등','#ffd166']];const tot=L.reduce((a,[k])=>a+(run.dmg[k]||0),0);
   if(!tot){el.innerHTML='';return}
@@ -4427,7 +4427,7 @@ document.getElementById('closeTune').addEventListener('click',()=>{paused=false;
 document.getElementById('resetTune').addEventListener('click',()=>{for(const t of TUNE)if(t.k&&t.tab===curTab)T[t.k]=t.d;saveTune();buildSliders();copyBox.hidden=true});
 document.getElementById('copyTune').addEventListener('click',async()=>{
   const lines=TUNE.filter(t=>t.k).map(t=>`${t.l}: ${fmt(t,T[t.k])}${T[t.k]!==t.d?' (기본 '+fmt(t,t.d)+')':''}`);
-  const text='스플래시 파이터 조정 값\n'+lines.join('\n');
+  const text='스플래쉬 맨 조정 값\n'+lines.join('\n');
   copyBox.value=text;copyBox.hidden=false;
   const btn=document.getElementById('copyTune');
   try{await navigator.clipboard.writeText(text);btn.textContent='복사됨'}catch(e){copyBox.select();btn.textContent='아래 글 복사'}

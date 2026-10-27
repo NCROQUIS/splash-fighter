@@ -1,4 +1,4 @@
-# 스플래시 파이터 공개 테스트 페이지
+# 스플래쉬 맨 공개 테스트 페이지
 
 플레이: https://ncroquis.github.io/splash-fighter/
 
