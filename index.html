@@ -1001,7 +1001,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.87 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.88 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1690,10 +1690,10 @@ const TUNE=[
   {k:'pvpLose',s:"PVP 패배 코인",l:'패배 코인',min:0,max:100,step:5,d:15,h:''},
   {k:'pvpK',s:"PVP 점수 오르내림 폭",l:'점수 변동 폭',min:8,max:64,step:2,d:32,h:'엘로 K값'},
   {g:'보석 (유료 재화 예정)',tab:'grow'},
-  {k:'gemStart',s:"처음 주는 보석",l:'처음 지급 보석',min:0,max:300,step:10,d:60,h:'진행 초기화 시 다시 지급'},
+  {k:'gemStart',s:"처음 주는 보석",l:'처음 지급 보석',min:0,max:300,step:10,d:0,h:'진행 초기화 시 다시 지급'},
   {k:'coinPackRuns',s:"보석 60 코인 꾸러미 = 최근 챕터 몇 판 분량",l:'코인 꾸러미 크기',min:2,max:20,step:1,d:8,h:'판'},
-  {k:'gemClear',s:"첫 클리어 보석",l:'챕터 첫 클리어 보석',min:0,max:30,step:1,d:5,h:''},
-  {k:'gemTitle',s:"칭호 보석 배율",l:'칭호 보석 배율',min:0,max:3,step:0.1,d:1,h:'칭호마다 기본 10~30'},
+  {k:'gemClear',s:"첫 클리어 보석",l:'챕터 첫 클리어 보석',min:0,max:30,step:1,d:2,h:''},
+  {k:'gemTitle',s:"칭호 보석 배율",l:'칭호 보석 배율',min:0,max:3,step:0.05,d:0.35,h:'칭호마다 기본 10~60 × 배율'},
   {g:'챕터 구성',tab:'stage'},
   {k:'perStage',s:"한 챕터의 적 수 · 많을수록 어려움",hot:1,l:'챕터당 웨이브 수',min:3,max:20,step:1,d:10,h:'웨이브마다 적 1명'},
   {k:'bossEvery',s:"몇 웨이브마다 보스 · 짧을수록 어려움",hot:1,l:'보스 등장 간격',min:2,max:10,step:1,d:5,h:'웨이브마다, 마지막 웨이브는 항상 보스'},
@@ -1734,6 +1734,8 @@ try{const raw=localStorage.getItem('snackTune5');
   if(raw){const s=JSON.parse(raw);for(const k in s)if(k in T)T[k]=+s[k]}
   else if(loadOldFeel()){localStorage.setItem('snackTune5',JSON.stringify(T))}
 }catch(e){}
+/* v0.88: gem economy cut (sim 10/27) — reset gem-related tune values once */
+try{if(!localStorage.getItem('snackGemV1')){localStorage.setItem('snackGemV1','1');for(const k of ['gemClear','gemTitle','gemStart']){const t=TUNE.find(t=>t.k===k);if(t)T[k]=t.d}localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
 /* v0.73: the throw feel the team settled on (power 800 set) is the default everywhere; volume is per device and never shared */
 const VOLK=['bgmVol','sfxVol'],FEEL800=['power','grav','headDmg','preview','interval','err','cool'];
 try{if(!localStorage.getItem('snackFeelV1')){localStorage.setItem('snackFeelV1','1');for(const k of FEEL800){const t=TUNE.find(t=>t.k===k);if(t)T[k]=t.d}localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
@@ -2060,7 +2062,7 @@ function initMeta(){let ch=false;
   if(!prog.en.t){prog.en.t=Date.now();ch=true}
   if(!prog.patrol){prog.patrol=Date.now();ch=true}
   if((prog.mailSeed||0)<1){prog.mailSeed=1;prog.mail.push(
-    {id:'welcome',from:'옥상 관리인',title:'옥상에 온 걸 환영해요!',body:'물풍선은 공짜예요. 수도세는 제가 냅니다. 마음껏 던지세요.',gems:50},
+    {id:'welcome',from:'옥상 관리인',title:'옥상에 온 걸 환영해요!',body:'물풍선은 공짜예요. 수도세는 제가 냅니다. 마음껏 던지세요.',gems:30},
     {id:'sorry',from:'개발자',title:'사과문 (진짜 사과 아님)',body:'적들이 너무 젖어서 항의가 들어왔어요. 사과의 의미로 코인을 보냅니다. 앞으로도 많이 적셔 주세요.',coins:300});ch=true}
   if(ch)saveProg()}
 initMeta();
@@ -2186,12 +2188,12 @@ const TITLES=[
   {id:'disarm6',req:'disarm',name:'손목 관리사',cond:'한 판에 앞팔 6번 맞히기',hint:'손목 보호대 필수',gem:25},
   {id:'umbrella8',req:'umbrella',name:'우산 장인 명예의 전당',cond:'한 판에 우산으로 8번 막기',hint:'장마철 대비 완료',gem:30},
   {id:'intercept6',req:'intercept',name:'방공망 가동 중',cond:'한 판에 물풍선끼리 6번 부딪히기',hint:'하늘을 지켜요',gem:30},
-  {id:'helmet20',req:'helmet',name:'고철상 사장님',cond:'투구 누적 20개 튕겨내기',hint:'고철 값이 올랐대요',gem:25},
+  {id:'helmet20',req:'helmet',name:'고철상 사장님',cond:'투구 누적 40개 튕겨내기',hint:'고철 값이 올랐대요',gem:25},
   {id:'wind40',req:'wind2',name:'바람 탓 전문가',cond:'한 판에 40번 빗나감',hint:'그래도 바람 탓',gem:15},
   {id:'never10',req:'never',name:'오뚝이 정신',cond:'같은 챕터 10번 실패',hint:'일곱 번 넘어져도 아직 셋 남았어요',gem:25},
-  {id:'giant10',req:'giant',name:'거인 퇴치 자격증',cond:'보스 누적 10번 격파',hint:'큰 녀석 전문',gem:30},
-  {id:'butter5',req:'butter',name:'기름칠 담당',cond:'적이 물풍선 떨어뜨리기 누적 5번',hint:'손에 뭘 바른 걸까요',gem:20},
-  {id:'selfhit5',req:'selfhit',name:'자업자득 연출가',cond:'적이 자기 물풍선에 맞기 누적 5번',hint:'뿌린 대로 거두게',gem:25},
+  {id:'giant10',req:'giant',name:'거인 퇴치 자격증',cond:'보스 누적 30번 격파',hint:'큰 녀석 전문',gem:30},
+  {id:'butter5',req:'butter',name:'기름칠 담당',cond:'적이 물풍선 떨어뜨리기 누적 15번',hint:'손에 뭘 바른 걸까요',gem:20},
+  {id:'selfhit5',req:'selfhit',name:'자업자득 연출가',cond:'적이 자기 물풍선에 맞기 누적 15번',hint:'뿌린 대로 거두게',gem:25},
   {id:'flawless3',req:'flawless',name:'방수 코팅 완료',cond:'한 대도 안 맞고 클리어 누적 3번',hint:'물 한 방울 안 묻게',gem:40},
   {id:'clutch3',req:'clutch',name:'심장이 쫄깃쫄깃',cond:'체력 10% 이하로 클리어 누적 3번',hint:'아슬아슬이 습관',gem:30},
   {id:'comeback',name:'역전의 명수',cond:'부활한 뒤 그 판 클리어',hint:'한 번 쓰러져도 끝이 아니에요',gem:20},
@@ -2310,12 +2312,12 @@ function mergeAll(){const made=[];let again=true;
   return made}
 function autoEquip(){for(const t of IKEYS){let best=null;for(const i of prog.inv)if(i.t===t&&(!best||iVal(i)>iVal(best)))best=i;if(best)prog.eq[t]=best.u}}
 const needAX=lv=>Math.round(50*Math.pow(1.3,lv-1));
-const EN_MAX=30,EN_COST=5,EN_SEC=300,LV_EN=5;/* 10/25: level-up gives +5 energy (was full refill) so day one lands around chapter 2-3 */
+const EN_MAX=30,EN_COST=5,EN_SEC=300,LV_EN=5,LV_GEM=4;/* 10/25: level-up gives +5 energy (was full refill) so day one lands around chapter 2-3 */
 function enTick(){const e=prog.en,now=Date.now();if(e.v>=EN_MAX){e.t=now;return}const n=Math.floor((now-e.t)/(EN_SEC*1000));if(n>0){e.v=Math.min(EN_MAX,e.v+n);e.t=e.v>=EN_MAX?now:e.t+n*EN_SEC*1000}}
 function enNow(){enTick();return prog.en.v}
 function enAdd(n){enTick();prog.en.v+=n;if(prog.en.v>=EN_MAX)prog.en.t=Date.now();saveProg()}
 function enLeft(){enTick();if(prog.en.v>=EN_MAX)return '';const sc=Math.max(0,EN_SEC-Math.floor((Date.now()-prog.en.t)/1000));return Math.floor(sc/60)+':'+String(sc%60).padStart(2,'0')}
-function gainAcct(n){const a=prog.acct;a.xp+=n;let up=0;while(a.xp>=needAX(a.lv)){a.xp-=needAX(a.lv);a.lv++;up++;prog.gems+=10;enTick();const full=prog.en.v>=EN_MAX;prog.en.v+=LV_EN;if(!full&&prog.en.v>=EN_MAX)prog.en.t=Date.now()}return up}
+function gainAcct(n){const a=prog.acct;a.xp+=n;let up=0;while(a.xp>=needAX(a.lv)){a.xp-=needAX(a.lv);a.lv++;up++;prog.gems+=LV_GEM;enTick();const full=prog.en.v>=EN_MAX;prog.en.v+=LV_EN;if(!full&&prog.en.v>=EN_MAX)prog.en.t=Date.now()}return up}
 const PATROL_ON=false,PATROL_CAP=8*3600;
 const patrolSec=()=>Math.min(PATROL_CAP,Math.max(0,(Date.now()-(prog.patrol||Date.now()))/1000));
 const patrolRate=()=>0.8+(prog.best-1)*0.4;
@@ -3118,19 +3120,19 @@ function fxDemo(k){const fx=fx2();if(!fx)return;const g=+$('fxTier').value,t=IKE
 /* ---------- live ops: attendance (7-day loop), daily/weekly missions, achievements, limited event ---------- */
 const weekKey=()=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return dayStr(d)};
 const dayStr=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const ATT=[{coins:200},{en:10},{gems:10},{coins:400},{box:0.6,lab:'장비 상자'},{gems:20},{gems:50,box:1.2,lab:'보석 50 + 희귀 상자'}];
+const ATT=[{coins:200},{en:10},{gems:5},{coins:400},{box:0.6,lab:'장비 상자'},{gems:10},{gems:25,box:1.2,lab:'보석 25 + 희귀 상자'}];
 const MS_D=[{id:'d_login',k:'login',n:1,t:'오늘 접속하기',r:{coins:100}},{id:'d_play',k:'play',n:3,t:'아무 모드나 3판 하기',r:{en:10}},{id:'d_kill',k:'kill',n:30,t:'적 30명 적시기',r:{coins:200}},
-  {id:'d_head',k:'head',n:10,t:'헤드샷 10번',r:{gems:5}},{id:'d_up',k:'up',n:1,t:'강화 1번 하기 (능력치·스킬·장비)',r:{coins:150}},{id:'d_poke',k:'poke',n:5,t:'로비 캐릭터 5번 찌르기',r:{gems:3},fun:'귀찮아해도 괜찮아요'}];
-const MS_DALL={gems:20};
-const MS_W=[{id:'w_login',k:'login',n:5,t:'이번 주 5일 접속',r:{gems:50}},{id:'w_clear',k:'clear',n:5,t:'챕터 5번 클리어',r:{gems:30}},{id:'w_dun',k:'dun',n:3,t:'던전 3번 도전',r:{box:0.8,lab:'장비 상자'}},
-  {id:'w_pvp',k:'pvp',n:5,t:'PVP 5판',r:{coins:1000}},{id:'w_kill',k:'kill',n:300,t:'적 300명 적시기',r:{gems:30}}];
-const ACH=[{id:'a_ch3',t:'챕터 3 클리어',v:()=>prog.best-1,n:3,r:{gems:30}},{id:'a_ch5',t:'챕터 5 클리어',v:()=>prog.best-1,n:5,r:{gems:50}},{id:'a_ch10',t:'챕터 10 클리어',v:()=>prog.best-1,n:10,r:{gems:100}},
-  {id:'a_k100',t:'누적 100명 적시기',v:()=>msLife('kill'),n:100,r:{coins:500}},{id:'a_k1000',t:'누적 1,000명 적시기',v:()=>msLife('kill'),n:1000,r:{gems:50}},{id:'a_h100',t:'헤드샷 누적 100번',v:()=>msLife('head'),n:100,r:{gems:30}},
-  {id:'a_lv5',t:'계정 레벨 5',v:()=>prog.acct.lv,n:5,r:{gems:20}},{id:'a_lv10',t:'계정 레벨 10',v:()=>prog.acct.lv,n:10,r:{gems:50}},{id:'a_leg',t:'전설 장비 얻기',v:()=>prog.inv.some(i=>i.g>=4)?1:0,n:1,r:{gems:50}},
-  {id:'a_att7',t:'출석 7일 채우기',v:()=>(prog.att&&prog.att.total)||0,n:7,r:{gems:30}},{id:'a_title10',t:'칭호 10개 모으기',v:()=>Object.keys(prog.titles).length,n:10,r:{gems:30}}];
+  {id:'d_head',k:'head',n:10,t:'헤드샷 10번',r:{gems:2}},{id:'d_up',k:'up',n:1,t:'강화 1번 하기 (능력치·스킬·장비)',r:{coins:150}},{id:'d_poke',k:'poke',n:5,t:'로비 캐릭터 5번 찌르기',r:{gems:1},fun:'귀찮아해도 괜찮아요'}];
+const MS_DALL={gems:6};
+const MS_W=[{id:'w_login',k:'login',n:5,t:'이번 주 5일 접속',r:{gems:20}},{id:'w_clear',k:'clear',n:5,t:'챕터 5번 클리어',r:{gems:12}},{id:'w_dun',k:'dun',n:3,t:'던전 3번 도전',r:{box:0.8,lab:'장비 상자'}},
+  {id:'w_pvp',k:'pvp',n:5,t:'PVP 5판',r:{coins:1000}},{id:'w_kill',k:'kill',n:300,t:'적 300명 적시기',r:{gems:12}}];
+const ACH=[{id:'a_ch3',t:'챕터 3 클리어',v:()=>prog.best-1,n:3,r:{gems:10}},{id:'a_ch5',t:'챕터 5 클리어',v:()=>prog.best-1,n:5,r:{gems:20}},{id:'a_ch10',t:'챕터 10 클리어',v:()=>prog.best-1,n:10,r:{gems:40}},
+  {id:'a_k100',t:'누적 100명 적시기',v:()=>msLife('kill'),n:100,r:{coins:500}},{id:'a_k1000',t:'누적 1,000명 적시기',v:()=>msLife('kill'),n:1000,r:{gems:20}},{id:'a_h100',t:'헤드샷 누적 100번',v:()=>msLife('head'),n:100,r:{gems:12}},
+  {id:'a_lv5',t:'계정 레벨 5',v:()=>prog.acct.lv,n:5,r:{gems:8}},{id:'a_lv10',t:'계정 레벨 10',v:()=>prog.acct.lv,n:10,r:{gems:20}},{id:'a_leg',t:'전설 장비 얻기',v:()=>prog.inv.some(i=>i.g>=4)?1:0,n:1,r:{gems:20}},
+  {id:'a_att7',t:'출석 7일 채우기',v:()=>(prog.att&&prog.att.total)||0,n:7,r:{gems:12}},{id:'a_title10',t:'칭호 10개 모으기',v:()=>Object.keys(prog.titles).length,n:10,r:{gems:12}}];
 const EVENT={id:'fall26',name:'가을 물풍선 축제',start:'2026-10-25',end:'2026-11-08',pt:'단풍잎',
   how:'적 1명 = 1 · 헤드샷 +1 · 챕터 클리어 20 · 던전 승리 30',
-  steps:[{n:100,r:{coins:500}},{n:300,r:{gems:20}},{n:600,r:{box:1,lab:'장비 상자'}},{n:1000,r:{gems:50}},{n:1600,r:{legend:1,lab:'전설 장비 확정'}}]};
+  steps:[{n:100,r:{coins:500}},{n:300,r:{gems:10}},{n:600,r:{box:1,lab:'장비 상자'}},{n:1000,r:{gems:20}},{n:1600,r:{legend:1,lab:'전설 장비 확정'}}]};
 function msData(){const d=todayKey(),w=weekKey();let M=prog.ms;if(!M)M=prog.ms={d:'',w:'',c:{},cw:{},got:{},gw:{},life:{},ach:{}};
   if(M.d!==d){M.d=d;M.c={};M.got={};M.c.login=1;M.cw.login=(M.w===w?(M.cw.login||0):0)+1;if(M.w!==w){M.w=w;M.cw={login:1};M.gw={}}}
   if(M.w!==w){M.w=w;M.cw={login:1};M.gw={}}return M}
@@ -3208,7 +3210,7 @@ const DUN_TICKETS=3;
 const bossHp=tier=>Math.round(520+260*(tier-1)+40*(tier-1)*(tier-1));
 const bossPower=tier=>Math.round(40*Math.pow(1.3,tier-1));
 function dunDay(){const k=todayKey();if(!prog.dun)prog.dun={tier:1,wins:0,day:'',left:-1};if(prog.dun.day!==k||prog.dun.left<0){prog.dun.day=k;prog.dun.left=DUN_TICKETS;saveProg()}}
-function dunReward(tier){return{coins:180+120*tier,gems:tier===1?20:8+2*tier,box:1}}
+function dunReward(tier){return{coins:180+120*tier,gems:tier===1?8:3+tier,box:1}}
 function spawnBoss(){const tier=prog.dun.tier,s=3.1;
   eRoof={x:250,w:W-250+40,y:H+30,ty:H-26,t:0};
   enemy=makeMan(470,eRoof.y,-1,s,'#7fa6d6',bossHp(tier));
@@ -3768,8 +3770,8 @@ function breakdown(el,rows){el.innerHTML=rows.map(([a,b])=>`<li><span>${a}</span
 function statLine(el){el.innerHTML=`<div><b>${run.kills}</b><span>격파</span></div><div><b>${run.bestShot}</b><span>최고 한 방</span></div><div><b>${prog.day.key===todayKey()?prog.day.kills:0}</b><span>오늘 격파</span></div>`}
 const CUM={kill100:()=>(prog.stat.kills||0)>=100,kill500:()=>(prog.stat.kills||0)>=500,kill2000:()=>(prog.stat.kills||0)>=2000,
   play10:()=>prog.plays>=10,play50:()=>prog.plays>=50,play200:()=>prog.plays>=200,lv5:()=>prog.acct.lv>=5,lv10:()=>prog.acct.lv>=10,lv20:()=>prog.acct.lv>=20,
-  rich1:()=>prog.coins>=1000,rich2:()=>prog.coins>=10000,pvp10:()=>prog.pvp.w>=10,pvp30:()=>prog.pvp.w>=30,giant10:()=>(prog.stat.bosses||0)>=10,
-  farmer100:()=>prog.stat.apples>=100,helmet20:()=>prog.stat.helmets>=20,butter5:()=>(prog.stat.butter||0)>=5,selfhit5:()=>(prog.stat.selfhit||0)>=5,
+  rich1:()=>prog.coins>=1000,rich2:()=>prog.coins>=10000,pvp10:()=>prog.pvp.w>=10,pvp30:()=>prog.pvp.w>=30,giant10:()=>(prog.stat.bosses||0)>=30,
+  farmer100:()=>prog.stat.apples>=100,helmet20:()=>prog.stat.helmets>=40,butter5:()=>(prog.stat.butter||0)>=15,selfhit5:()=>(prog.stat.selfhit||0)>=15,
   flawless3:()=>(prog.stat.flawless||0)>=3,clutch3:()=>(prog.stat.clutch||0)>=3,h_dun5:()=>(prog.dun.wins||0)>=5};
 function chkTitles(){for(const id in CUM)if(!prog.titles[id]&&CUM[id]())award(id)}
 function titleCards(el){chkTitles();el.innerHTML=run.newTitles.map(id=>{const t=TITLE[id];return `<div class="newtitle"><span>새 칭호 획득 · 보석 +${Math.round(t.gem*T.gemTitle)}</span><b>「${t.name}」</b><span>${t.cond}</span></div>`}).join('')}
@@ -3966,9 +3968,10 @@ const PACKS=[
   {id:'g5',name:'보석 트럭',price:65000,gems:4500,desc:'보석 3,250 + 보너스 1,250',tag:'최고 효율'},
 ];
 /* v0.86 store: 일일 상점 (pinned cards, daily limits, reset timer, sold-out stamp) · 패키지 (chapter milestones) · 충전 */
-const GEMSHOP=[{id:'free',name:'오늘의 선물',cost:0,lim:1,ic:'ic-en',desc:'에너지 10 · 매일 무료'},{id:'en',name:'에너지 30',cost:30,lim:2,ic:'ic-en',desc:'바로 여섯 판 더'},{id:'coin',name:'코인 꾸러미',cost:60,lim:2,ic:'ic-coin',desc:''},
+const GEMSHOP=[{id:'free',name:'오늘의 선물',cost:0,lim:1,ic:'ic-en',desc:'에너지 10 · 매일 무료'},{id:'en',name:'에너지 30',cost:50,lim:1,ic:'ic-en',desc:'바로 여섯 판 더'},{id:'coin',name:'코인 꾸러미',cost:60,lim:2,ic:'ic-coin',desc:''},
   {id:'box',name:'장비 상자',cost:80,lim:3,ic:'ic-box',desc:'희귀 이상이 잘 나와요 · <u data-odds="1">확률</u>'},{id:'pvp',name:'PVP 티켓 3장',cost:30,lim:3,ic:'ic-tk',desc:'무료·광고 도전을 다 썼을 때'}];
-const CHPACK=[{ch:2,cost:100,coins:3000,box:1,en:30,eff:'500%'},{ch:4,cost:200,coins:8000,box:2,en:30,eff:'550%'},{ch:6,cost:300,coins:15000,box:3,en:30,eff:'600%'},{ch:10,cost:500,coins:40000,box:5,en:60,eff:'700%'}];
+const CHPACK=[{ch:2,cost:100,runs:6,box:1,en:30,eff:'300%'},{ch:4,cost:150,runs:6,box:1,en:30,eff:'300%'},{ch:6,cost:200,runs:6,box:2,en:30,eff:'350%'},{ch:10,cost:300,runs:6,box:2,en:30,eff:'350%'}];
+CHPACK.forEach(k=>Object.defineProperty(k,'coins',{get(){return Math.round(fullClearCoins(k.ch)*k.runs/50)*50}}));
 let buyArm=null,storeTab='daily',storeIv=null;
 function shopDay(){const k=todayKey();if(!prog.shop||prog.shop.day!==k)prog.shop={day:k,b:{}}}
 function untilReset(){const d=new Date(),n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),t=Math.max(0,Math.floor((n-d)/1000));return [t/3600|0,(t%3600)/60|0,t%60].map(v=>String(v).padStart(2,'0')).join(':')}
@@ -4069,7 +4072,7 @@ function pvpEnd(win){
 $('pvpAgain').addEventListener('click',()=>afterResult(()=>{goLobby();openPanel('pvp',titleOv)}));
 function renderTitles(){
   {const A=prog.acct,st=baseStats(),p=Math.round(A.xp/needAX(A.lv)*100);
-   $('profHd').innerHTML=`<span class="lvb2">Lv<b>${A.lv}</b></span><span class="pw">전투력 ${power(st).toLocaleString('ko-KR')}</span><small>경험치 ${A.xp} / ${needAX(A.lv)} · 레벨 업마다 보석 10 + 에너지 5</small><span class="xpb"><i style="width:${p}%"></i></span>`;
+   $('profHd').innerHTML=`<span class="lvb2">Lv<b>${A.lv}</b></span><span class="pw">전투력 ${power(st).toLocaleString('ko-KR')}</span><small>경험치 ${A.xp} / ${needAX(A.lv)} · 레벨 업마다 보석 4 + 에너지 5</small><span class="xpb"><i style="width:${p}%"></i></span>`;
    $('profSt').innerHTML=[[prog.best-1,'최고 챕터'],[(prog.bestWave||0)+'웨이브','무한 최고'],[prog.bestShot,'최고 한 방'],[prog.plays,'총 플레이'],[st.hp,'체력'],[Math.round(st.dmg*100)+'%','공격력'],[st.cool.toFixed(2)+'초','재장전'],[Math.round(st.crit*100)+'%','치명타'],[TITLES.filter(x=>x.hidden&&prog.titles[x.id]).length+' / '+TITLES.filter(x=>x.hidden).length,'숨은 칭호'],[Object.keys(prog.titles).length,'칭호 합계']].map(([b,t])=>`<div><b>${b}</b><span>${t}</span></div>`).join('')}
   const N0=TITLES.filter(t=>!t.hidden),H0=TITLES.filter(t=>t.hidden),g0=N0.filter(t=>prog.titles[t.id]).length,h0=H0.filter(t=>prog.titles[t.id]).length;$('titleCount').innerHTML='일반 '+g0+' / '+N0.length+' · <b style="color:#ffd166">숨은 칭호 '+h0+' / '+H0.length+'</b><br>장착한 칭호는 머리 위와 랭킹에 표시돼요';
   const list=$('titleList');list.innerHTML='';
@@ -4427,7 +4430,7 @@ function patrolPop(){const r=patrolReward(),sc=patrolSec(),p=Math.round(sc/PATRO
     [[['받기',()=>{claimPatrol(1)},null,r.coins<1],['광고 보고 ×2',()=>{adPop(()=>{claimPatrol(2);closePop(true)});return true},'gemrev',r.coins<1]],['닫기',null,'ghost']])}
 $('sbMail').addEventListener('click',mailPop);$('sbAttend').addEventListener('click',attendPop);$('sbMission').addEventListener('click',()=>missionPop('d'));$('sbEvent').addEventListener('click',eventPop);$('sbNotice').addEventListener('click',noticePop);$('sbPatrol').addEventListener('click',patrolPop);
 /* chapter chests · info */
-function chestRw(c,w){return w==='clear'?{gems:15,item:1}:{coins:60+40*c,gems:5}}
+function chestRw(c,w){return w==='clear'?{gems:5,item:1}:{coins:60+40*c,gems:2}}
 function chestPop(w){const c=prog.stage,st=chestState(c,w),r=chestRw(c,w),N=stageN(),need=w==='clear'?N:Math.ceil(N/2),lab=w==='clear'?'클리어':'웨이브 '+need;
   const rw=`<div class="rwds">${r.coins?`<span class="rwd"><i class="ic-coin"></i><b>${r.coins}</b>코인</span>`:''}<span class="rwd"><i class="ic-gem"></i><b>${r.gems}</b>보석</span>${r.item?'<span class="rwd"><i class="ic-xp"></i><b>1</b>장비</span>':''}</div>`;
   if(st==='got'){popup('이미 연 상자','<p class="sub">챕터 '+c+' · '+lab+' 상자는 이미 받았어요</p>'+rw,[['확인']]);return}
