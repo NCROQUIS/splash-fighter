@@ -795,6 +795,18 @@ b,strong{font-weight:700}
 .chpk .pkit i{width:20px;height:20px;display:inline-block}.chpk button{font-size:15px;padding:9px}
 .chpk.lock{filter:grayscale(.85);opacity:.8}.chpk.got>*:not(.stamp){opacity:.5}
 .ic-tk{border-radius:6px;box-sizing:border-box;border:2.5px solid var(--ink);background:repeating-linear-gradient(90deg,#ffb3cf 0 6px,#ff8fb8 6px 12px);position:relative}
+
+/* v0.87 (5) active tab rises like a paper tab · (6) shared rooftop props: tape on page headers and popups, clothespin by titles */
+.tabbar button[aria-selected="true"]{transform:translateY(-10px);background:linear-gradient(180deg,#fffaf0,#efe3cc);color:#2a2340;border:2.5px solid var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.35);z-index:2}
+.tabbar button[aria-selected="true"] svg{transform:scale(1.18)}
+.tabbar button[aria-selected="true"] .lbl{font-weight:700}
+.tabbar button{transition:transform .18s cubic-bezier(.3,1.5,.5,1),background .18s}
+.overlay.sheet.page .pghead{position:sticky}
+.overlay.sheet.page .pghead::before,.overlay.sheet.page .pghead::after{content:"";position:absolute;top:-9px;width:46px;height:16px;background:rgba(255,236,190,.55);border-left:2px dashed rgba(120,90,40,.25);border-right:2px dashed rgba(120,90,40,.25);pointer-events:none}
+.overlay.sheet.page .pghead::before{left:14px;transform:rotate(-7deg)}.overlay.sheet.page .pghead::after{right:14px;transform:rotate(6deg)}
+.pgtitle{position:relative}
+.pgtitle::before{content:"";display:inline-block;width:10px;height:22px;margin-right:8px;vertical-align:-3px;border-radius:3px 3px 5px 5px;background:linear-gradient(90deg,#d99a5b 0 45%,#8a5427 45% 55%,#d99a5b 55%);border:2px solid #15122b;transform:rotate(-12deg)}
+.overlay.pop .card::before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:18px;transform:translateX(-50%) rotate(-3deg);background:rgba(255,236,190,.6);border-left:2px dashed rgba(120,90,40,.25);border-right:2px dashed rgba(120,90,40,.25);pointer-events:none;z-index:3}
 </style>
 
 <div class="app">
@@ -989,7 +1001,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.86 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.87 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1054,7 +1066,7 @@ b,strong{font-weight:700}
 
 <script>/* RewardFX v2 (games/reward-fx/reward-fx.js) */
 /**
- * RewardFX v2.0 — presentation-only reward effects for mobile H5 games.
+ * RewardFX v2.1 — presentation-only reward effects for mobile H5 games.
  * The game decides and grants every reward first; RewardFX only shows the result.
  * No RNG, no inventory, no payout. Skipping never changes game state.
  * API: new RewardFX(opts) · fx.chest(o) · fx.score(o) · fx.merge(o) · fx.skip() · fx.setOptions(o) · fx.destroy()
@@ -1104,6 +1116,11 @@ b,strong{font-weight:700}
 .rfx-hint.rfx-blink{animation:rfx-blink 1s ease-in-out infinite}
 .rfx-skip{position:absolute;right:calc(12px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));font:inherit;font-size:13px;font-weight:700;color:#fff;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.5);border-radius:99px;padding:8px 14px;cursor:pointer}
 .rfx-ok{position:absolute;left:50%;bottom:calc(7% + env(safe-area-inset-bottom));transform:translateX(-50%);font:inherit;font-weight:900;font-size:calc(17px*var(--s));min-width:calc(170px*var(--s));padding:calc(12px*var(--s)) calc(20px*var(--s));border-radius:99px;border:3px solid #15122b;background:linear-gradient(180deg,#7ff0c9,#3ccf9e);color:#10202a;box-shadow:0 4px 0 #15122b;cursor:pointer;opacity:0}
+.rfx-again{position:absolute;left:50%;bottom:calc(7% + env(safe-area-inset-bottom));transform:translateX(-50%);font:inherit;font-weight:900;font-size:calc(17px*var(--s));min-width:calc(170px*var(--s));padding:calc(12px*var(--s)) calc(20px*var(--s));border-radius:99px;border:3px solid #15122b;background:linear-gradient(180deg,#7ff0c9,#3ccf9e);color:#10202a;box-shadow:0 4px 0 #15122b;cursor:pointer;opacity:0}
+.rfx-again{background:linear-gradient(180deg,#ffe07a,#ffb627);color:#15122b}
+.rfx-chest.rfx-drag{pointer-events:auto;cursor:grab;touch-action:none}
+.rfx-uparrow{position:absolute;left:50%;top:calc(50% - 150px*var(--s));transform:translateX(-50%);font-size:calc(34px*var(--s));color:#ffd166;text-shadow:0 2px 0 #15122b;animation:rfxUp 1s ease-in-out infinite;pointer-events:none}
+@keyframes rfxUp{0%,100%{transform:translate(-50%,6px);opacity:.5}50%{transform:translate(-50%,-10px);opacity:1}}
 .rfx-score{display:grid;justify-items:center;gap:calc(8px*var(--s));width:calc(320px*var(--s))}
 .rfx-num{font-size:calc(64px*var(--s));font-weight:950;font-variant-numeric:tabular-nums;color:var(--tc);text-shadow:0 4px 0 rgba(0,0,0,.45);will-change:transform}
 .rfx-num.rfx-h2{text-shadow:0 4px 0 rgba(0,0,0,.45),0 0 18px color-mix(in srgb,var(--tc) 60%,transparent)}
@@ -1294,12 +1311,12 @@ b,strong{font-weight:700}
     constructor(opts = {}) {
       const rm = !!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
       this.opts = Object.assign({ container: null, zIndex: null, volume: 0.6, muted: false, reducedMotion: rm, speed: 1, quality: 'auto', particles: 1, quickRepeat: true, chestColors: ['#c0392b', '#ffd166'], audio: null, texts: {} }, opts);
-      this.T = Object.assign({ tap: '눌러서 열기', skip: '건너뛰기', ok: '확인', close: '눌러서 닫기', high: '대박!', merge: '합성 성공!', chest: '보물 상자' }, this.opts.texts);
+      this.T = Object.assign({ drag: '상자를 위로 끌어 올려 열어요', tap: '눌러서 열기', skip: '건너뛰기', ok: '확인', close: '눌러서 닫기', high: '대박!', merge: '합성 성공!', chest: '보물 상자' }, this.opts.texts);
       this.queue = Promise.resolve(); this.destroyed = false; this.cur = null; this.seen = {}; this.pending = 0;
       if (!document.getElementById('rfx-style')) { const st = document.createElement('style'); st.id = 'rfx-style'; st.textContent = CSS; document.head.appendChild(st); this.style = st; }
       const root = this.root = document.createElement('div'); root.className = 'rfx-root'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-live', 'polite');
-      root.innerHTML = '<div class="rfx-dim"></div><canvas class="rfx-cv"></canvas><div class="rfx-anchor"></div><p class="rfx-title"></p><p class="rfx-hint"></p><button type="button" class="rfx-skip"></button><button type="button" class="rfx-ok"></button>';
-      this.el = { dim: root.children[0], cv: root.children[1], anchor: root.children[2], title: root.children[3], hint: root.children[4], skip: root.children[5], ok: root.children[6] };
+      root.innerHTML = '<div class="rfx-dim"></div><canvas class="rfx-cv"></canvas><div class="rfx-anchor"></div><p class="rfx-title"></p><p class="rfx-hint"></p><button type="button" class="rfx-skip"></button><button type="button" class="rfx-ok"></button><button type="button" class="rfx-again" hidden></button>';
+      this.el = { dim: root.children[0], cv: root.children[1], anchor: root.children[2], title: root.children[3], hint: root.children[4], skip: root.children[5], ok: root.children[6], again: root.children[7] };
       this.el.skip.textContent = this.T.skip; this.el.ok.textContent = this.T.ok;
       this.eng = new Engine(this.el.cv); this.eng.q = this.opts.quality === 'low' ? 0.35 : 1;
       this.eng.onQuality = q => { this._emit('rewardfx:quality', { q }); this._resize(); };
@@ -1307,7 +1324,8 @@ b,strong{font-weight:700}
       const host = this.opts.container || document.body; if (host !== document.body) { root.classList.add('rfx-in'); if (getComputedStyle(host).position === 'static') host.style.position = 'relative'; }
       if (this.opts.zIndex != null) root.style.setProperty('--rfx-z', this.opts.zIndex);
       host.appendChild(root);
-      root.addEventListener('pointerdown', e => { if (e.target === this.el.skip || e.target === this.el.ok) return; this._tap(); });
+      root.addEventListener('pointerdown', e => { if (e.target === this.el.skip || e.target === this.el.ok || e.target === this.el.again) return; this._tap(); });
+      this.el.again.addEventListener('click', e => { e.stopPropagation(); const S = this.cur; if (S && S.phase === 'done' && S.tapWait) { S.again = true; const w = S.tapWait; S.tapWait = null; w.done(); } });
       this.el.skip.addEventListener('click', e => { e.stopPropagation(); this._ff(); });
       this.el.ok.addEventListener('click', e => { e.stopPropagation(); this._tap(true); });
       this._onResize = () => { if (this.cur) this._resize(); };
@@ -1341,7 +1359,7 @@ b,strong{font-weight:700}
         const S = this._session(kind); this.cur = S; this._open(S); this._emit('rewardfx:start', { kind });
         try { await fn(S); } catch (e) { if (!S.ac.signal.aborted) console.error('[RewardFX]', e); }
         const status = this.destroyed ? 'destroyed' : (S.skipped || S.ffd) ? 'skipped' : 'complete';
-        this._close(S); this.cur = null; this._emit('rewardfx:end', { kind, status }); return { status };
+        this._close(S); this.cur = null; this._emit('rewardfx:end', { kind, status }); return { status, again: !!S.again };
       };
       const res = this.queue.then(task, task); this.queue = res.catch(() => {}); return res;
     }
@@ -1368,7 +1386,7 @@ b,strong{font-weight:700}
     }
     _open(S) {
       const el = this.el, r = this.root; this.eng.clear(); el.anchor.replaceChildren(); el.title.textContent = ''; el.title.style.opacity = 0; el.hint.textContent = ''; el.hint.style.opacity = 0; el.hint.classList.remove('rfx-blink');
-      el.ok.style.opacity = 0; el.ok.style.pointerEvents = 'none'; el.skip.hidden = true; r.classList.remove('rfx-lite');
+      el.ok.style.opacity = 0; el.ok.style.pointerEvents = 'none'; el.again.hidden = true; el.skip.hidden = true; r.classList.remove('rfx-lite');
       r.classList.add('rfx-on'); this._resize(); void r.offsetWidth; r.classList.add('rfx-show'); this._start();
     }
     _close(S) {
@@ -1379,7 +1397,7 @@ b,strong{font-weight:700}
     _ff() { const S = this.cur; if (!S || S.ff) return; S.ff = true; S.ffd = true; S.anims.forEach(a => { try { a.finish(); } catch (e) {} }); S.waits.forEach(w => { if (w !== S.tapWait || S.phase === 'pre') w.done(); }); }
     _tap(fromOk) {
       const S = this.cur; if (!S) return;
-      if (S.phase === 'pre') { if (S.tapWait) { const w = S.tapWait; S.tapWait = null; w.done(); } else if (S.skippable !== false) this._ff(); }
+      if (S.phase === 'pre') { if (S.dragMode && S.tapWait) return; if (S.tapWait) { const w = S.tapWait; S.tapWait = null; w.done(); } else if (S.skippable !== false) this._ff(); }
       else if (S.phase === 'done' && S.tapWait && (fromOk || performance.now() - S.doneAt > 280)) { const w = S.tapWait; S.tapWait = null; w.done(); }
     }
     _hint(text, blink) { const h = this.el.hint; h.textContent = text || ''; h.style.opacity = text ? 1 : 0; h.classList.toggle('rfx-blink', !!blink); }
@@ -1440,7 +1458,8 @@ b,strong{font-weight:700}
     async _done(S, o, defAuto) {
       S.phase = 'done'; S.doneAt = performance.now(); this.el.skip.hidden = true;
       const auto = o.autoClose != null ? o.autoClose : defAuto;
-      if (auto) this._hint(this.T.close, false); else { const ok = this.el.ok; ok.textContent = o.okText || this.T.ok; ok.style.pointerEvents = 'auto'; S.anim(ok, [{ opacity: 0, transform: 'translateX(-50%) translateY(10px)' }, { opacity: 1, transform: 'translateX(-50%)' }], { duration: 220, delay: 250 }); }
+      if (auto) this._hint(this.T.close, false); else { const ok = this.el.ok; ok.textContent = o.okText || this.T.ok; ok.style.pointerEvents = 'auto'; S.anim(ok, [{ opacity: 0, transform: (o.again ? 'translateX(-104%)' : 'translateX(-50%)') + ' translateY(10px)' }, { opacity: 1, transform: o.again ? 'translateX(-104%)' : 'translateX(-50%)' }], { duration: 220, delay: 250 }); }
+      if (!auto && o.again) { const ag = this.el.again; ag.hidden = false; ag.textContent = o.again.label || '한 번 더'; S.anim(ag, [{ opacity: 0, transform: 'translateX(4%) translateY(10px)' }, { opacity: 1, transform: 'translateX(4%)' }], { duration: 220, delay: 120 }); }
       if (!S.ac.signal.aborted) S.ff = false; await S.waitTap(auto || Infinity);
     }
 
@@ -1460,9 +1479,16 @@ b,strong{font-weight:700}
         setTimeout(() => S.snd('drop'), 330 / S.sp());
         await S.wait(quick ? 260 : 560);
         if (o.tapToOpen !== false && !quick && !S.ff) {
-          this._hint(this.T.tap, true);
+          const drag = !!o.dragToOpen && !S.rm(); this._hint(drag ? this.T.drag : this.T.tap, true);
+          let arrow = null, offDrag = null;
+          if (drag) { S.dragMode = true; box.classList.add('rfx-drag'); arrow = this._node('rfx-uparrow'); arrow.textContent = '▲';
+            let y0 = null, dy = 0; const mv = e => { if (y0 == null) return; dy = Math.max(0, y0 - e.clientY); const k = Math.min(1, dy / 90); box.style.transform = `translate(-50%,calc(-50% - ${Math.min(dy, 120)}px)) scale(${1 + 0.08 * k},${1 - 0.06 * k})`; if (dy > 90 && S.tapWait) { S.snd('drop'); const w = S.tapWait; S.tapWait = null; w.done(); } };
+            const up = () => { if (y0 == null) return; y0 = null; if (S.tapWait) box.animate([{ transform: box.style.transform }, { transform: 'translate(-50%,-50%)' }], { duration: 260, easing: 'cubic-bezier(.3,1.6,.5,1)' }); box.style.transform = ''; };
+            const dn = e => { e.stopPropagation(); y0 = e.clientY; dy = 0; if (box.getAnimations) box.getAnimations().forEach(a => { try { a.cancel(); } catch (_) {} }); box.style.transform = 'translate(-50%,-50%)'; try { box.setPointerCapture(e.pointerId); } catch (_) {} };
+            box.addEventListener('pointerdown', dn); box.addEventListener('pointermove', mv); box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
+            offDrag = () => { box.removeEventListener('pointerdown', dn); box.removeEventListener('pointermove', mv); box.removeEventListener('pointerup', up); box.removeEventListener('pointercancel', up); box.classList.remove('rfx-drag'); box.style.transform = ''; if (arrow) arrow.remove(); S.dragMode = false; }; }
           const idle = S.rm() ? null : S.anim(box, [{ transform: 'translate(-50%,-50%) rotate(0)' }, { transform: 'translate(-50%,-50%) rotate(-3deg)', offset: .2 }, { transform: 'translate(-50%,-50%) rotate(3deg)', offset: .4 }, { transform: 'translate(-50%,-50%) rotate(0)', offset: .55 }], { duration: 1100, iterations: Infinity, fill: 'none' });
-          await S.waitTap(o.autoOpen != null ? o.autoOpen : 2600); if (idle) idle.cancel(); this._hint('');
+          await S.waitTap(o.autoOpen != null ? o.autoOpen : (drag ? 8000 : 2600)); if (idle) idle.cancel(); if (offDrag) offDrag(); this._hint('');
         }
         // 2) tension: shakes escalate per tier, light leaks from the seam
         gem.setAttribute('fill', T.color);
@@ -1599,7 +1625,6 @@ b,strong{font-weight:700}
   RewardFX.TIERS = TIERS; RewardFX.version = '2.0.0';
   global.RewardFX = RewardFX;
 })(typeof window !== 'undefined' ? window : this);
-
 </script>
 <script>
 (()=>{
@@ -3156,7 +3181,7 @@ function fx2(){if(FX2||!window.RewardFX)return FX2;try{FX2=new RewardFX({contain
 const fxItem=it=>{const D=ITYPES[it.t],R=RARITY[it.g],cur=it.u!=null?itemBy(prog.eq[it.t]):null;return{tier:it.g,tierLabel:R.name,color:R.col,name:iName(it),sub:iStat(it)+(it.u!=null&&autoEq.has(it.u)&&prog.eq[it.t]===it.u?' · 자동 장착됨':cur&&cur!==it&&prog.inv.includes(it)&&iVal(it)>iVal(cur)?' · 지금 장비보다 좋아요':''),render:el=>{el.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true">'+D.svg+'</svg>';el.style.color=D.col}}};
 function fxGrowth(from){if(from==null)return null;const to=power(baseStats());return to!==from?{label:'전투력',from,to}:null}
 function revealReward(items,opt={},done){const fx=fx2();
-  if(fx){fx.chest({title:opt.title||'보물 상자',items:items.map(fxItem),note:opt.extra||'',growth:fxGrowth(opt.powerFrom),chestColors:opt.chest==='half'?['#6b3fd1','#5ec8ff']:null}).then(()=>{askEquip(items,()=>{done&&done();if(state==='title')updateTitle()})});return}
+  if(fx){fx.chest({title:opt.title||'보물 상자',items:items.map(fxItem),note:opt.extra||'',growth:fxGrowth(opt.powerFrom),chestColors:opt.chest==='half'?['#6b3fd1','#5ec8ff']:null,dragToOpen:true,again:opt.again}).then(r=>{if(r&&r.again&&opt.onAgain){opt.onAgain();return}askEquip(items,()=>{done&&done();if(state==='title')updateTitle()})});return}
   revealOld(items,opt,()=>askEquip(items,done))}
 function fxMerge(made,pw){const fx=fx2();if(!fx){revealOld(made,{title:'합성 완료!',chest:'half',extra:'같은 장비 3개가 하나로 뭉쳤어요'});return}
   made.forEach((it,i)=>{const src=fxItem({t:it.t,g:Math.max(0,it.g-1),l:0});fx.merge({title:'합성 성공!',from:[src,src,src],to:fxItem(it),note:made.length>1?'합성 '+(i+1)+'/'+made.length:'같은 장비 3개가 하나로 뭉쳤어요',growth:null}).then(()=>{if(i===made.length-1&&pw!=null){const g=fxGrowth(pw);if(g)toast('<b>전투력 '+g.from.toLocaleString('ko-KR')+' → '+g.to.toLocaleString('ko-KR')+'</b>')}})})}
@@ -3949,7 +3974,8 @@ function shopDay(){const k=todayKey();if(!prog.shop||prog.shop.day!==k)prog.shop
 function untilReset(){const d=new Date(),n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),t=Math.max(0,Math.floor((n-d)/1000));return [t/3600|0,(t%3600)/60|0,t%60].map(v=>String(v).padStart(2,'0')).join(':')}
 function giveGem(id){if(id==='free'){enAdd(10);toast('<b>에너지 +10</b><br>내일 또 받으세요')}else if(id==='en'){enAdd(30);toast('<b>에너지 +30</b>')}else if(id==='coin'){const c=coinPack();prog.coins+=c;toast('<b>코인 +'+c.toLocaleString('ko-KR')+'</b>')}
   else if(id==='pvp'){pvpDay();prog.pvp.bought+=PVP_PACK.n;toast('<b>PVP 티켓 +'+PVP_PACK.n+'</b><br>PVP에서 바로 쓸 수 있어요')}
-  else{const pw=power(baseStats()),it=dropItem(Math.max(3,prog.best),0.8);if(it)revealReward([it],{title:'장비 상자',powerFrom:pw});else toast('가방이 꽉 차서 코인으로 바꿨어요')}}
+  else{const pw=power(baseStats()),it=dropItem(Math.max(3,prog.best),0.8);shopDay();const g=GEMSHOP.find(x=>x.id==='box'),more=(prog.shop.b.box||0)<g.lim&&prog.gems>=g.cost;
+    if(it)revealReward([it],{title:'장비 상자',powerFrom:pw,again:more?{label:'한 번 더 · 보석 '+g.cost}:null,onAgain:()=>{shopDay();if((prog.shop.b.box||0)>=g.lim||prog.gems<g.cost)return;prog.gems-=g.cost;prog.shop.b.box=(prog.shop.b.box||0)+1;giveGem('box');saveProg();if(!storeOv.hidden)renderStore();updateTitle()}});else toast('가방이 꽉 차서 코인으로 바꿨어요')}}
 function renderStore(){shopDay();
   $('storeGems').textContent='보석 '+prog.gems+(prog.adFree?' · 광고 제거됨':'');const list=$('storeList');list.innerHTML='';list.className='packs st-'+storeTab;
   {const tb=$('storeTabs');tb.innerHTML='';for(const [k,nm] of [['daily','일일 상점'],['pack','패키지'],['charge','충전']]){const b=document.createElement('button');b.type='button';b.textContent=nm;b.setAttribute('aria-selected',storeTab===k);
