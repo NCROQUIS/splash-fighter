@@ -931,7 +931,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.81 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.82 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2082,10 +2082,48 @@ const TITLES=[
   {id:'h_boss',hidden:1,name:'물탱크 해체반',cond:'보스 던전 첫 승리',hint:'던전 깊은 곳의 거인',gem:20},
   {id:'h_bucket',hidden:1,name:'역류의 달인',cond:'보스의 양동이를 돌려보내기',hint:'머리 위로 떨어지기 전에',gem:15},
   {id:'h_full',hidden:1,name:'몰입의 시작',cond:'전체 화면으로 플레이',hint:'화면을 넓게 쓰면',gem:5},
+  /* v0.82: title chains — a step needs the previous title (earned in an earlier run) */
+  {id:'head10',req:'head5',name:'두피 마사지사',cond:'한 판에 헤드샷 10번',hint:'머리, 또 머리',gem:20},
+  {id:'head20',req:'head10',name:'정수리 장인',cond:'한 판에 헤드샷 20번',hint:'정수리가 반짝일 때까지',gem:35},
+  {id:'oneshot6',req:'oneshot',name:'한 방 배달 전문',cond:'한 판에 한 방 격파 6번',hint:'한 방, 또 한 방',gem:25},
+  {id:'oneshot10',req:'oneshot6',name:'한 방이면 퇴근',cond:'한 판에 한 방 격파 10번',hint:'칼퇴의 비결',gem:40},
+  {id:'sniper20',req:'sniper',name:'조준경 달린 눈',cond:'20번 연속 명중',hint:'더 오래 안 놓치기',gem:30},
+  {id:'sniper30',req:'sniper20',name:'자동 조준 의심자',cond:'30번 연속 명중',hint:'신고 들어올 정도로',gem:45},
+  {id:'cannon400',req:'cannon',name:'옥상 붕괴 위험',cond:'한 방에 400 이상 피해',hint:'건물이 흔들릴 만큼',gem:35},
+  {id:'cannon800',req:'cannon400',name:'기상청 특보 발령',cond:'한 방에 800 이상 피해',hint:'국지성 물폭탄',gem:50},
+  {id:'robin6',req:'robin',name:'사과 저격 동호회장',cond:'한 판에 사과 6번 맞히기',hint:'사과만 보면 손이 가요',gem:25},
+  {id:'farmer100',req:'farmer',name:'사과 재벌 3세',cond:'사과 누적 100개',hint:'과수원을 물려받을 만큼',gem:40},
+  {id:'disarm6',req:'disarm',name:'손목 관리사',cond:'한 판에 앞팔 6번 맞히기',hint:'손목 보호대 필수',gem:25},
+  {id:'umbrella8',req:'umbrella',name:'우산 장인 명예의 전당',cond:'한 판에 우산으로 8번 막기',hint:'장마철 대비 완료',gem:30},
+  {id:'intercept6',req:'intercept',name:'방공망 가동 중',cond:'한 판에 물풍선끼리 6번 부딪히기',hint:'하늘을 지켜요',gem:30},
+  {id:'helmet20',req:'helmet',name:'고철상 사장님',cond:'투구 누적 20개 튕겨내기',hint:'고철 값이 올랐대요',gem:25},
+  {id:'wind40',req:'wind2',name:'바람 탓 전문가',cond:'한 판에 40번 빗나감',hint:'그래도 바람 탓',gem:15},
+  {id:'never10',req:'never',name:'오뚝이 정신',cond:'같은 챕터 10번 실패',hint:'일곱 번 넘어져도 아직 셋 남았어요',gem:25},
+  {id:'giant10',req:'giant',name:'거인 퇴치 자격증',cond:'보스 누적 10번 격파',hint:'큰 녀석 전문',gem:30},
+  {id:'butter5',req:'butter',name:'기름칠 담당',cond:'적이 물풍선 떨어뜨리기 누적 5번',hint:'손에 뭘 바른 걸까요',gem:20},
+  {id:'selfhit5',req:'selfhit',name:'자업자득 연출가',cond:'적이 자기 물풍선에 맞기 누적 5번',hint:'뿌린 대로 거두게',gem:25},
+  {id:'flawless3',req:'flawless',name:'방수 코팅 완료',cond:'한 대도 안 맞고 클리어 누적 3번',hint:'물 한 방울 안 묻게',gem:40},
+  {id:'clutch3',req:'clutch',name:'심장이 쫄깃쫄깃',cond:'체력 10% 이하로 클리어 누적 3번',hint:'아슬아슬이 습관',gem:30},
+  {id:'comeback',name:'역전의 명수',cond:'부활한 뒤 그 판 클리어',hint:'한 번 쓰러져도 끝이 아니에요',gem:20},
+  {id:'pvp10',req:'pvpwin',name:'옥상 결투 랭커',cond:'PVP 누적 10승',hint:'결투가 일상',gem:30},
+  {id:'pvp30',req:'pvp10',name:'결투장 관장님',cond:'PVP 누적 30승',hint:'도장 깨기 환영',gem:50},
+  {id:'kill100',name:'동네 물총 고수',cond:'누적 100명 적시기',hint:'꾸준히 적시다 보면',gem:15},
+  {id:'kill500',req:'kill100',name:'옥상 소문난 집',cond:'누적 500명 적시기',hint:'동네에 소문이 났어요',gem:30},
+  {id:'kill2000',req:'kill500',name:'물바다의 지배자',cond:'누적 2,000명 적시기',hint:'도시가 젖었어요',gem:60},
+  {id:'play10',name:'단골 손님',cond:'10판 플레이',hint:'자주 오세요',gem:10},
+  {id:'play50',req:'play10',name:'옥상 상주 직원',cond:'50판 플레이',hint:'출근 도장 쾅',gem:25},
+  {id:'play200',req:'play50',name:'옥상 등기 완료',cond:'200판 플레이',hint:'이제 여기 사는 사람',gem:50},
+  {id:'lv5',name:'견습 물총수',cond:'계정 레벨 5',hint:'경험치를 모아요',gem:10},
+  {id:'lv10',req:'lv5',name:'정식 물총수',cond:'계정 레벨 10',hint:'자격증 발급',gem:20},
+  {id:'lv20',req:'lv10',name:'물총 사범',cond:'계정 레벨 20',hint:'제자 받습니다',gem:40},
+  {id:'rich1',name:'저금통 개설',cond:'코인 1,000개 보유',hint:'아껴 쓰면',gem:10},
+  {id:'rich2',req:'rich1',name:'옥상 건물주 꿈나무',cond:'코인 10,000개 보유',hint:'꿈은 크게',gem:25},
+  {id:'h_dun5',hidden:1,req:'h_boss',name:'물탱크 단골 수리공',cond:'보스 던전 5승',hint:'거인을 자주 만나 보세요',gem:30},
 ];
 const TITLE=Object.fromEntries(TITLES.map(t=>[t.id,t]));
 function award(id){
-  if(prog.titles[id])return;const t=TITLE[id];const g=Math.round(t.gem*T.gemTitle);
+  if(prog.titles[id])return;const t=TITLE[id];if(!t)return;
+  if(t.req&&(!prog.titles[t.req]||run.newTitles.includes(t.req)))return;const g=Math.round(t.gem*T.gemTitle);
   prog.titles[id]=todayKey();prog.gems+=g;run.newTitles.push(id);if(!prog.title)prog.title=id;ecoTrack();ecoCtx='칭호';saveProg();
   titleBanner(t,g);
   if(state==='title'||state==='over'||state==='clear'){try{SFX.level()}catch(e){}}
@@ -2101,7 +2139,7 @@ function tbNext(){const st=document.getElementById('tbStack');if(!st)return;cons
   const em=document.createElement('em');em.textContent=' · 보석 +'+g+(t.hidden?' · 숨은 칭호 '+TITLES.filter(x=>x.hidden&&prog.titles[x.id]).length+' / '+TITLES.filter(x=>x.hidden).length:'');
   ln.appendChild(sm);ln.appendChild(em);el.appendChild(b);el.appendChild(ln);if(tbN>1){const c=document.createElement('i');c.className='cnt';c.textContent=tbI+'/'+tbN;el.appendChild(c)}
   while(st.firstChild)st.removeChild(st.firstChild);st.appendChild(el);setTimeout(()=>{el.classList.add('out');setTimeout(()=>{el.remove();tbNext()},450)},500+(tbQ.length?1900:2600))}
-function onMiss(){run.streak=0;run.misses++;if(run.misses>=20)award('wind2')}
+function onMiss(){run.streak=0;run.misses++;if(run.misses>=20)award('wind2');if(run.misses>=40)award('wind40')}
 const sk=id=>run.skills[id]||0;
 const skLv=id=>(run.skLv&&run.skLv[id])||0;
 const RARITY=[{id:'n',name:'일반',p:60,mul:0.6,col:'#c9cbe0'},{id:'u',name:'고급',p:25,mul:1.0,col:'#7bd88f'},{id:'r',name:'희귀',p:10,mul:1.5,col:'#5ec8ff'},{id:'e',name:'영웅',p:4,mul:2.2,col:'#c39bff'},{id:'l',name:'전설',p:1,mul:3.2,col:'#ffb627'}];
@@ -2275,13 +2313,13 @@ function applyHit(m,pr,res,isPlayer){
   if(isPlayer&&m.shield){}else{const pf={head:1.3,torso:1,armF:0.6,arm:0.6,leg:0.8}[res.part];m.vax+=pr.vx*0.15*pf*T.knock/m.s*(pr.mul||1)}
   let dmg;
   if(isPlayer){
-    if(m.shield){m.shield=false;splash(pr.x,pr.y,16,'#9fe7ff');comic(m.points.neck.x+m.face*24,m.points.neck.y-56,'팅!','#9fe7ff',22,0.7);parts.push({x:m.points.neck.x+m.face*20,y:m.points.neck.y-22,vx:-m.face*rand(90,160),vy:-rand(260,340),t:0,life:1.2,umb:1,rot:m.face*0.6,vr:-m.face*rand(8,12)});ring(pr.x,pr.y,46,'#9fe7ff',0.4,4);SFX.block();run.blocks++;if(run.blocks>=3)award('umbrella');return}
+    if(m.shield){m.shield=false;splash(pr.x,pr.y,16,'#9fe7ff');comic(m.points.neck.x+m.face*24,m.points.neck.y-56,'팅!','#9fe7ff',22,0.7);parts.push({x:m.points.neck.x+m.face*20,y:m.points.neck.y-22,vx:-m.face*rand(90,160),vy:-rand(260,340),t:0,life:1.2,umb:1,rot:m.face*0.6,vr:-m.face*rand(8,12)});ring(pr.x,pr.y,46,'#9fe7ff',0.4,4);SFX.block();run.blocks++;if(run.blocks>=3)award('umbrella');if(run.blocks>=8)award('umbrella8');return}
     dmg=(mode==='pvp'?{head:40,torso:25,armF:15,arm:15,leg:15}:{head:35,torso:20,armF:12,arm:12,leg:12})[res.part];
     if(pr.crit&&Math.random()<pr.crit){dmg*=2;floatText(m.points.neck.x,m.points.neck.y-70,'치명타!','#ff9f6e',24)}
     dmg=Math.round(dmg*(pr.atk||1)*(pr.mul||1)*(1-AV().guard/100));run.taken+=dmg;run.wet++;if(enemy&&enemy.nick)run.killer=enemy.nick;SFX.hurt();comic(pr.x,pr.y-28,['으악!','앗 차가!','으윽!'][Math.floor(Math.random()*3)],'#ff9b9b',17,0.6);
     if(!reduceMotion)shake=Math.max(shake,6*T.shake);
   }else{
-    run.streak++;run.hits=(run.hits||0)+1;if(run.streak>=10)award('sniper');
+    run.streak++;run.hits=(run.hits||0)+1;if(run.streak>=10)award('sniper');if(run.streak>=20)award('sniper20');if(run.streak>=30)award('sniper30');
     m.hits=(m.hits||0)+1;
     if(res.part==='head'&&m.helmet){
       m.helmet=false;const h=P.head;
@@ -2290,20 +2328,20 @@ function applyHit(m,pr,res,isPlayer){
     }
     const headMul=1+sk('head')*0.4*em('head')+AV().head/100;
     dmg=(mode==='pvp'?{head:40*headMul,torso:25,armF:15,arm:15,leg:15}:{head:T.headDmg*headMul,torso:25,armF:15,arm:15,leg:15})[res.part]*(pr.mul||1)*(pr.owner==='e'?(pr.atk||1):dmgMul());
-    if(pr.owner==='e'){floatText(P.neck.x,P.neck.y-80,'제 발등!',COL.mint,24);award('selfhit')}
+    if(pr.owner==='e'){floatText(P.neck.x,P.neck.y-80,'제 발등!',COL.mint,24);award('selfhit');prog.stat.selfhit=(prog.stat.selfhit||0)+1}
     const crit=Math.random()<critChance();if(crit){dmg*=2;comic(P.neck.x+30,P.neck.y-60,'치명타!','#ff6b4a',24,0.8);ring(pr.x,pr.y,54,'#ff9f6e',0.45,5);SFX.crit()}
     if(res.part==='head'){ring(P.head.x,P.head.y,40,COL.mustard,0.4,4);sparks(P.head.x,P.head.y,12,COL.mustard);SFX.head();doFlash(0.18,'#fff3c4')}else{SFX.hit(1);if(Math.random()<0.55)comic(pr.x+rand(-10,10),pr.y-26,HITW[Math.floor(Math.random()*HITW.length)],'#8ff0d6',17,0.6)}
     dmg=Math.round(dmg);{const src=pr.owner==='e'?'self':pr.r>10?'big':pr.ex?'ex':'base';run.dmg[src]=(run.dmg[src]||0)+Math.min(m.hp,dmg)}
-    run.bestShot=Math.max(run.bestShot,dmg);if(dmg>prog.bestShot)prog.bestShot=dmg;if(dmg>=200)award('cannon');
+    run.bestShot=Math.max(run.bestShot,dmg);if(dmg>prog.bestShot)prog.bestShot=dmg;if(dmg>=200)award('cannon');if(dmg>=400)award('cannon400');if(dmg>=800)award('cannon800');
     if(sk('chill'))m.throwT+=0.4*sk('chill')*em('chill');
     const vamp=sk('vamp')*0.08*em('vamp')+AV().vamp/100;
     if(vamp&&player.alive){player.hp=Math.min(player.maxHp,player.hp+Math.min(m.hp,dmg)*vamp)}
     if(res.part==='head'){comic(P.head.x,P.head.y-46,'헤드샷!','#ffb627',28,0.9);if(!reduceMotion)shake=Math.max(shake,10*T.shake);
-      run.heads++;msAdd('head');if(run.heads>=5)award('head5');if(Math.abs(wind)>=120)award('windhead')}
+      run.heads++;msAdd('head');if(run.heads>=5)award('head5');if(run.heads>=10)award('head10');if(run.heads>=20)award('head20');if(Math.abs(wind)>=120)award('windhead')}
     if(res.part==='armF'&&m.throwT<1.0&&Math.hypot(pr.x-P.hF.x,pr.y-P.hF.y)<pr.r+8&&Math.random()<T.dropChance/100){
       proj.push({x:P.hF.x,y:P.hF.y-4,vx:rand(-50,50)+pr.vx*0.08,vy:-150,owner:'e',r:m.giant?10:7,atk:m.atk,eq:m.equip,free:true,mul:0.6,drop:true});
-      m.throwT=Math.max(m.throwT,0)+1.6;m.armDir=null;floatText(P.neck.x,P.neck.y-100,'공을 떨어뜨렸다!',COL.mustard,24);award('butter');SFX.drop()}
-    if(res.part==='armF'){m.throwT=Math.max(m.throwT,0.4)+1.3;m.armDir=null;floatText(P.neck.x,P.neck.y-40,'무장해제',COL.mint,22);run.disarms++;if(run.disarms>=3)award('disarm')}
+      m.throwT=Math.max(m.throwT,0)+1.6;m.armDir=null;floatText(P.neck.x,P.neck.y-100,'공을 떨어뜨렸다!',COL.mustard,24);award('butter');prog.stat.butter=(prog.stat.butter||0)+1;SFX.drop()}
+    if(res.part==='armF'){m.throwT=Math.max(m.throwT,0.4)+1.3;m.armDir=null;floatText(P.neck.x,P.neck.y-40,'무장해제',COL.mint,22);run.disarms++;if(run.disarms>=3)award('disarm');if(run.disarms>=6)award('disarm6')}
   }
   m.hp=Math.max(0,m.hp-dmg);
   floatText(pr.x,pr.y-14,'-'+dmg,isPlayer?COL.danger:COL.ink,22);
@@ -2313,10 +2351,10 @@ function applyHit(m,pr,res,isPlayer){
     for(const n of NAMES){P[n].px-=pr.vx*DT*0.44*T.kick;P[n].py-=pr.vy*DT*0.44*T.kick+2}
     if(!isPlayer)startDeath(m,pr);
     if(isPlayer){state='dying';dyingT=0;aim=null}
-    else{stageIdx++;run.kills++;msAdd('kill');deadT=0;slowDur=slowT=Math.max(0.001,T.slowTime*(m.giant?1.5:1)+T.hitStop);comic(P.neck.x,P.neck.y-70,'SPLASH!','#3fa9f5',36,1.2);puffs(P.neck.x,P.neck.y,8,1.2);waterHit({x:P.neck.x,y:P.neck.y,vx:pr.vx,vy:pr.vy},ballColor(),2.2,null);speedT=0.45;speedX=P.neck.x;speedY=P.neck.y;speedA=Math.atan2(pr.vy||0,pr.vx||1);ring(P.neck.x,P.neck.y,80,'#fff4e6',0.55,5);confetti(P.neck.x,P.neck.y-10,22);SFX.kill();doFlash(0.35);glowBurst(P.neck.x,P.neck.y,m.color);
+    else{stageIdx++;run.kills++;prog.stat.kills=(prog.stat.kills||0)+1;msAdd('kill');deadT=0;slowDur=slowT=Math.max(0.001,T.slowTime*(m.giant?1.5:1)+T.hitStop);comic(P.neck.x,P.neck.y-70,'SPLASH!','#3fa9f5',36,1.2);puffs(P.neck.x,P.neck.y,8,1.2);waterHit({x:P.neck.x,y:P.neck.y,vx:pr.vx,vy:pr.vy},ballColor(),2.2,null);speedT=0.45;speedX=P.neck.x;speedY=P.neck.y;speedA=Math.atan2(pr.vy||0,pr.vx||1);ring(P.neck.x,P.neck.y,80,'#fff4e6',0.55,5);confetti(P.neck.x,P.neck.y-10,22);SFX.kill();doFlash(0.35);glowBurst(P.neck.x,P.neck.y,m.color);
       const k=todayKey();if(prog.day.key!==k)prog.day={key:k,kills:0};prog.day.kills++;
-      if(m.hits===1){run.oneShots++;floatText(P.neck.x,P.neck.y-90,'원샷 원킬',COL.mint,22);if(run.oneShots>=3)award('oneshot')}
-      if(m.frozen>0)award('freeze');if(m.giant)award('giant');
+      if(m.hits===1){run.oneShots++;floatText(P.neck.x,P.neck.y-90,'원샷 원킬',COL.mint,22);if(run.oneShots>=3)award('oneshot');if(run.oneShots>=6)award('oneshot6');if(run.oneShots>=10)award('oneshot10')}
+      if(m.frozen>0)award('freeze');if(m.giant){award('giant');prog.stat.bosses=(prog.stat.bosses||0)+1};
       if(m.giant&&mode!=='pvp'){run.bosses++;if(Math.random()<(mode==='endless'?0.6:0.5)){const it=dropItem(curCh(),0.25);if(it){run.drops.push(it);floatText(P.neck.x,P.neck.y-120,'장비 획득! '+RARITY[it.g].name,RARITY[it.g].col,24)}}}
       if(mode!=='pvp'){const c=killCoins(curCh(),m.giant,coinMul());run.coins+=c;floatText(P.neck.x,P.neck.y-5,'+'+c+' 코인',COL.mustard,18);}
       if(mode!=='pvp')gainXp(T.xpKill+(res.part==='head'?T.xpHead:0),P.neck.x,P.neck.y-30)}
@@ -2340,7 +2378,7 @@ function spawnItem(){
 }
 function pickItem(it){
   const P=player.points,x=it.x,y=it.y,c=ITEMS[it.type].color;splash(x,y,16,c);ring(x,y,36,c,0.4,3);sparks(x,y,8,c,260);SFX.pick();
-  if(it.type==='apple'){const h=Math.round(25*(1+AV().apple/100));player.hp=Math.min(player.maxHp,player.hp+h);floatText(x,y-18,'체력 +'+h,COL.mint,24);run.apples++;prog.stat.apples++;if(run.apples>=3)award('robin');if(prog.stat.apples>=30)award('farmer')}
+  if(it.type==='apple'){const h=Math.round(25*(1+AV().apple/100));player.hp=Math.min(player.maxHp,player.hp+h);floatText(x,y-18,'체력 +'+h,COL.mint,24);run.apples++;prog.stat.apples++;if(run.apples>=3)award('robin');if(run.apples>=6)award('robin6');if(prog.stat.apples>=30)award('farmer')}
   else if(it.type==='gold'){const h=Math.round(60*(1+AV().apple/100));player.hp=Math.min(player.maxHp,player.hp+h);floatText(x,y-18,'체력 +'+h,COL.mustard,26);award('lucky')}
   else if(it.type==='triple'){player.triple=3;floatText(x,y-18,'3연발 ×3',c,24)}
   else if(it.type==='big'){player.bigShots=(player.bigShots||0)+1;floatText(x,y-18,'왕풍선!',c,24)}
@@ -2617,7 +2655,7 @@ function update(dt){
     A.vx+=J/ma*n.x;A.vy+=J/ma*n.y;B.vx-=J/mb*n.x;B.vy-=J/mb*n.y;
     const dist=Math.hypot(A.x-B.x,A.y-B.y),ov=R-dist;if(ov>0){A.x+=n.x*ov*mb/(ma+mb);A.y+=n.y*ov*mb/(ma+mb);B.x-=n.x*ov*ma/(ma+mb);B.y-=n.y*ov*ma/(ma+mb)}
     A.free=B.free=true;A.age=B.age=0;const mx=(A.x+B.x)/2,my=(A.y+B.y)/2;splash(mx,my,8,'#cfefff');ring(mx,my,30,'#ffffff',0.3,3);SFX.bump();
-    if(state==='play'&&(A.owner==='p'||B.owner==='p')&&A.owner!==B.owner){run.bumps++;floatText(mx,my-20,'요격!',COL.ink,20);if(run.bumps>=3)award('intercept')}}
+    if(state==='play'&&(A.owner==='p'||B.owner==='p')&&A.owner!==B.owner){run.bumps++;floatText(mx,my-20,'요격!',COL.ink,20);if(run.bumps>=3)award('intercept');if(run.bumps>=6)award('intercept6')}}
   // snack
   if(state==='play'){
     if(!item){itemT-=dt;if(itemT<=0){item=spawnItem();itemT=rand(6,10)*Math.pow(0.7,sk('luck')*em('luck'))/(1+AV().item/100)}}
@@ -3628,7 +3666,13 @@ function hideAll(){for(const o of [$('revealOv'),$('popOv'),$('pauseOv'),$('pvpO
 function startGame(fromLobby,m){if(m)mode=m;else if(fromLobby===true)mode='chapter';reset();anStart();msAdd('play');if(mode==='dungeon')msAdd('dun');missionT=mode==='pvp'?-1:0;AU_song();slowT=0;hideAll();if(fromLobby===true){introFrom={z:lobby.zoom,f:lobby.foot};introT=0;state='intro'}else{introT=-1;state='play'}}
 function breakdown(el,rows){el.innerHTML=rows.map(([a,b])=>`<li><span>${a}</span><span>${b}</span></li>`).join('')}
 function statLine(el){el.innerHTML=`<div><b>${run.kills}</b><span>격파</span></div><div><b>${run.bestShot}</b><span>최고 한 방</span></div><div><b>${prog.day.key===todayKey()?prog.day.kills:0}</b><span>오늘 격파</span></div>`}
-function titleCards(el){el.innerHTML=run.newTitles.map(id=>{const t=TITLE[id];return `<div class="newtitle"><span>새 칭호 획득 · 보석 +${Math.round(t.gem*T.gemTitle)}</span><b>「${t.name}」</b><span>${t.cond}</span></div>`}).join('')}
+const CUM={kill100:()=>(prog.stat.kills||0)>=100,kill500:()=>(prog.stat.kills||0)>=500,kill2000:()=>(prog.stat.kills||0)>=2000,
+  play10:()=>prog.plays>=10,play50:()=>prog.plays>=50,play200:()=>prog.plays>=200,lv5:()=>prog.acct.lv>=5,lv10:()=>prog.acct.lv>=10,lv20:()=>prog.acct.lv>=20,
+  rich1:()=>prog.coins>=1000,rich2:()=>prog.coins>=10000,pvp10:()=>prog.pvp.w>=10,pvp30:()=>prog.pvp.w>=30,giant10:()=>(prog.stat.bosses||0)>=10,
+  farmer100:()=>prog.stat.apples>=100,helmet20:()=>prog.stat.helmets>=20,butter5:()=>(prog.stat.butter||0)>=5,selfhit5:()=>(prog.stat.selfhit||0)>=5,
+  flawless3:()=>(prog.stat.flawless||0)>=3,clutch3:()=>(prog.stat.clutch||0)>=3,h_dun5:()=>(prog.dun.wins||0)>=5};
+function chkTitles(){for(const id in CUM)if(!prog.titles[id]&&CUM[id]())award(id)}
+function titleCards(el){chkTitles();el.innerHTML=run.newTitles.map(id=>{const t=TITLE[id];return `<div class="newtitle"><span>새 칭호 획득 · 보석 +${Math.round(t.gem*T.gemTitle)}</span><b>「${t.name}」</b><span>${t.cond}</span></div>`}).join('')}
 function showRevive(){state='revive';aim=null;$('adBox').hidden=true;$('adBtn').hidden=false;$('giveUpBtn').hidden=false;{const gb=$('gemRevBtn');gb.hidden=false;gb.disabled=prog.gems<30;gb.textContent='보석 30으로 부활'}
   {let t=8;const el=$('rvCount'),draw=()=>{el.textContent=Math.max(0,Math.ceil(t));el.setAttribute('style','background:radial-gradient(closest-side,#262b66 74%,transparent 77% 100%),conic-gradient(#ff7a6b '+Math.max(0,t/8*360).toFixed(1)+'deg,#3b3f72 0)')};draw();
    clearInterval(rvIv);rvIv=setInterval(()=>{if(state!=='revive'){clearInterval(rvIv);return}if(!$('adBox').hidden)return;t-=0.1;draw();if(t<=0){clearInterval(rvIv);reviveOv.hidden=true;gameOver()}},100)}
@@ -3666,7 +3710,7 @@ function gameOver(){
   if(mode==='dungeon'){state='over';prog.plays++;clearInterval(rvIv);dungeonFail();return}
   state='over';prog.plays++;clearInterval(rvIv);const N=stageN();let cmp,nb=false;
   if(mode==='endless'){const pb=prog.bestWave||0;prog.bestWave=Math.max(pb,stageIdx);nb=stageIdx>pb;cmp=nb?'신기록! '+stageIdx+'웨이브 (이전 '+pb+')':'최고 기록 '+pb+'웨이브 · 이번 '+stageIdx;}
-  else{prog.stat.fails[prog.stage]=(prog.stat.fails[prog.stage]||0)+1;if(prog.stat.fails[prog.stage]>=5)award('never');
+  else{prog.stat.fails[prog.stage]=(prog.stat.fails[prog.stage]||0)+1;if(prog.stat.fails[prog.stage]>=5)award('never');if(prog.stat.fails[prog.stage]>=10)award('never10');
     const pb=chBestOf(prog.stage);nb=stageIdx>pb;if(nb)prog.chBest[prog.stage]=stageIdx;cmp=nb?'신기록! 웨이브 '+stageIdx+'/'+N+' (이전 '+pb+')':'최고 기록 '+pb+'/'+N+' · 이번 '+stageIdx;}
   const kept=Math.round(run.coins*(mode==='endless'?100:T.failKeep)/100);prog.coins+=kept;const ax=giveAcct(false);tutAfterRun();saveProg();
   $('overStage').textContent=mode==='endless'?'무한 모드 · 웨이브 '+stageIdx+' 돌파':'챕터 '+prog.stage+' 실패 · 웨이브 '+stageIdx+'/'+N;
@@ -3678,7 +3722,7 @@ function stageClear(){
   anEnd('clear');if(mode==='chapter')msAdd('clear');
   if(mode==='dungeon'){dungeonClear();return}
   state='clear';prog.plays++;const mul=coinMul(),bonus=clearCoins(prog.stage,mul),total=run.coins+bonus,N=stageN();
-  if(run.taken===0)award('flawless');if(player.hp<=player.maxHp*0.1)award('clutch');
+  if(run.taken===0){award('flawless');prog.stat.flawless=(prog.stat.flawless||0)+1}if(player.hp<=player.maxHp*0.1){award('clutch');prog.stat.clutch=(prog.stat.clutch||0)+1}if(run.revived)award('comeback');
   const first=prog.stage>=prog.best;const gem=first?Math.round(T.gemClear):0;
   $('clearStage').textContent='챕터 '+prog.stage+' 클리어!';
   prog.chBest[prog.stage]=N;
@@ -3881,9 +3925,10 @@ function renderTitles(){
    $('profSt').innerHTML=[[prog.best-1,'최고 챕터'],[(prog.bestWave||0)+'웨이브','무한 최고'],[prog.bestShot,'최고 한 방'],[prog.plays,'총 플레이'],[st.hp,'체력'],[Math.round(st.dmg*100)+'%','공격력'],[st.cool.toFixed(2)+'초','재장전'],[Math.round(st.crit*100)+'%','치명타'],[TITLES.filter(x=>x.hidden&&prog.titles[x.id]).length+' / '+TITLES.filter(x=>x.hidden).length,'숨은 칭호'],[Object.keys(prog.titles).length,'칭호 합계']].map(([b,t])=>`<div><b>${b}</b><span>${t}</span></div>`).join('')}
   const N0=TITLES.filter(t=>!t.hidden),H0=TITLES.filter(t=>t.hidden),g0=N0.filter(t=>prog.titles[t.id]).length,h0=H0.filter(t=>prog.titles[t.id]).length;$('titleCount').innerHTML='일반 '+g0+' / '+N0.length+' · <b style="color:#ffd166">숨은 칭호 '+h0+' / '+H0.length+'</b><br>장착한 칭호는 머리 위와 랭킹에 표시돼요';
   const list=$('titleList');list.innerHTML='';
-  for(const t of [...TITLES].sort((a,b)=>(!!a.hidden-!!b.hidden))){const has=prog.titles[t.id],on=prog.title===t.id;const row=document.createElement('div');row.className='trow'+(has?'':' locked')+(t.hidden?' hid':'');
+  const kids={},ord=[];for(const t of TITLES)if(t.req)(kids[t.req]=kids[t.req]||[]).push(t);const add=t=>{ord.push(t);for(const k of kids[t.id]||[])add(k)};for(const t of TITLES)if(!t.req)add(t);
+  for(const t of ord.sort((a,b)=>(!!a.hidden-!!b.hidden))){const has=prog.titles[t.id],on=prog.title===t.id;const row=document.createElement('div');row.className='trow'+(has?'':' locked')+(t.hidden?' hid':'');
     row.innerHTML=has?`<b>${t.hidden?'<i class="htag">숨은 칭호</i>':''}「${t.name}」</b><button type="button"${on?' class="ghost"':''}>${on?'해제':'장착'}</button><small>${t.cond} · ${has}</small>`
-      :`<b>${t.hidden?'<i class="htag">숨은 칭호</i>':''}???</b><small>힌트: ${t.hint}</small>`;
+      :`<b>${t.hidden?'<i class="htag">숨은 칭호</i>':''}???</b><small>${t.req&&!prog.titles[t.req]?'잠김 · 「'+(prog.titles[t.req]||!TITLE[t.req].hidden?TITLE[t.req].name:'???')+'」을(를) 먼저 얻어야 열려요':'힌트: '+t.hint+(t.req?' · 「'+TITLE[t.req].name+'」 다음 단계':'')}</small>`;
     const b=row.querySelector('button');if(b)b.addEventListener('click',()=>{prog.title=on?null:t.id;saveProg();renderTitles()});
     list.appendChild(row)}
 }
