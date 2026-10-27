@@ -775,6 +775,26 @@ b,strong{font-weight:700}
 .avtag b{font-family:var(--display);font-weight:400;font-size:15px;color:#fff4e6}.avtag small{font-size:11px;color:#dcdef8}
 .avtag button{margin-top:4px;font-size:13.5px;padding:6px 10px}.avtag button.buy{background:linear-gradient(180deg,#ffe07a,#ffb627);color:#15122b}
 #avatarOv .pgstage .avreset{position:absolute;right:10px;bottom:14px;font-size:12px;padding:6px 10px;pointer-events:auto;background:rgba(21,18,43,.8);color:#fff4e6;border:2px solid rgba(255,255,255,.2);box-shadow:none}
+
+/* v0.86 store */
+#storeOv .stabs{align-self:stretch;margin-top:auto!important;position:sticky;bottom:-16px;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px -14px -16px;padding:8px 10px 10px;background:#1c1440;border-top:2px solid rgba(255,255,255,.1)}
+#storeOv .stabs button{position:relative;font-size:14px;padding:9px 4px;border-radius:12px;background:rgba(255,255,255,.07);color:#dcdef8;border:2px solid transparent;box-shadow:none}
+#storeOv .stabs button[aria-selected="true"]{background:linear-gradient(180deg,#ffe07a,#ffb627);color:#15122b;border-color:#15122b}
+#storeOv .stabs button.dot::after{content:"";position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:#ff4d5e;border:2px solid #15122b}
+.sthd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:8px 2px 2px}.sthd b{font-family:var(--title);font-size:18px;color:#ffd166}.sthd span{font-size:12px;color:#dcdef8}
+.pins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px;padding-top:8px}
+.pin{position:relative;display:grid;justify-items:center;gap:3px;padding:14px 6px 8px;border-radius:8px;background:linear-gradient(180deg,#fffaf0,#efe3cc);color:#2a2340;border:2.5px solid var(--ink);box-shadow:0 4px 0 rgba(0,0,0,.3);line-height:1.2;text-align:center}
+.pin::before{content:"";position:absolute;top:-8px;left:50%;width:14px;height:14px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff9b9b,#d9483b);border:2px solid var(--ink)}
+.pin b{font-family:var(--display);font-weight:400;font-size:13px}.pin small{font-size:10.5px;color:#6a6080;min-height:2.4em}.pin em{font-style:normal;font-size:10.5px;color:#8a7f9e}
+.pin .pic{width:34px;height:34px;display:block}.pin button{font-size:12.5px;padding:6px 4px;width:100%}.pin.free button{background:linear-gradient(180deg,#9df5c8,#3fcf8e);color:#15122b}
+.pin.sold>*:not(.stamp){opacity:.45}.stamp{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-14deg);font-family:var(--title);font-size:16px;color:#d9483b;border:3px solid #d9483b;border-radius:8px;padding:2px 8px;background:rgba(255,250,240,.85);white-space:nowrap;letter-spacing:.04em}
+.chpacks{display:flex;gap:10px;overflow-x:auto;margin:0 -14px;padding:8px 14px 6px;scroll-snap-type:x proximity}
+.chpk{position:relative;flex:0 0 78%;scroll-snap-align:center;display:grid;gap:8px;padding:14px;border-radius:16px;border:3px solid var(--ink);background:linear-gradient(135deg,#ffcf5a,#ff7a4d 60%,#d9483b);color:#2a1030;box-shadow:0 5px 0 rgba(0,0,0,.35)}
+.chpk b{font-family:var(--title);font-size:21px;color:#fff;text-shadow:0 2px 0 #7a1f1f}.chpk .eff{justify-self:start;font-family:var(--display);font-size:12px;padding:2px 10px;border-radius:10px;background:#5b2a8c;color:#fff}
+.chpk .pkit{display:flex;gap:10px;flex-wrap:wrap}.chpk .pkit span{display:flex;align-items:center;gap:4px;font-family:var(--display);font-size:15px;padding:4px 8px;border-radius:10px;background:rgba(255,250,240,.9)}
+.chpk .pkit i{width:20px;height:20px;display:inline-block}.chpk button{font-size:15px;padding:9px}
+.chpk.lock{filter:grayscale(.85);opacity:.8}.chpk.got>*:not(.stamp){opacity:.5}
+.ic-tk{border-radius:6px;box-sizing:border-box;border:2.5px solid var(--ink);background:repeating-linear-gradient(90deg,#ffb3cf 0 6px,#ff8fb8 6px 12px);position:relative}
 </style>
 
 <div class="app">
@@ -969,7 +989,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.85 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.86 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -978,10 +998,11 @@ b,strong{font-weight:700}
       <div class="overlay sheet" id="storeOv" hidden>
         <div class="card">
           <button type="button" class="xBtn" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-          <h1 style="font-size:28px">보석 상점</h1>
+          <h1 style="font-size:28px">상점</h1>
           <div class="gems" id="storeGems">보석 0</div>
           <div class="packs" id="storeList"></div>
-          <p class="sub">결제는 프로토타입이에요. 실제 돈은 나가지 않아요.</p>
+          <p class="sub" id="storeNote">결제는 프로토타입이에요. 실제 돈은 나가지 않아요.</p>
+          <div class="stabs" id="storeTabs"></div>
           <button type="button" class="closeBtn">돌아가기</button>
         </div>
       </div>
@@ -1996,7 +2017,7 @@ const STARTERS=['power','rapid','tough','crit','regen'];
 function freshProg(){return{stage:1,best:1,coins:0,gems:T.gemStart,up:{hp:0,atk:0,cool:0,crit:0},
   mastery:Object.fromEntries(STARTERS.map(k=>[k,1])),owned:{},equip:{},titles:{},title:null,
   stat:{apples:0,helmets:0,fails:{}},bestShot:0,bestWave:0,plays:0,lastInter:0,adFree:false,purchases:{},pvp:{rating:1000,w:0,l:0,day:'',left:-1,ads:0,bought:0},unlocked:{},fresh:{},day:{key:'',kills:0},
-  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3}}}
+  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3},shop:{day:'',b:{}},chpack:{}}}
 const prog=freshProg();
 try{const s=JSON.parse(localStorage.getItem('snackProg3')||'null');
   if(s)for(const k in prog){if(s[k]===undefined)continue;
@@ -3919,22 +3940,41 @@ const PACKS=[
   {id:'g4',name:'보석 금고',price:33000,gems:2100,desc:'보석 1,650 + 보너스 450',tag:'+27%'},
   {id:'g5',name:'보석 트럭',price:65000,gems:4500,desc:'보석 3,250 + 보너스 1,250',tag:'최고 효율'},
 ];
-const GEMSHOP=[{id:'en',name:'에너지 30',cost:30,desc:'바로 여섯 판 더'},{id:'coin',name:'코인 꾸러미',cost:60,desc:''},{id:'pvp',name:'PVP 티켓 3장',cost:30,desc:'오늘 무료·광고 도전을 다 썼을 때 · 날짜가 지나도 남아요'},{id:'box',name:'장비 상자',cost:80,desc:'희귀 이상이 잘 나오는 장비 1개 · <u data-odds="1">확률 보기</u>'}];
-let buyArm=null;
-function renderStore(){
-  $('storeGems').textContent='보석 '+prog.gems+(prog.adFree?' · 광고 제거됨':'');const list=$('storeList');list.innerHTML='';
-  const hd=t=>{const p=document.createElement('p');p.className='pgroup2';p.textContent=t;list.appendChild(p)};
-  if(offerLive()){hd('기간 한정');const row=document.createElement('div');row.className='pack limited';row.innerHTML=`<b>분노 폭발 헤어<span class="tag hot">${offerLeft()} 남음</span></b><button type="button">₩1,500</button><small>찌르다 화나면 변하는 그 머리 · 치명타 +5%</small>`;row.querySelector('button').addEventListener('click',()=>offerPop(true));list.appendChild(row)}
-  hd('보석으로 사기');
-  for(const g of GEMSHOP){const row=document.createElement('div');row.className='pack';const arm=buyArm==='gs-'+g.id;
-    if(g.id==='pvp'){row.id='pvpPack';if(!isOpen('pvp'))continue}const desc=g.id==='coin'?'코인 '+coinPack().toLocaleString('ko-KR')+' · 최근 챕터 '+Math.round(T.coinPackRuns)+'판 분량':g.desc;
-    row.innerHTML=`<b>${g.name}</b><button type="button"${prog.gems<g.cost?' disabled':''}>${arm?'구매 확인':'보석 '+g.cost}</button><small>${desc}</small>`;{const o=row.querySelector('[data-odds]');if(o){o.style.cursor='pointer';o.addEventListener('click',boxOddsPop)}}
-    row.querySelector('button').addEventListener('click',()=>{if(prog.gems<g.cost)return;if(!arm){buyArm='gs-'+g.id;renderStore();return}buyArm=null;prog.gems-=g.cost;
-      if(g.id==='en'){enAdd(30);toast('<b>에너지 +30</b>')}else if(g.id==='coin'){const c=coinPack();prog.coins+=c;toast('<b>코인 +'+c.toLocaleString('ko-KR')+'</b>')}else if(g.id==='pvp'){pvpDay();prog.pvp.bought+=PVP_PACK.n;toast('<b>PVP 티켓 +'+PVP_PACK.n+'</b><br>PVP에서 바로 쓸 수 있어요')}
-      else{const pw=power(baseStats()),it=dropItem(Math.max(3,prog.best),0.8);if(it)revealReward([it],{title:'장비 상자',powerFrom:pw});else toast('가방이 꽉 차서 코인으로 바꿨어요')}
-      saveProg();SFX.clear();renderStore();updateTitle()});
-    list.appendChild(row)}
-  hd('보석 충전');list.lastChild.id='gemPacks';
+/* v0.86 store: 일일 상점 (pinned cards, daily limits, reset timer, sold-out stamp) · 패키지 (chapter milestones) · 충전 */
+const GEMSHOP=[{id:'free',name:'오늘의 선물',cost:0,lim:1,ic:'ic-en',desc:'에너지 10 · 매일 무료'},{id:'en',name:'에너지 30',cost:30,lim:2,ic:'ic-en',desc:'바로 여섯 판 더'},{id:'coin',name:'코인 꾸러미',cost:60,lim:2,ic:'ic-coin',desc:''},
+  {id:'box',name:'장비 상자',cost:80,lim:3,ic:'ic-box',desc:'희귀 이상이 잘 나와요 · <u data-odds="1">확률</u>'},{id:'pvp',name:'PVP 티켓 3장',cost:30,lim:3,ic:'ic-tk',desc:'무료·광고 도전을 다 썼을 때'}];
+const CHPACK=[{ch:2,cost:100,coins:3000,box:1,en:30,eff:'500%'},{ch:4,cost:200,coins:8000,box:2,en:30,eff:'550%'},{ch:6,cost:300,coins:15000,box:3,en:30,eff:'600%'},{ch:10,cost:500,coins:40000,box:5,en:60,eff:'700%'}];
+let buyArm=null,storeTab='daily',storeIv=null;
+function shopDay(){const k=todayKey();if(!prog.shop||prog.shop.day!==k)prog.shop={day:k,b:{}}}
+function untilReset(){const d=new Date(),n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),t=Math.max(0,Math.floor((n-d)/1000));return [t/3600|0,(t%3600)/60|0,t%60].map(v=>String(v).padStart(2,'0')).join(':')}
+function giveGem(id){if(id==='free'){enAdd(10);toast('<b>에너지 +10</b><br>내일 또 받으세요')}else if(id==='en'){enAdd(30);toast('<b>에너지 +30</b>')}else if(id==='coin'){const c=coinPack();prog.coins+=c;toast('<b>코인 +'+c.toLocaleString('ko-KR')+'</b>')}
+  else if(id==='pvp'){pvpDay();prog.pvp.bought+=PVP_PACK.n;toast('<b>PVP 티켓 +'+PVP_PACK.n+'</b><br>PVP에서 바로 쓸 수 있어요')}
+  else{const pw=power(baseStats()),it=dropItem(Math.max(3,prog.best),0.8);if(it)revealReward([it],{title:'장비 상자',powerFrom:pw});else toast('가방이 꽉 차서 코인으로 바꿨어요')}}
+function renderStore(){shopDay();
+  $('storeGems').textContent='보석 '+prog.gems+(prog.adFree?' · 광고 제거됨':'');const list=$('storeList');list.innerHTML='';list.className='packs st-'+storeTab;
+  {const tb=$('storeTabs');tb.innerHTML='';for(const [k,nm] of [['daily','일일 상점'],['pack','패키지'],['charge','충전']]){const b=document.createElement('button');b.type='button';b.textContent=nm;b.setAttribute('aria-selected',storeTab===k);
+    if(k==='daily'&&!prog.shop.b.free)b.classList.add('dot');b.addEventListener('click',()=>{storeTab=k;buyArm=null;renderStore();const c=storeOv.querySelector('.card');if(c)c.scrollTop=0});tb.appendChild(b)}}
+  $('storeNote').hidden=storeTab!=='charge';
+  const hd=(t,sub)=>{const p=document.createElement('div');p.className='sthd';p.innerHTML='<b></b>'+(sub?'<span></span>':'');p.querySelector('b').textContent=t;if(sub)p.querySelector('span').textContent=sub;list.appendChild(p);return p};
+  if(storeTab==='daily'){const h=hd('일일 초특가','⏱ '+untilReset()+' 후 초기화');h.id='stReset';const grid=document.createElement('div');grid.className='pins';list.appendChild(grid);
+    for(const g of GEMSHOP){if(g.id==='pvp'&&!isOpen('pvp'))continue;const used=prog.shop.b[g.id]||0,sold=used>=g.lim,arm=buyArm==='gs-'+g.id;
+      const c=document.createElement('div');c.className='pin'+(sold?' sold':'')+(g.cost===0?' free':'');if(g.id==='pvp')c.id='pvpPack';
+      const desc=g.id==='coin'?'코인 '+coinPack().toLocaleString('ko-KR'):g.desc;
+      c.innerHTML=`<b>${g.name}</b><i class="${g.ic} pic"></i><small>${desc}</small><em>구매 가능 ${g.lim-used}/${g.lim}</em><button type="button"${sold||prog.gems<g.cost?' disabled':''}>${sold?'품절':arm?'구매 확인':g.cost?'보석 '+g.cost:'무료'}</button>${sold?'<span class="stamp">SOLD OUT</span>':''}`;
+      {const o=c.querySelector('[data-odds]');if(o){o.style.cursor='pointer';o.addEventListener('click',boxOddsPop)}}
+      c.querySelector('button').addEventListener('click',()=>{shopDay();if((prog.shop.b[g.id]||0)>=g.lim||prog.gems<g.cost)return;if(g.cost&&!arm){buyArm='gs-'+g.id;renderStore();return}buyArm=null;prog.gems-=g.cost;prog.shop.b[g.id]=(prog.shop.b[g.id]||0)+1;giveGem(g.id);saveProg();SFX.clear();renderStore();updateTitle()});
+      grid.appendChild(c)}
+    clearInterval(storeIv);storeIv=setInterval(()=>{if(storeOv.hidden||storeTab!=='daily'){clearInterval(storeIv);return}const e=$('stReset');if(e){const sp=e.querySelector('span');if(sp)sp.textContent='⏱ '+untilReset()+' 후 초기화'}if(prog.shop.day!==todayKey())renderStore()},1000)}
+  else if(storeTab==='pack'){
+    if(offerLive()){hd('기간 한정',offerLeft()+' 남음');const row=document.createElement('div');row.className='pack limited';row.innerHTML=`<b>분노 폭발 헤어<span class="tag hot">${offerLeft()} 남음</span></b><button type="button">₩1,500</button><small>찌르다 화나면 변하는 그 머리 · 치명타 +5%</small>`;row.querySelector('button').addEventListener('click',()=>offerPop(true));list.appendChild(row)}
+    hd('챕터 패키지','한 번만 살 수 있어요 · 보석으로 구매');const car=document.createElement('div');car.className='chpacks';list.appendChild(car);
+    for(const k of CHPACK){const got=!!prog.chpack[k.ch],lk=cleared()<k.ch,arm=buyArm==='cp-'+k.ch;const c=document.createElement('div');c.className='chpk'+(got?' got':'')+(lk?' lock':'');
+      c.innerHTML=`<span class="eff">${k.eff} 효율</span><b>${k.ch}챕터 클리어 패키지</b><div class="pkit"><span><i class="ic-coin"></i>${k.coins.toLocaleString('ko-KR')}</span><span><i class="ic-box"></i>×${k.box}</span><span><i class="ic-en"></i>${k.en}</span></div><button type="button"${got||lk||prog.gems<k.cost?' disabled':''}>${got?'구매 완료':lk?'챕터 '+k.ch+' 클리어 시 열림':arm?'구매 확인':'보석 '+k.cost}</button>${got?'<span class="stamp">구매 완료</span>':''}`;
+      c.querySelector('button').addEventListener('click',()=>{if(prog.chpack[k.ch]||cleared()<k.ch||prog.gems<k.cost)return;if(!arm){buyArm='cp-'+k.ch;renderStore();return}buyArm=null;prog.gems-=k.cost;prog.chpack[k.ch]=1;prog.coins+=k.coins;enAdd(k.en);
+        const items=[];for(let i=0;i<k.box;i++){const it=dropItem(Math.max(3,prog.best),0.8);if(it)items.push(it)}saveProg();SFX.clear();renderStore();updateTitle();
+        if(items.length)revealReward(items,{title:k.ch+'챕터 클리어 패키지',extra:'코인 +'+k.coins.toLocaleString('ko-KR')+' · 에너지 +'+k.en});else toast('<b>패키지 구매!</b><br>코인 +'+k.coins.toLocaleString('ko-KR'))});
+      car.appendChild(c)}}
+  else{hd('보석 충전','첫 구매는 2배');list.lastChild.id='gemPacks';
   for(const k of PACKS){const owned=k.once&&prog.purchases[k.id];const firstx=!k.adFree&&!prog.purchases[k.id];const row=document.createElement('div');row.className='pack'+(k.adFree?' best':'');
     const label=owned?'구매 완료':buyArm===k.id?'결제 확인':'₩'+k.price.toLocaleString('ko-KR');
     row.innerHTML=`<b>${k.name}${k.adFree?'<span class="tag">추천</span>':''}${k.tag?'<span class="tag hot">'+k.tag+'</span>':''}</b><button type="button"${owned?' disabled':''}>${label}</button><small>${k.desc}${firstx?' · <b style="font-size:12px;color:#ffd166">첫 구매 2배!</b>':''}</small>`;
@@ -3942,7 +3982,7 @@ function renderStore(){
       if(buyArm!==k.id){buyArm=k.id;renderStore();return}
       buyArm=null;prog.purchases[k.id]=(prog.purchases[k.id]||0)+1;prog.gems+=k.gems*(firstx?2:1);if(k.adFree){prog.adFree=true;ADS.banner(false)}
       saveProg();SFX.clear();renderStore();updateTitle()});
-    list.appendChild(row)}
+    list.appendChild(row)}}
 }
 /* ---------- async PVP ---------- */
 let pvpOpp=null;
@@ -3985,7 +4025,7 @@ $('pvpGo').addEventListener('click',()=>{if(!pvpOpp)return;const p=prog.pvp;
   if(p.ads<PVP_ADS){adPop(()=>{closePop(true);pvpDay();if(prog.pvp.ads>=PVP_ADS)return;prog.pvp.ads++;saveProg();startGame(true,'pvp')});return}
   if(!isOpen('store')){toast('<b>오늘 도전 끝!</b><br>내일 0시에 무료 3회가 충전돼요');return}
   openStoreAt('pvpPack')});
-function openStoreAt(id){openPanel('store',titleOv);setTimeout(()=>{const g=$(id);if(g&&g.scrollIntoView){g.scrollIntoView({block:'center',behavior:'smooth'});g.classList.add('flashrow');setTimeout(()=>g.classList.remove('flashrow'),1600)}},120)}
+function openStoreAt(id){storeTab=id==='gemPacks'?'charge':'daily';openPanel('store',titleOv);setTimeout(()=>{const g=$(id);if(g&&g.scrollIntoView){g.scrollIntoView({block:'center',behavior:'smooth'});g.classList.add('flashrow');setTimeout(()=>g.classList.remove('flashrow'),1600)}},120)}
 function pvpEnd(win){
   msAdd('pvp');
   anEnd(run.quit?'quit':win?'clear':'fail');
@@ -4282,7 +4322,7 @@ function offerPop(fromMenu){if(prog.owned.rage){toast('이미 가지고 있어�
   const cv2=$('offerCv');if(cv2)drawHatThumb(cv2,'rage');offerTick()}
 $('sbOffer').addEventListener('click',()=>offerPop(true));
 $('dunGo').addEventListener('click',()=>{dunDay();if(prog.dun.left<=0)return;prog.dun.left--;saveProg();closePanel(dunOv);startGame(true,'dungeon')});
-$('gemChip').addEventListener('click',()=>{if(!isOpen('store'))return;setTimeout(()=>{const g=$('gemPacks');if(g&&g.scrollIntoView)g.scrollIntoView({block:'start',behavior:'smooth'})},60)});
+$('gemChip').addEventListener('click',()=>{if(!isOpen('store'))return;storeTab='charge';buyArm=null;setTimeout(()=>{if(!storeOv.hidden)renderStore()},0)});
 $('pauseX').addEventListener('click',()=>resumeGame());
 /* ---------- v0.45: lobby ops · popups · equipment UI · pause · boot ---------- */
 const PAUSEBTN=$('pauseBtn');
