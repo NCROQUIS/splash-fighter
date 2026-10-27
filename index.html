@@ -420,7 +420,8 @@ body{color:#fff4e6}
 #pvpGo.adgo{background:linear-gradient(180deg,#ffcf4a,#e58a12);color:#3a1c00}
 .pack.flashrow{animation:flashRow .8s ease-in-out 2}@keyframes flashRow{50%{box-shadow:0 0 0 3px #ffd166,0 0 18px #ffd166}}
 .sbtn.evt{background:linear-gradient(180deg,#ff7aa8,#c2367a);color:#fff}
-.att7{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}
+.att7{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:8px 0;align-self:stretch;width:100%;box-sizing:border-box;padding:0 2px}
+.att7 .ad{min-width:0}.att7 .ad span{max-width:100%;word-break:keep-all;overflow-wrap:anywhere;line-height:1.2}
 .att7 .ad{position:relative;display:grid;justify-items:center;gap:2px;padding:8px 2px 6px;border-radius:12px;border:2.5px solid var(--ink);background:linear-gradient(180deg,#323879,#232858);font-size:11px;color:#e6e3f8}
 .att7 .ad b{font-family:var(--display);font-weight:400;font-size:13px;color:#fff4e6}
 .att7 .ad i{font-style:normal;font-size:20px;line-height:1}
@@ -1001,7 +1002,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.89 · 2026-10-27</p>
+            <p class="ver">스플래쉬 맨 v0.90 · 2026-10-27</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
