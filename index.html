@@ -1020,7 +1020,7 @@ b,strong{font-weight:700}
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.92 · 2026-10-28</p>
+            <p class="ver">스플래쉬 맨 v0.93 · 2026-10-28</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1737,6 +1737,10 @@ const TUNE=[
   {k:'windStage',s:"바람이 부는 첫 챕터",hot:1,l:'바람 등장 챕터',min:1,max:10,step:1,d:5,h:'부터, 챕터마다 세짐'},
   {k:'pityStep',s:"같은 챕터를 3번째 실패부터 적이 약해지는 정도",l:'연패 보정 1회당',min:0,max:15,step:1,d:5,h:'% 약해짐 (체력·공격력)'},
   {k:'pityMax',s:"연패 보정 최대치",l:'연패 보정 최대',min:0,max:40,step:5,d:15,h:'%'},
+  {k:'chGrow',s:"뒤 챕터일수록 적이 강해지는 비율",hot:1,l:'챕터당 적 성장',min:0,max:12,step:0.5,d:3,h:'% (체력, 공격력은 그 40%)'},
+  {k:'growFrom',s:"적 성장이 시작되는 챕터",l:'적 성장 시작',min:1,max:20,step:1,d:10,h:'챕터부터'},
+  {k:'sawPct',s:"벽 챕터(짝수)와 숨 돌리기 챕터(홀수)의 차이",hot:1,l:'벽·숨 돌리기 차이',min:0,max:30,step:1,d:7,h:'% (5챕터부터)'},
+  {k:'spdKnee',s:"적 공격 속도 증가가 완만해지는 챕터",l:'공격 속도 꺾이는 챕터',min:5,max:40,step:1,d:15,h:'이후 30%만 증가'},
   {g:'보상 (코인)',tab:'stage'},
   {k:'coinKill',s:"처치 코인",l:'격파 코인',min:0,max:50,step:1,d:8,h:''},
   {k:'coinKillStage',s:"챕터마다 늘어나는 처치 코인",l:'챕터당 격파 코인',min:0,max:10,step:1,d:3,h:'+'},
@@ -1764,7 +1768,7 @@ try{const raw=localStorage.getItem('snackTune5');
   else if(loadOldFeel()){localStorage.setItem('snackTune5',JSON.stringify(T))}
 }catch(e){}
 /* v0.88: gem economy cut (sim 10/27) — reset gem-related tune values once */
-try{if(!localStorage.getItem('snackDiffV1')){localStorage.setItem('snackDiffV1','1');for(const k of ['windStage','pityStep','pityMax']){const t=TUNE.find(t=>t.k===k);if(t)T[k]=t.d}localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
+try{if(!localStorage.getItem('snackDiffV2')){localStorage.setItem('snackDiffV2','1');for(const k of ['windStage','pityStep','pityMax','chGrow','growFrom','sawPct','spdKnee']){const t=TUNE.find(t=>t.k===k);if(t)T[k]=t.d}localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
 try{if(!localStorage.getItem('snackGemV1')){localStorage.setItem('snackGemV1','1');for(const k of ['gemClear','gemTitle','gemStart']){const t=TUNE.find(t=>t.k===k);if(t)T[k]=t.d}localStorage.setItem('snackTune5',JSON.stringify(T))}}catch(e){}
 /* v0.73: the throw feel the team settled on (power 800 set) is the default everywhere; volume is per device and never shared */
 const VOLK=['bgmVol','sfxVol'],FEEL800=['power','grav','headDmg','preview','interval','err','cool'];
@@ -2353,8 +2357,8 @@ const patrolSec=()=>Math.min(PATROL_CAP,Math.max(0,(Date.now()-(prog.patrol||Dat
 const patrolRate=()=>0.8+(prog.best-1)*0.4;
 function patrolReward(){const m=Math.floor(patrolSec()/60);return{coins:Math.floor(m*patrolRate()),xp:Math.floor(m/5),m}}
 const fmtHM=sec=>{const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60);return h?h+'시간 '+m+'분':m+'분'};
-const NOTICE_VER='0.92';
-const NOTICE=['초반 챕터가 쉬워졌어요. 바람은 5챕터부터 불고, 처음 불 때 알려 줘요.','메뉴를 정리했어요. 아래 탭이 상점 · 성장 · 모험 · 내 정보 · 도전으로 바뀌었어요. 던전 · 무한 모드 · PVP · 랭킹은 「도전」에 모였어요.','출석 체크가 생겼어요. 7일째엔 큰 선물! 빠진 날이 있어도 이어서 받아요.','일일·주간 미션과 업적이 생겼어요. 로비 캐릭터 찌르기도 미션이에요. 미안해요, 캐릭터.','이벤트 「가을 물풍선 축제」 (10/25~11/8): 적을 적실수록 단풍잎이 쌓여요. 1,600개면 전설 장비 확정.','던전이 열렸어요: 물탱크 거인. 등의 수도꼭지를 노리세요.','장비 상자가 이제 진짜로 열려요. 등급별 확률도 상점에서 볼 수 있어요.','장착한 물총·우비·장화가 캐릭터에 보여요.'];
+const NOTICE_VER='0.93';
+const NOTICE=['5챕터부터 짝수 챕터는 「벽」, 홀수 챕터는 「숨 돌리기」예요. 벽을 넘으면 다음 챕터에서 성장한 게 느껴질 거예요.','초반 챕터가 쉬워졌어요. 바람은 5챕터부터 불고, 처음 불 때 알려 줘요.','메뉴를 정리했어요. 아래 탭이 상점 · 성장 · 모험 · 내 정보 · 도전으로 바뀌었어요. 던전 · 무한 모드 · PVP · 랭킹은 「도전」에 모였어요.','출석 체크가 생겼어요. 7일째엔 큰 선물! 빠진 날이 있어도 이어서 받아요.','일일·주간 미션과 업적이 생겼어요. 로비 캐릭터 찌르기도 미션이에요. 미안해요, 캐릭터.','이벤트 「가을 물풍선 축제」 (10/25~11/8): 적을 적실수록 단풍잎이 쌓여요. 1,600개면 전설 장비 확정.','던전이 열렸어요: 물탱크 거인. 등의 수도꼭지를 노리세요.','장비 상자가 이제 진짜로 열려요. 등급별 확률도 상점에서 볼 수 있어요.','장착한 물총·우비·장화가 캐릭터에 보여요.'];
 const COUPONS={SPLASH2026:{gems:100},WATERBALLOON:{en:30},ROOFTOP:{coins:1000}};
 const VIB={off:(()=>{try{return localStorage.getItem('snackVibOff')==='1'}catch(e){return false}})()};
 function vib(p){if(VIB.off)return;try{navigator.vibrate&&navigator.vibrate(p)}catch(_){}}
@@ -2374,12 +2378,16 @@ const isBossIdx=i=>(i+1)%Math.round(T.bossEvery)===0||i===stageN()-1;
 function waveCurve(idx){const n=Math.max(2,stageN()),half=Math.ceil(n/2),b=Math.min(1,idx/(n-1));if(idx<half||mode!=='chapter')return b;const span=Math.max(1,n-1-half);return b-0.16*(1-(idx-half)/span)}
 const EASE=[[1,0.35],[0.8,0.3],[0.65,0.25],[0.52,0.2],[0.45,0.15],[0.38,0.12],[0.3,0.1],[0.22,0.08],[0.14,0.06],[0.07,0.03]];/* v0.92: ch1~6 much gentler, tail fades by ch9 */
 /* v0.92 losing-streak help: from the 3rd failure on an uncleared chapter, enemies get quietly weaker (max -T.pityMax%) */
+/* v0.93 difficulty curve: enemies grow by a % per chapter after T.growFrom (tracks the player's multiplicative power),
+   and from ch4 even chapters are 'wall' chapters while odd ones are 'breather' chapters */
+function chGrowth(st){return Math.pow(1+T.chGrow/100,Math.max(0,st-T.growFrom))}
+function chSaw(st){return st<5?1:st%2===0?1+T.sawPct/100:1-T.sawPct/100}
 function pityOf(st){if(mode!=='chapter'||st!==prog.best)return 0;const f=(prog.stat.fails&&prog.stat.fails[st])||0;return Math.min(T.pityMax,T.pityStep*Math.max(0,f-2))/100}
 function easeOf(st,idx){if(mode!=='chapter')return 0;const k=waveCurve(idx),e=EASE[st-1];return e?Math.max(0,e[0]-e[1]*k):0}
 function enemyStats(st,idx){
-  const boss=isBossIdx(idx),D=waveCurve(idx),L=(st-1)+D,E=easeOf(st,idx),Pt=pityOf(st);
-  return{boss,ease:E,pity:Pt,hp:Math.round((T.eHp+(st-1)*T.eHpStage+D*(stageN()-1)*T.eHpIdx)*(boss?T.bossMul:1)*(1-0.25*E)*(1-Pt)),
-    atk:(1+L*T.atkStage/100)*(boss?1.5:1)*(1-0.45*E)*(1-Pt),spd:(1+L*T.spdStage/100)*(1-0.35*E)*(1-Pt/2),
+  const boss=isBossIdx(idx),D=waveCurve(idx),L=(st-1)+D,E=easeOf(st,idx),Pt=pityOf(st),G=chGrowth(st),Sw=chSaw(st),Ls=L<=T.spdKnee?L:T.spdKnee+(L-T.spdKnee)*0.3;
+  return{boss,ease:E,pity:Pt,saw:Sw,hp:Math.round((T.eHp+(st-1)*T.eHpStage+D*(stageN()-1)*T.eHpIdx)*(boss?T.bossMul:1)*(1-0.25*E)*(1-Pt)*G*Sw),
+    atk:(1+L*T.atkStage/100)*(boss?1.5:1)*(1-0.45*E)*(1-Pt)*(1+(G-1)*0.4)*Sw,spd:(1+Ls*T.spdStage/100)*(1-0.35*E)*(1-Pt/2),
     err:Math.max(0.03,T.err-L*T.errStage)*(boss?0.85:1)+0.11*E};
 }
 const killCoins=(st,boss,mul=1)=>Math.round((T.coinKill+(st-1)*T.coinKillStage+(boss?T.coinBoss:0))*mul);
