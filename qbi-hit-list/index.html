@@ -182,19 +182,34 @@ a.btn{text-decoration:none;display:inline-block}
 .how{font-size:13px;font-weight:700;color:var(--muted);line-height:1.5;max-width:46ch}
 @media (prefers-reduced-motion:reduce){#damn.pop,#toast.show{animation-duration:.01s}#chapterCard{animation:none}}
 /* ---------- title screen ---------- */
-#title{z-index:8;padding:0;background:#0b0911;overflow:hidden;cursor:pointer;justify-content:space-between;align-items:center;text-align:center}
+/* Night gallery heist: painted canvas scene behind an HTML logo lockup. No radial rays (Game Lab rule). */
+#title{z-index:8;padding:0;background:#0b0911;overflow:hidden;cursor:pointer;justify-content:space-between;align-items:center;text-align:center;clip-path:circle(150% at 50% 80%);transition:clip-path .6s cubic-bezier(.6,0,.4,1)}
+#title.out{clip-path:circle(0 at var(--ix,50%) var(--iy,80%));pointer-events:none}
 #titleArt{position:absolute;inset:0;width:100%;height:100%;display:block}
-.tLogo{position:relative;margin-top:max(40px,9vh);animation:logoIn .9s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
-.tLogo .nametag{font-size:clamp(22px,7vw,34px)}
-.tLogo .brand{font-size:clamp(66px,21vw,120px);text-shadow:0 6px 0 #000,0 0 34px rgba(255,210,63,.35);animation:logoBob 2.6s ease-in-out .9s infinite}
-.tLogo .byline{margin-top:10px}
-.tStart{position:relative;margin-bottom:max(44px,10vh);font-family:var(--display);font-size:clamp(20px,6vw,26px);letter-spacing:.06em;background:rgba(14,11,20,.55);border:2px solid var(--cone);border-radius:999px;color:var(--cone);padding:12px 26px;cursor:pointer;animation:tPulse 1.3s ease-in-out infinite}
-.tVer{position:absolute;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:0;right:0;font-size:11px;font-weight:900;letter-spacing:.14em;color:var(--muted);pointer-events:none}
-#title.out{animation:tOut .45s ease-in forwards;pointer-events:none}
-@keyframes logoIn{0%{opacity:0;transform:translateY(-60px) scale(.6) rotate(-6deg)}100%{opacity:1;transform:none}}
-@keyframes logoBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
-@keyframes tPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,210,63,.5)}50%{transform:scale(1.06);box-shadow:0 0 0 10px rgba(255,210,63,0)}}
-@keyframes tOut{to{opacity:0;transform:scale(1.15)}}
+.tLogo{position:relative;margin-top:max(34px,7vh);pointer-events:none;display:flex;flex-direction:column;align-items:center}
+.tLogo .nametag{position:relative;font-size:clamp(22px,7vw,32px);padding:7px 14px 6px;box-shadow:0 6px 0 rgba(0,0,0,.45);animation:tagIn .6s cubic-bezier(.2,1.6,.4,1) .15s both}
+.tLogo .nametag::before,.tLogo .nametag::after{content:"";position:absolute;top:-9px;width:34px;height:15px;background:rgba(244,239,228,.55);border-radius:2px}
+.tLogo .nametag::before{left:-12px;transform:rotate(-22deg)}.tLogo .nametag::after{right:-12px;transform:rotate(18deg)}
+.tLogo .brand{margin-top:10px;font-size:clamp(70px,22vw,124px);line-height:.86;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55))}
+.tLogo .brand .w{display:block;white-space:nowrap}
+.tLogo .brand .l{display:inline-block;animation:letIn .7s cubic-bezier(.2,1.7,.35,1) both;animation-delay:calc(.25s + var(--i) * .07s)}
+.tLogo .brand .hit .l{color:#f4efe4;text-shadow:0 3px 0 #b9b1c9,0 6px 0 #7d7493,0 9px 0 #4b4460,0 10px 0 #15121d}
+.tLogo .brand .list .l{color:var(--cone);text-shadow:0 3px 0 #d9a514,0 6px 0 #a07800,0 9px 0 #6b5000,0 10px 0 #15121d}
+.tLogo .brand .list{position:relative;transform:rotate(-3deg)}
+.tLogo .glint{position:absolute;right:-6%;top:6%;width:.34em;height:.34em;font-size:clamp(70px,22vw,124px);background:#fff;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);animation:glint 3.2s ease-in-out 1.4s infinite;opacity:0}
+.tLogo .byline{margin-top:16px;display:flex;align-items:center;gap:10px;color:#cfc6e6;text-shadow:0 2px 0 rgba(0,0,0,.6);animation:fadeUp .6s ease-out .95s both}
+.tLogo .byline::before,.tLogo .byline::after{content:"";width:26px;height:2px;background:currentColor;opacity:.6}
+.tFoot{position:relative;margin-bottom:max(30px,7vh);display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeUp .6s ease-out 1.15s both}
+.tStart{font-family:var(--display);font-size:clamp(20px,6vw,25px);letter-spacing:.05em;background:linear-gradient(#ffe066,#ffc21a);border:0;border-radius:999px;color:#2a1d00;padding:15px 34px 13px;cursor:pointer;box-shadow:0 5px 0 #a07800,0 12px 26px rgba(0,0,0,.5);animation:tPulse 1.4s ease-in-out 1.8s infinite}
+.tMeta{font-size:12px;font-weight:900;letter-spacing:.14em;color:#cfc6e6;text-shadow:0 2px 0 rgba(0,0,0,.7);text-transform:uppercase}
+.tMeta b{color:var(--cone)}
+.tVer{position:absolute;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:0;right:0;font-size:10px;font-weight:900;letter-spacing:.14em;color:rgba(163,155,189,.7);pointer-events:none}
+@keyframes tagIn{0%{opacity:0;transform:translateY(-40px) rotate(-14deg) scale(.7)}100%{opacity:1;transform:rotate(-3deg)}}
+@keyframes letIn{0%{opacity:0;transform:translateY(-70px) scaleY(1.3)}60%{opacity:1;transform:translateY(6px) scaleY(.86)}100%{transform:none}}
+@keyframes glint{0%,70%,100%{opacity:0;transform:scale(.2) rotate(0)}80%{opacity:1;transform:scale(1) rotate(45deg)}90%{opacity:0;transform:scale(.4) rotate(90deg)}}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}
+@keyframes tPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@media (prefers-reduced-motion:reduce){#title{transition:none}.tLogo .nametag,.tLogo .brand .l,.tLogo .byline,.tFoot,.tStart,.tLogo .glint{animation:none}}
 /* ---------- lobby ---------- */
 #menu{background:#0e0b14}
 .lobbyTop{display:flex;align-items:center;gap:10px;min-width:0}
@@ -297,8 +312,8 @@ a.btn{text-decoration:none;display:inline-block}
 
   <div class="overlay" id="title" role="button" aria-label="Tap to start">
     <canvas id="titleArt"></canvas>
-    <div class="tLogo"><div class="nametag">Q-BI'S</div><div class="brand">HIT<br><span>LIST</span></div><div class="byline">A Damn Seconds game</div></div>
-    <button class="tStart" id="tStart">TAP TO START</button>
+    <div class="tLogo"><div class="nametag">Q-BI'S</div><div class="brand" aria-label="Hit List"><span class="w hit"><span class="l" style="--i:0">H</span><span class="l" style="--i:1">I</span><span class="l" style="--i:2">T</span></span><span class="w list"><span class="l" style="--i:3">L</span><span class="l" style="--i:4">I</span><span class="l" style="--i:5">S</span><span class="l" style="--i:6">T</span><i class="glint"></i></span></div><div class="byline">A Damn Seconds game</div></div>
+    <div class="tFoot"><button class="tStart" id="tStart">TAP TO START</button><div class="tMeta" id="tMeta"></div></div>
     <div class="tVer" id="tVer"></div>
   </div>
 
@@ -2443,92 +2458,178 @@ function drawLobby(dt) {
 }
 
 // ---------- title screen ----------
-const TT = { t0: performance.now() / 1000, live: true };
-function drawTitleGuard(c, x, y, s, dir, fall, t) {
-  c.save(); c.translate(x, y);
-  c.fillStyle = 'rgba(0,0,0,.4)'; c.beginPath(); c.ellipse(0, s*.45, s*.36, s*.09, 0, 0, 2*PI); c.fill();
-  if (fall) { c.rotate(-dir * fall * 1.35); c.globalAlpha = 1 - fall * .3; }
-  const step = fall ? 0 : Math.sin(t * 10) * s * .05;
-  c.strokeStyle = '#0d0b12'; c.lineWidth = Math.max(2, s*.05); c.lineJoin = 'round';
-  c.fillStyle = '#1a1824'; c.fillRect(-s*.2, s*.3 + step, s*.14, s*.14); c.fillRect(s*.06, s*.3 - step, s*.14, s*.14);
-  c.fillStyle = '#2d2a3a'; roundRect(c, -s*.32, -s*.04, s*.64, s*.42, s*.12); c.fill(); c.stroke();
-  c.fillStyle = '#e0c39b'; c.beginPath(); c.arc(0, -s*.22, s*.2, 0, 2*PI); c.fill(); c.stroke();
-  c.fillStyle = '#23324f'; c.beginPath(); c.ellipse(0, -s*.36, s*.22, s*.09, 0, PI, 2*PI); c.fill(); c.stroke(); c.fillRect(dir * s*.04, -s*.37, dir * s*.24, s*.05);
-  c.fillStyle = '#0d0b12';
-  if (fall) { for (const ex of [-s*.07, s*.07]) { c.fillRect(ex - s*.04, -s*.24, s*.08, s*.025); } }
-  else c.beginPath(), c.arc(dir * s*.09, -s*.22, s*.03, 0, 2*PI), c.fill();
-  c.fillStyle = '#5b5670'; c.fillRect(dir > 0 ? s*.24 : -s*.42, s*.06, s*.18, s*.08);
+// A night gallery: moonlit arched windows, framed paintings under picture lamps, a polished floor,
+// two sweeping searchlights, and a looping skit (guard on patrol, Q-Bi sneaks up, DAMN!).
+// Lighting is all cones, shafts and pools; no radial ray bursts (Game Lab rule).
+const TT = { t0: performance.now() / 1000 };
+const TSTARS = Array.from({ length: 46 }, (_, i) => [((i * 137.508) % 100) / 100, ((i * 61.803) % 100) / 100, 1 + (i % 3)]);
+function tArch(c, x, y, w, h) { c.beginPath(); c.moveTo(x, y + h); c.lineTo(x, y + w / 2); c.arc(x + w / 2, y + w / 2, w / 2, PI, 0); c.lineTo(x + w, y + h); c.closePath(); }
+function tPainting(c, x, y, w, h, kind, u, t) {
+  c.fillStyle = 'rgba(0,0,0,.45)'; c.fillRect(x + 6*u, y + 8*u, w, h);                       // drop shadow
+  const g = c.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, '#e2b85a'); g.addColorStop(.5, '#a87a2c'); g.addColorStop(1, '#e0b350');
+  c.fillStyle = g; c.fillRect(x, y, w, h);
+  c.fillStyle = '#5e4214'; c.fillRect(x + 7*u, y + 7*u, w - 14*u, h - 14*u);
+  const ix = x + 10*u, iy = y + 10*u, iw = w - 20*u, ih = h - 20*u;
+  c.save(); c.beginPath(); c.rect(ix, iy, iw, ih); c.clip();
+  if (kind === 0) {                                                                         // "Portrait of Q-Bi"
+    c.fillStyle = '#3d2a63'; c.fillRect(ix, iy, iw, ih);
+    drawQbi(c, ix + iw / 2, iy + ih * .62, ih * .62, CHARS[0], 0, null, 1, 0, null, t);
+  } else if (kind === 1) {                                                                  // mountains at dusk
+    const sk = c.createLinearGradient(0, iy, 0, iy + ih); sk.addColorStop(0, '#f08a5d'); sk.addColorStop(1, '#6a2c70'); c.fillStyle = sk; c.fillRect(ix, iy, iw, ih);
+    c.fillStyle = '#ffd23f'; c.beginPath(); c.arc(ix + iw * .7, iy + ih * .45, ih * .13, 0, 2*PI); c.fill();
+    c.fillStyle = '#2b1940'; c.beginPath(); c.moveTo(ix, iy + ih); c.lineTo(ix + iw * .3, iy + ih * .45); c.lineTo(ix + iw * .55, iy + ih * .75); c.lineTo(ix + iw * .8, iy + ih * .5); c.lineTo(ix + iw, iy + ih * .8); c.lineTo(ix + iw, iy + ih); c.fill();
+  } else if (kind === 2) {                                                                  // abstract: circles and a stripe
+    c.fillStyle = '#e9e1cf'; c.fillRect(ix, iy, iw, ih);
+    c.fillStyle = '#2a9d8f'; c.fillRect(ix + iw * .12, iy + ih * .2, iw * .36, ih * .5);   // (no red disc on white: avoids flag look)
+    c.fillStyle = '#1d3557'; c.fillRect(ix + iw * .55, iy, iw * .12, ih);
+    c.fillStyle = '#ff5fa2'; c.beginPath(); c.arc(ix + iw * .8, iy + ih * .68, ih * .15, 0, 2*PI); c.fill();
+  } else {                                                                                  // still life: vase
+    c.fillStyle = '#21524a'; c.fillRect(ix, iy, iw, ih);
+    c.fillStyle = '#c8553d'; c.beginPath(); c.ellipse(ix + iw / 2, iy + ih * .66, iw * .17, ih * .24, 0, 0, 2*PI); c.fill();
+    c.fillRect(ix + iw * .45, iy + ih * .3, iw * .1, ih * .2);
+    c.fillStyle = '#f4efe4'; for (const [dx, dy] of [[-.12, .22], [0, .16], [.12, .24]]) { c.beginPath(); c.arc(ix + iw * (.5 + dx), iy + ih * dy, ih * .07, 0, 2*PI); c.fill(); }
+  }
+  const sh = c.createLinearGradient(ix, iy, ix + iw, iy + ih); sh.addColorStop(0, 'rgba(255,255,255,.16)'); sh.addColorStop(.5, 'rgba(255,255,255,0)'); c.fillStyle = sh; c.fillRect(ix, iy, iw, ih);
   c.restore();
 }
 function drawTitle(now) {
   const cvs = $('titleArt'), r = cvs.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
   const W = Math.round(r.width * d), H = Math.round(r.height * d);
+  if (!W || !H) return;
   if (cvs.width !== W || cvs.height !== H) { cvs.width = W; cvs.height = H; }
-  const c = cvs.getContext('2d'), t = now / 1000 - TT.t0, u = Math.min(W, H * .6) / 390;
-  // night museum wall + floor
-  const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#1b1530'); bg.addColorStop(.62, '#2a2140'); bg.addColorStop(.62, '#17121f'); bg.addColorStop(1, '#0b0911');
-  c.fillStyle = bg; c.fillRect(0, 0, W, H);
-  const fy = H * .62, scroll = (t * 40 * u) % (180 * u);
-  for (let x = -scroll - 180*u; x < W + 180*u; x += 180 * u) {          // picture frames sliding past
-    c.fillStyle = '#c99a3b'; c.fillRect(x + 40*u, fy - 190*u, 100*u, 76*u);
-    c.fillStyle = ['#3d6b8a','#8a3d5b','#4f8a3d'][Math.abs(Math.round(x / (180*u) + t * 40 * u / (180*u))) % 3]; c.fillRect(x + 48*u, fy - 182*u, 84*u, 60*u);
+  const c = cvs.getContext('2d'), t = now / 1000 - TT.t0, u = Math.min(W, H * .62) / 390;
+  const still = reduceMotion ? 0 : 1, fy = H * .635;
+  // skit timeline (seconds in a 5.4 s loop)
+  const LOOP = 5.4, k = still ? t % LOOP : 3.4, HIT = 2.75, aft = k - HIT;
+  const shake = still && aft > 0 && aft < .25 ? (1 - aft / .25) * 9 * u : 0;
+  c.save(); c.clearRect(0, 0, W, H);
+  if (shake) c.translate((Math.random() - .5) * shake, (Math.random() - .5) * shake);
+  // --- wall
+  const wall = c.createLinearGradient(0, 0, 0, fy); wall.addColorStop(0, '#120e22'); wall.addColorStop(.55, '#231a3b'); wall.addColorStop(1, '#2f2449');
+  c.fillStyle = wall; c.fillRect(-20, -20, W + 40, fy + 20);
+  // --- two arched windows with the night sky, a moon and moonlight shafts
+  const ww = W * .25, wy = H * .05, wh = H * .32;
+  for (const [wx, moon] of [[W * .06, true], [W * .69, false]]) {
+    c.save(); tArch(c, wx, wy, ww, wh); c.clip();
+    const sky = c.createLinearGradient(0, wy, 0, wy + wh); sky.addColorStop(0, '#0a1430'); sky.addColorStop(1, '#294a86'); c.fillStyle = sky; c.fillRect(wx, wy, ww, wh);
+    for (const [sx, sy, sz] of TSTARS) { const tw = .4 + .6 * Math.abs(Math.sin(t * 1.3 + sx * 40)); c.fillStyle = `rgba(255,255,255,${(.35 + .5 * tw).toFixed(2)})`; c.fillRect(wx + sx * ww, wy + sy * wh * .8, sz * u * .9, sz * u * .9); }
+    if (moon) { const mx = wx + ww * .66, my = wy + wh * .3, mr = ww * .14;
+      const mg = c.createRadialGradient(mx, my, mr * .5, mx, my, mr * 3); mg.addColorStop(0, 'rgba(255,246,216,.45)'); mg.addColorStop(1, 'rgba(255,246,216,0)'); c.fillStyle = mg; c.fillRect(wx, wy, ww, wh);
+      c.fillStyle = '#fff6d8'; c.beginPath(); c.arc(mx, my, mr, 0, 2*PI); c.fill(); c.fillStyle = 'rgba(200,190,160,.5)'; c.beginPath(); c.arc(mx - mr * .3, my + mr * .2, mr * .2, 0, 2*PI); c.arc(mx + mr * .35, my - mr * .3, mr * .12, 0, 2*PI); c.fill(); }
+    c.restore();
+    c.strokeStyle = '#141024'; c.lineWidth = 7 * u;                                          // mullions
+    c.beginPath(); c.moveTo(wx + ww / 2, wy); c.lineTo(wx + ww / 2, wy + wh); c.moveTo(wx, wy + wh * .55); c.lineTo(wx + ww, wy + wh * .55); c.stroke();
+    c.strokeStyle = '#4a3b72'; c.lineWidth = 9 * u; tArch(c, wx, wy, ww, wh); c.stroke();
+    c.fillStyle = '#3b2f5c'; c.fillRect(wx - 10*u, wy + wh, ww + 20*u, 9*u);                // sill
+    c.save(); c.globalCompositeOperation = 'lighter';                                        // slanted moonlight shaft onto the floor
+    const sg = c.createLinearGradient(0, wy + wh, 0, fy + 60*u); sg.addColorStop(0, 'rgba(140,170,255,.10)'); sg.addColorStop(1, 'rgba(140,170,255,0)');
+    c.fillStyle = sg; c.beginPath(); c.moveTo(wx, wy + wh); c.lineTo(wx + ww, wy + wh); c.lineTo(wx + ww + 70*u, fy + 60*u); c.lineTo(wx + 70*u, fy + 60*u); c.closePath(); c.fill(); c.restore();
   }
-  for (let x = -((t * 120 * u) % (60 * u)); x < W; x += 60 * u) { c.fillStyle = 'rgba(255,255,255,.035)'; c.fillRect(x, fy, 30 * u, H - fy); }
-  // big searchlights sweeping the hall
+  // --- gallery wall: paintings under picture lamps + wainscot (parallax scroll)
+  const PW = 230 * u, pScroll = still ? (t * 16 * u) % PW : 0, py0 = H * .395, ph = H * .115;
+  for (let n = -1; n * PW - pScroll < W + PW; n++) {
+    const px = n * PW - pScroll + 40*u, kind = ((n % 4) + 4) % 4, pw = kind === 0 ? 120*u : 140*u;
+    c.save(); c.globalCompositeOperation = 'lighter';                                        // lamp pool on the wall
+    const lg = c.createLinearGradient(0, py0 - 22*u, 0, py0 + ph + 30*u); lg.addColorStop(0, 'rgba(255,214,140,.30)'); lg.addColorStop(1, 'rgba(255,214,140,0)');
+    c.fillStyle = lg; c.beginPath(); c.moveTo(px + pw * .3, py0 - 22*u); c.lineTo(px + pw * .7, py0 - 22*u); c.lineTo(px + pw + 26*u, py0 + ph + 30*u); c.lineTo(px - 26*u, py0 + ph + 30*u); c.closePath(); c.fill(); c.restore();
+    tPainting(c, px, py0, pw, ph, kind, u, t);
+    c.fillStyle = '#c99a3b'; c.fillRect(px + pw * .28, py0 - 26*u, pw * .44, 7*u); c.fillRect(px + pw / 2 - 2*u, py0 - 34*u, 4*u, 9*u);
+  }
+  const wy0 = H * .555, wScroll = still ? (t * 20 * u) % (110 * u) : 0;
+  c.fillStyle = '#1a1430'; c.fillRect(-20, wy0, W + 40, fy - wy0);
+  c.fillStyle = '#5a4a2a'; c.fillRect(-20, wy0, W + 40, 5*u);
+  c.strokeStyle = 'rgba(120,100,170,.25)'; c.lineWidth = 2*u;
+  for (let x = -wScroll; x < W; x += 110*u) c.strokeRect(x + 10*u, wy0 + 14*u, 90*u, fy - wy0 - 26*u);
+  c.fillStyle = '#0e0b18'; c.fillRect(-20, fy - 8*u, W + 40, 8*u);
+  // --- polished floor with plank seams and reflections
+  const fl = c.createLinearGradient(0, fy, 0, H); fl.addColorStop(0, '#2a1f35'); fl.addColorStop(1, '#0c0912'); c.fillStyle = fl; c.fillRect(-20, fy, W + 40, H - fy + 20);
+  const fScroll = still ? (t * 44 * u) % (90 * u) : 0;
+  c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 2*u;
+  for (let row = 0; row < 6; row++) { const y = fy + (row + 1) * (H - fy) / 7; c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke();
+    for (let x = -fScroll + (row % 2) * 45*u; x < W; x += 90*u) { c.beginPath(); c.moveTo(x, y - (H - fy) / 7); c.lineTo(x, y); c.stroke(); } }
   c.save(); c.globalCompositeOperation = 'lighter';
-  for (const [ox, ph, sp] of [[W * .2, 0, .9], [W * .8, 2.1, 1.1]]) {
-    const a = PI/2 + Math.sin(t * sp + ph) * .55, g = c.createRadialGradient(ox, -20, 10, ox, -20, H * 1.1);
-    g.addColorStop(0, 'rgba(255,225,140,.30)'); g.addColorStop(1, 'rgba(255,225,140,0)');
-    c.fillStyle = g; c.beginPath(); c.moveTo(ox, -20); c.arc(ox, -20, H * 1.2, a - .17, a + .17); c.closePath(); c.fill();
+  for (let n = -1; n * PW - pScroll < W + PW; n++) { const px = n * PW - pScroll + 40*u + 65*u, rg = c.createLinearGradient(0, fy, 0, fy + 120*u);
+    rg.addColorStop(0, 'rgba(255,214,140,.10)'); rg.addColorStop(1, 'rgba(255,214,140,0)'); c.fillStyle = rg; c.fillRect(px - 50*u, fy, 100*u, 120*u); }
+  c.restore();
+  // --- two searchlights sweeping across the hall, each with a hot spot on the floor
+  c.save(); c.globalCompositeOperation = 'lighter';
+  for (const [ox, ph2, sp] of [[W * .12, 0, .55], [W * .88, 2.2, .7]]) {
+    const ax = W / 2 + Math.sin(t * sp * still + ph2) * W * .42, ay = fy + 40*u, spread = 70*u;
+    const cg = c.createLinearGradient(ox, -20, ax, ay); cg.addColorStop(0, 'rgba(255,236,170,.02)'); cg.addColorStop(1, 'rgba(255,236,170,.16)');
+    c.fillStyle = cg; c.beginPath(); c.moveTo(ox - 8*u, -20); c.lineTo(ox + 8*u, -20); c.lineTo(ax + spread, ay); c.lineTo(ax - spread, ay); c.closePath(); c.fill();
+    const hs = c.createRadialGradient(ax, ay, 4, ax, ay, spread * 1.3); hs.addColorStop(0, 'rgba(255,236,170,.22)'); hs.addColorStop(1, 'rgba(255,236,170,0)');
+    c.fillStyle = hs; c.beginPath(); c.ellipse(ax, ay, spread * 1.3, spread * .45, 0, 0, 2*PI); c.fill();
   }
   c.restore();
-  // looping skit: guard strolls left, Q-Bi sneaks up behind and — DAMN!
-  const L = 4.2, k = (t % L), s = 120 * u, gy = fy + 40 * u;
-  const hit = 2.3, after = k - hit;
-  const gx = W * .78 - Math.min(k, hit) * 60 * u;
-  const qTarget = gx + 70 * u;
-  const qPos = k < hit ? (W + 80*u) + (qTarget - (W + 80*u)) * Math.min(1, k / hit) : qTarget;
-  // guard's flashlight
+  // --- the skit
+  const s = 100 * u, gy = fy + 52*u, fadeAll = k > LOOP - .6 ? Math.max(0, (LOOP - k) / .6) : k < .3 ? k / .3 : 1;
+  const walkEnd = Math.min(k, HIT), gx = W + 70*u - (W + 70*u - W * .40) * Math.min(1, walkEnd / 2.6) - (aft > 0 ? Math.min(aft, .25) * 140*u : 0);
+  const qStart = .5, qT = Math.max(0, Math.min(1, (k - qStart) / (HIT - .12 - qStart))), qEase = 1 - Math.pow(1 - qT, 2);
+  const qx = gx + 78*u + 230*u * (1 - qEase);                                                // always behind the guard, closing the gap
+  c.globalAlpha = fadeAll;
+  // guard's flashlight beam (a cone along the floor; drops when the guard does)
   c.save(); c.globalCompositeOperation = 'lighter';
-  if (after < 0) { const g = c.createRadialGradient(gx - 30*u, gy, 4, gx - 30*u, gy, 260*u); g.addColorStop(0, 'rgba(255,210,63,.4)'); g.addColorStop(1, 'rgba(255,210,63,0)');
-    c.fillStyle = g; c.beginPath(); c.moveTo(gx - 30*u, gy); c.arc(gx - 30*u, gy, 260*u, PI - .3, PI + .3); c.closePath(); c.fill(); }
+  if (aft < 0) { const bx = gx - 32*u, by = gy - 6*u, bl = c.createLinearGradient(bx, 0, bx - 300*u, 0); bl.addColorStop(0, 'rgba(255,214,90,.42)'); bl.addColorStop(1, 'rgba(255,214,90,0)');
+    c.fillStyle = bl; c.beginPath(); c.moveTo(bx, by - 6*u); c.lineTo(bx - 300*u, by - 70*u); c.lineTo(bx - 300*u, by + 60*u); c.lineTo(bx, by + 6*u); c.closePath(); c.fill(); }
   c.restore();
-  const fall = after > 0 ? Math.min(1, after / .25) : 0, fade = after > 1.4 ? Math.max(0, 1 - (after - 1.4) / .5) : 1;
-  c.globalAlpha = fade;
-  drawTitleGuard(c, gx, gy, s, -1, fall, t);
-  const swing = after > -0.15 && after < .35 ? 1 - Math.abs(after - .1) / .25 : 0;
-  drawQbi(c, qPos, gy - 6*u - (after > 0 && after < .3 ? Math.sin(after / .3 * PI) * 26*u : 0), s * 1.05, CHARS[0], t * 12, null, -1, Math.max(0, swing), null, t);
+  c.fillStyle = 'rgba(0,0,0,.35)';                                                           // contact shadows on the shiny floor
+  c.beginPath(); c.ellipse(gx, gy + s * .43, s * .36, s * .08, 0, 0, 2*PI); c.fill();
+  // guard (the game's own sprite), knocked over on the hit
+  const walking = aft < 0 && k < 2.6, bob = walking ? Math.abs(Math.sin(k * 9)) * 5*u : 0;
+  withBoard(s, gx, gy - bob, () => drawGuard(c, { x:0, y:0, ang:PI, tang:PI, dead: aft > 0, deadT: Math.max(0, aft), alert: 0, heard: 0 }, s));
+  if (aft > .15 && aft < 1.4) {                                                              // dizzy stars circling the guard
+    c.fillStyle = '#ffd23f'; c.font = `900 ${Math.round(s * .22)}px Nunito, sans-serif`; c.textAlign = 'center';
+    for (let n = 0; n < 3; n++) { const a = aft * 7 + n * 2.1; c.fillText('★', gx + s * .18 + Math.cos(a) * s * .32, gy - s * .55 + Math.sin(a) * s * .1); }
+  }
+  // Q-Bi: tiptoe sneak, wind-up, swing, victory hop, turn to camera
+  const sneaking = k < HIT - .1, crouch = sneaking ? 6*u : 0;
+  const hop = aft > .35 && aft < .85 ? Math.sin((aft - .35) / .5 * PI) * 34*u : 0;
+  const swing = aft > -.12 && aft < .2 ? Math.max(0, .3 - (aft + .12)) : 0;
+  const face = aft > .9 ? 1 : -1;
+  c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(qx, gy + s * .45, s * .3 * (1 - hop / (90*u)), s * .07, 0, 0, 2*PI); c.fill();
+  drawQbi(c, qx, gy + crouch - hop - (sneaking ? Math.abs(Math.sin(k * 7)) * 7*u : 0), s * 1.04, CHARS[0], sneaking ? k * 7 : 0, null, face, swing, null, t);
+  if (sneaking && k > 1.1) {                                                                 // "shh" sweat drop over Q-Bi while closing in
+    c.fillStyle = 'rgba(244,239,228,.9)'; c.font = `900 ${Math.round(16*u)}px Nunito, sans-serif`; c.textAlign = 'center'; c.fillText('shh…', qx, gy - s * .72);
+  }
   c.globalAlpha = 1;
-  // impact: flash, burst, DAMN!
-  if (after > 0 && after < 1.6) {
-    const e = after;
-    if (e < .12) { c.fillStyle = `rgba(255,255,255,${.5 * (1 - e / .12)})`; c.fillRect(0, 0, W, H); }
-    c.save(); c.translate(gx - 10*u, gy - 40*u);
-    c.strokeStyle = '#ffd23f'; c.lineWidth = 6 * u * (1 - Math.min(1, e / .5));
-    // expanding rings + tumbling confetti diamonds (no radial rays: Game Lab rule)
-    for (const k of [0, .12]) { const ek = Math.max(0, e - k); c.globalAlpha = Math.max(0, 1 - ek / .6); c.beginPath(); c.arc(0, 0, 30*u + ek * 260*u, 0, 2*PI); c.stroke(); }
-    c.globalAlpha = Math.max(0, 1 - e / .9);
-    for (let i = 0; i < 9; i++) { const a = i * 2.4 + .5, d = 40*u + e * (150 + i * 14)*u, sz = 9*u; c.save(); c.translate(Math.cos(a)*d, Math.sin(a)*d + e*e*120*u); c.rotate(e * 9 + i);
-      c.fillStyle = i % 3 ? '#ffd23f' : '#b026f0'; c.fillRect(-sz/2, -sz/2, sz, sz); c.restore(); }
-    c.globalAlpha = 1;
+  // impact: white flash, expanding rings, confetti, the DAMN! pop
+  if (aft > 0 && aft < 1.9 && still) {
+    if (aft < .1) { c.fillStyle = `rgba(255,255,255,${(.55 * (1 - aft / .1)).toFixed(2)})`; c.fillRect(-20, -20, W + 40, H + 40); }
+    c.save(); c.translate(gx - 8*u, gy - 30*u); c.strokeStyle = '#ffd23f'; c.lineWidth = 6*u;
+    for (const off of [0, .12]) { const e = Math.max(0, aft - off); c.globalAlpha = Math.max(0, 1 - e / .55); c.beginPath(); c.ellipse(0, 0, 30*u + e * 280*u, (30*u + e * 280*u) * .55, 0, 0, 2*PI); c.stroke(); }
+    c.globalAlpha = Math.max(0, 1 - aft / 1.6);
+    for (let n = 0; n < 16; n++) { const a = n * 2.39996 + .4, dist = (60 + (n % 5) * 30) * u * Math.min(1, aft * 2.4), sz = (7 + (n % 3) * 3) * u;
+      c.save(); c.translate(Math.cos(a) * dist, Math.sin(a) * dist * .7 + aft * aft * 260*u - 30*u); c.rotate(aft * 8 + n);
+      c.fillStyle = ['#ffd23f', '#b026f0', '#5ee05a', '#ff5fa2'][n % 4]; c.fillRect(-sz / 2, -sz / 4, sz, sz / 2); c.restore(); }
     c.restore();
-    const pop = e < .15 ? .4 + e / .15 * .9 : e < .3 ? 1.3 - (e - .15) / .15 * .3 : 1;
-    c.save(); c.translate(W / 2, fy - 120 * u); c.rotate(-.08); c.scale(pop, pop); c.globalAlpha = e > 1.2 ? Math.max(0, 1 - (e - 1.2) / .4) : 1;
-    c.font = `400 ${Math.round(96 * u)}px Bungee, Impact, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.lineWidth = 12 * u; c.lineJoin = 'round'; c.strokeStyle = '#000'; c.strokeText('DAMN!', 0, 0); c.fillStyle = '#ffd23f'; c.fillText('DAMN!', 0, 0);
+    const e = aft, pop = e < .12 ? .3 + e / .12 * .9 : e < .26 ? 1.2 - (e - .12) / .14 * .2 : 1;
+    c.save(); c.translate(W / 2, H * .475); c.rotate(-.07); c.scale(pop, pop); c.globalAlpha = e > 1.5 ? Math.max(0, 1 - (e - 1.5) / .4) : 1;
+    c.font = `400 ${Math.round(76 * u)}px Bungee, Impact, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+    c.lineWidth = 16*u; c.strokeStyle = '#15121d'; c.strokeText('DAMN!', 0, 6*u);
+    c.fillStyle = '#a07800'; c.fillText('DAMN!', 0, 6*u); c.fillStyle = '#ffd23f'; c.fillText('DAMN!', 0, 0);
+    c.font = `900 ${Math.round(17 * u)}px Nunito, sans-serif`; c.lineWidth = 6*u; c.strokeText('0.3 SECONDS', 0, 56*u); c.fillStyle = '#f4efe4'; c.fillText('0.3 SECONDS', 0, 56*u);
     c.restore();
   }
-  // vignette
-  const v = c.createRadialGradient(W/2, H*.45, Math.min(W, H) * .3, W/2, H*.45, Math.max(W, H) * .8); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.7)');
+  // dust drifting through the light
+  c.fillStyle = 'rgba(255,240,200,.45)';
+  for (let n = 0; n < 30; n++) { const x = ((n * 97.3 + t * (6 + n % 5 * 3) * u * still) % W + W) % W, y = (n * 53.7 * u + Math.sin(t * .7 + n) * 18*u) % (fy - 20*u); c.fillRect(x, y, 2*u, 2*u); }
+  c.restore();
+  // legibility: darken behind the logo and the button, then a soft vignette
+  const top = c.createLinearGradient(0, 0, 0, H * .46); top.addColorStop(0, 'rgba(8,6,14,.72)'); top.addColorStop(1, 'rgba(8,6,14,0)'); c.fillStyle = top; c.fillRect(0, 0, W, H * .46);
+  const bot = c.createLinearGradient(0, H * .82, 0, H); bot.addColorStop(0, 'rgba(8,6,14,0)'); bot.addColorStop(1, 'rgba(8,6,14,.8)'); c.fillStyle = bot; c.fillRect(0, H * .82, W, H * .18);
+  const v = c.createRadialGradient(W / 2, H * .5, Math.min(W, H) * .35, W / 2, H * .5, Math.max(W, H) * .78); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.6)');
   c.fillStyle = v; c.fillRect(0, 0, W, H);
 }
 function leaveTitle() {
   const el = $('title'); if (el.hidden || el.classList.contains('out')) return;
   SFX.init(); SFX.play('chop', 0); SFX.play('giggle', 0, .2);
-  el.classList.add('out'); setTimeout(() => { el.hidden = true; el.classList.remove('out'); }, reduceMotion ? 10 : 450);
+  const b = $('tStart').getBoundingClientRect(), r = el.getBoundingClientRect();         // iris closes on the button
+  el.style.setProperty('--ix', (b.left + b.width / 2 - r.left) + 'px'); el.style.setProperty('--iy', (b.top + b.height / 2 - r.top) + 'px');
+  el.classList.add('out'); setTimeout(() => { el.hidden = true; el.classList.remove('out'); }, reduceMotion ? 10 : 620);
 }
 $('title').addEventListener('click', leaveTitle);
-$('tVer').textContent = `${GAME_VERSION} · ${LEVELS.length} stages · ${THEMES.length} chapters`;
+$('tVer').textContent = GAME_VERSION;
+$('tMeta').innerHTML = `<b>★ ${totalStars()}</b> / ${LEVELS.length * 3} &nbsp;·&nbsp; ${LEVELS.length} stages &nbsp;·&nbsp; ${THEMES.length} chapters`;
 
 function showMenu() {
   S.screen = 'menu'; SFX.music(false);
@@ -2557,7 +2658,9 @@ function frame(now) {
   if (!paused) { tickFx(dt); update(S.slowT > 0 ? dt * .28 : dt); }
   const covered = !$('title').hidden || !$('menu').hidden;   // the lobby/title fully cover the stage: don't paint it underneath
   if (!covered) draw(); else drawSkips++;
-  if (!$('title').hidden) drawTitle(now); else if (!$('menu').hidden) drawLobby(dt);
+  const tEl = $('title');
+  if (!tEl.hidden) drawTitle(now);
+  if ((tEl.hidden || tEl.classList.contains('out')) && !$('menu').hidden) drawLobby(dt);   // lobby is live while the iris closes
   if (!$('fail').hidden) drawFailArt();
   requestAnimationFrame(frame);
 }
