@@ -834,6 +834,9 @@ b,strong{font-weight:700}
 .chc .new{position:absolute;top:-7px;right:10px;font-size:10px;font-weight:700;padding:1px 6px;border-radius:7px;background:var(--mustard);color:var(--night);border:2px solid var(--ink)}
 
 #setUnlock{background:linear-gradient(180deg,#8ff0d6,#4fc7a8);color:#15122b}#setUnlock.on{background:linear-gradient(180deg,#ffe07a,#ffb627)}
+
+.release .devonly{display:none!important}
+.devbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.devbtns button{width:100%;min-width:0;white-space:nowrap;padding-left:6px;padding-right:6px}
 </style>
 
 <div class="app">
@@ -1021,9 +1024,9 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
-            <div class="setrow col reset"><span>전체 해금 <i class="tst">테스트용</i></span><button type="button" id="setUnlock">모든 콘텐츠 열기</button><small id="setUnlockInfo">모든 메뉴(상점·성장·코스튬·장비·도전·던전·무한·PVP·랭킹·소탕)와 코스튬·챕터 패키지를 열고, 챕터를 1~60 중 마음대로 고를 수 있어요. 진행 기록은 그대로예요.</small></div>
-            <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.94 · 2026-10-29</p>
+            <div class="setrow col reset devonly"><span>전체 해금 <i class="tst">테스트용</i></span><div class="devbtns"><button type="button" id="setUnlock">모든 콘텐츠 열기</button><button type="button" class="ghost" id="setCash">테스트 재화 받기</button></div><small id="setUnlockInfo">모든 메뉴(상점·성장·코스튬·장비·도전·던전·무한·PVP·랭킹·소탕)와 코스튬·챕터 패키지를 열고, 챕터를 1~60 중 마음대로 고를 수 있어요. 진행 기록은 그대로이고, 끄면 튜토리얼 상태도 되돌려요. 테스트 재화는 누를 때마다 코인 10,000 · 보석 1,000 · 에너지 60을 받아요.</small></div>
+            <div class="setrow col reset devonly"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
+            <p class="ver">스플래쉬 맨 v0.95 · 2026-10-29</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -1090,7 +1093,7 @@ b,strong{font-weight:700}
   <div class="banner" id="banner" role="complementary" aria-label="광고"><i>AD</i>배너 광고 자리 · 320×50</div>
   <div class="bar">
     <p class="hint">뒤로 당긴 만큼 세게 날아가요 · 바람을 확인하세요</p>
-    <div class="footbtns"><button type="button" class="ghost fsbtn" id="fsBtn"><svg class="fs-in" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-out" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg><span class="fs-l">전체 화면</span></button><button type="button" class="ghost" id="openTune">게임 조정</button></div>
+    <div class="footbtns"><button type="button" class="ghost fsbtn" id="fsBtn"><svg class="fs-in" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-out" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg><span class="fs-l">전체 화면</span></button><button type="button" class="ghost devonly" id="openTune">게임 조정</button></div>
   </div>
 </div>
 
@@ -1759,6 +1762,10 @@ const TUNE=[
   {k:'rewardSec',s:"리워드 광고 길이",l:'리워드 비디오 길이',min:1,max:30,step:1,d:3,h:'초 (실제는 보통 15~30초)'},
 ];
 {let tab='feel';for(const t of TUNE){if(t.g)tab=t.tab;t.tab=tab}}
+/* v0.95 release switch: test tools (게임 조정, 전체 해금, 테스트 재화, 완전 초기화) disappear in a release build.
+   On: build with SF_RELEASE=1 (tools/build_pages.py sets window.SF_RELEASE) or open with ?release=1. ?dev=1 forces them back. */
+const SF_RELEASE=(()=>{try{const q=location.search||'';if(/[?&]dev=1/.test(q))return false;if(/[?&]release=1/.test(q))return true}catch(e){}try{return window.SF_RELEASE===true}catch(e){return false}})();
+try{document.documentElement.classList.toggle('release',SF_RELEASE)}catch(e){}
 const T={};for(const t of TUNE)if(t.k)T[t.k]=t.d;
 const FEEL=TUNE.filter(t=>t.k&&t.tab==='feel').map(t=>t.k);
 function loadOldFeel(){let n=0;try{
@@ -2081,7 +2088,7 @@ const STARTERS=['power','rapid','tough','crit','regen'];
 function freshProg(){return{stage:1,best:1,coins:0,gems:T.gemStart,up:{hp:0,atk:0,cool:0,crit:0},
   mastery:Object.fromEntries(STARTERS.map(k=>[k,1])),owned:{},equip:{},titles:{},title:null,
   stat:{apples:0,helmets:0,fails:{}},bestShot:0,bestWave:0,plays:0,lastInter:0,adFree:false,purchases:{},pvp:{rating:1000,w:0,l:0,day:'',left:-1,ads:0,bought:0},unlocked:{},fresh:{},day:{key:'',kills:0},
-  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3},shop:{day:'',b:{}},chpack:{},devAll:false}}
+  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3},shop:{day:'',b:{}},chpack:{},devAll:false,devSave:null}}
 const prog=freshProg();
 try{const s=JSON.parse(localStorage.getItem('snackProg3')||'null');
   if(s)for(const k in prog){if(s[k]===undefined)continue;
@@ -3795,7 +3802,7 @@ const UNLOCK={
   pvp:{name:'PVP',ok:()=>cleared()>=T.unPvpCh&&upSum()>=T.unPvpUps,hint:()=>'챕터 '+T.unPvpCh+' 클리어 + 강화 '+T.unPvpUps+'단계 ('+Math.min(upSum(),T.unPvpUps)+'/'+T.unPvpUps+')'},
 };
 /* v0.94 test switch: 전체 해금 opens every menu, costume, pack and lets any chapter 1~DEV_MAXCH be picked */
-const DEV_MAXCH=60,devAll=()=>!!prog.devAll,maxStage=()=>devAll()?Math.max(prog.best,DEV_MAXCH):prog.best;
+const DEV_MAXCH=60,devAll=()=>!SF_RELEASE&&!!prog.devAll,maxStage=()=>devAll()?Math.max(prog.best,DEV_MAXCH):prog.best;
 const isOpen=k=>devAll()||!UNLOCK[k]||UNLOCK[k].ok();
 let toastT=null;
 function toast(html,ms=2200){const t=$('toast');t.innerHTML=html;t.hidden=false;t.style.animation='none';void t.offsetWidth;t.style.animation='';clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},ms)}
@@ -4611,9 +4618,13 @@ $('setReset').addEventListener('click',()=>{const b=$('setReset');
   resetProg();lobbyMan=null;lobby.anim=null;updateTitle();unlockUI();
   $('setResetInfo').textContent='초기화했어요. 신규 유저 상태로 시작합니다.';SFX.clear&&SFX.clear()});
 function unlockUI(){const b=$('setUnlock');if(!b)return;b.textContent=devAll()?'해금 끄기 (원래대로)':'모든 콘텐츠 열기';b.classList.toggle('on',devAll())}
-$('setUnlock').addEventListener('click',()=>{prog.devAll=!prog.devAll;if(prog.devAll&&prog.tut<9)prog.tut=9;if(!prog.devAll&&prog.stage>prog.best)prog.stage=prog.best;for(const k in UNLOCK)if(UNLOCK[k].ok())prog.unlocked[k]=1;saveProg();refreshLocks();updateTitle();unlockUI();
+$('setUnlock').addEventListener('click',()=>{if(SF_RELEASE)return;prog.devAll=!prog.devAll;
+  if(prog.devAll){const sv={tut:prog.tut,sil:[]};if(prog.tut<9)prog.tut=9;for(const k in UNLOCK)if(UNLOCK[k].ok()&&!prog.unlocked[k]){prog.unlocked[k]=1;sv.sil.push(k)}prog.devSave=sv}
+  else{const sv=prog.devSave;if(sv){prog.tut=sv.tut;for(const k of sv.sil||[])delete prog.unlocked[k]}prog.devSave=null;if(prog.stage>prog.best)prog.stage=prog.best}
+  saveProg();refreshLocks();updateTitle();unlockUI();
   toast(prog.devAll?'<b>전체 해금 켜짐</b><br>모든 메뉴가 열리고 챕터 1~'+DEV_MAXCH+'을 고를 수 있어요':'<b>전체 해금 꺼짐</b><br>원래 진행대로 잠겨요',2400)});
 setTimeout(unlockUI,0);
+$('setCash').addEventListener('click',()=>{if(SF_RELEASE)return;ecoCtx='테스트';prog.coins+=10000;prog.gems+=1000;enAdd(60);saveProg();updateTitle();SFX.pick&&SFX.pick();toast('<b>테스트 재화</b><br>코인 +10,000 · 보석 +1,000 · 에너지 +60',2000)});
 /* v0.79: full wipe for testing — every key this game stores on the device, then a fresh start */
 $('setWipe').addEventListener('click',()=>{popup('완전 초기화','<p class="sub">이 기기에 저장된 <b style="color:#ff9b9b">모든 게임 데이터</b>를 지워요.<br>진행, 구매 기록, 광고 제거, 소리·화질, 게임 조정 값까지 모두 처음 설치한 상태로 돌아가요.<br><br>되돌릴 수 없어요.</p>',
   [[['모두 지우고 다시 시작',()=>{wipeAll();return true},'danger'],['취소',null,'ghost']]])});
@@ -4704,7 +4715,7 @@ function buildSliders(){
     inp.addEventListener('input',()=>{T[t.k]=+inp.value;out.textContent=fmt(t,T[t.k]);saveTune();copyBox.hidden=true;renderPreview();auVol()});
   }
 }
-document.getElementById('openTune').addEventListener('click',()=>{setTab(curTab);aim=null;paused=true;tuneOv.hidden=false});
+document.getElementById('openTune').addEventListener('click',()=>{if(SF_RELEASE)return;setTab(curTab);aim=null;paused=true;tuneOv.hidden=false});
 document.getElementById('closeTune').addEventListener('click',()=>{paused=false;tuneOv.hidden=true;copyBox.hidden=true;updateTitle()});
 document.getElementById('resetTune').addEventListener('click',()=>{for(const t of TUNE)if(t.k&&t.tab===curTab)T[t.k]=t.d;saveTune();buildSliders();copyBox.hidden=true});
 document.getElementById('copyTune').addEventListener('click',async()=>{
