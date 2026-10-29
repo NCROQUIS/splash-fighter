@@ -832,6 +832,8 @@ b,strong{font-weight:700}
 .chc.locked .art{background:#c9c4bb!important;color:#4b4560}
 .chc.locked .go{background:#cfcac2;color:#4b4560;box-shadow:none;font-size:12px;line-height:1.25;white-space:normal;max-width:84px}
 .chc .new{position:absolute;top:-7px;right:10px;font-size:10px;font-weight:700;padding:1px 6px;border-radius:7px;background:var(--mustard);color:var(--night);border:2px solid var(--ink)}
+
+#setUnlock{background:linear-gradient(180deg,#8ff0d6,#4fc7a8);color:#15122b}#setUnlock.on{background:linear-gradient(180deg,#ffe07a,#ffb627)}
 </style>
 
 <div class="app">
@@ -1019,8 +1021,9 @@ b,strong{font-weight:700}
             <div class="setrow col"><span>쿠폰</span><div class="cpn"><input id="cpnIn" type="text" maxlength="24" placeholder="쿠폰 코드 입력" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="쿠폰 코드"><button type="button" id="cpnGo">입력</button></div><small id="cpnInfo">공식 채널에서 받은 코드를 넣어 보세요</small></div>
             <div class="setrow"><span>유저 ID<b class="uid" id="setUid"></b></span><button type="button" class="ghost" id="setUidCopy">복사</button></div>
             <div class="setrow col reset"><span>캐릭터 초기화</span><button type="button" class="danger" id="setReset">처음부터 시작</button><small id="setResetInfo">레벨·강화·코인·보석·아바타·칭호·챕터·PVP 기록이 모두 신규 유저 상태로 돌아가요. 소리·화질 설정은 유지돼요.</small></div>
+            <div class="setrow col reset"><span>전체 해금 <i class="tst">테스트용</i></span><button type="button" id="setUnlock">모든 콘텐츠 열기</button><small id="setUnlockInfo">모든 메뉴(상점·성장·코스튬·장비·도전·던전·무한·PVP·랭킹·소탕)와 코스튬·챕터 패키지를 열고, 챕터를 1~60 중 마음대로 고를 수 있어요. 진행 기록은 그대로예요.</small></div>
             <div class="setrow col reset"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
-            <p class="ver">스플래쉬 맨 v0.93 · 2026-10-28</p>
+            <p class="ver">스플래쉬 맨 v0.94 · 2026-10-29</p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
@@ -2078,7 +2081,7 @@ const STARTERS=['power','rapid','tough','crit','regen'];
 function freshProg(){return{stage:1,best:1,coins:0,gems:T.gemStart,up:{hp:0,atk:0,cool:0,crit:0},
   mastery:Object.fromEntries(STARTERS.map(k=>[k,1])),owned:{},equip:{},titles:{},title:null,
   stat:{apples:0,helmets:0,fails:{}},bestShot:0,bestWave:0,plays:0,lastInter:0,adFree:false,purchases:{},pvp:{rating:1000,w:0,l:0,day:'',left:-1,ads:0,bought:0},unlocked:{},fresh:{},day:{key:'',kills:0},
-  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3},shop:{day:'',b:{}},chpack:{}}}
+  acct:{lv:1,xp:0},inv:[],eq:{},iuid:1,newItems:0,en:{v:30,t:0},chBest:{},chests:{},mail:[],mailSeed:0,patrol:0,notice:'',coupons:{},uid:'',offer:null,dun:{tier:1,wins:0,day:'',left:-1},an:null,ms:null,att:null,ev:null,tut:0,sweep:{day:'',left:3},shop:{day:'',b:{}},chpack:{},devAll:false}}
 const prog=freshProg();
 try{const s=JSON.parse(localStorage.getItem('snackProg3')||'null');
   if(s)for(const k in prog){if(s[k]===undefined)continue;
@@ -3773,7 +3776,7 @@ function updateTitle(){$('lbCoins').textContent=prog.coins;$('lbGems').textConte
   $('chBar').setAttribute('style','width:'+Math.round(best/N*100)+'%');
   for(const [id,w] of [['chest5','half'],['chest10','clear']]){const st=chestState(c,w),b=$(id);b.className='chest '+st;if(b.dataset.svg!==st){b.dataset.svg=st;b.innerHTML=chestSVG(st==='got',w==='clear')}}
   ADS.banner(!prog.adFree&&state!=='title');refreshLocks();
-  $('chPrev').disabled=prog.stage<=1;$('chNext').disabled=prog.stage>=prog.best;try{sweepRefresh()}catch(e){}
+  $('chPrev').disabled=prog.stage<=1;$('chNext').disabled=prog.stage>=maxStage();try{sweepRefresh()}catch(e){}
   $('lbTitle').textContent=prog.title&&TITLE[prog.title]?'「'+TITLE[prog.title].name+'」':'칭호 없음';
   $('lbLv').textContent=prog.acct.lv;$('lbXp').setAttribute('style','width:'+Math.round(prog.acct.xp/needAX(prog.acct.lv)*100)+'%');
   $('lbStats').textContent='전투력 '+power(baseStats()).toLocaleString('ko-KR');lobbyTick(true)}
@@ -3791,7 +3794,9 @@ const UNLOCK={
   chal:{name:'도전',ok:()=>['dungeon','endless','rank'].some(k=>UNLOCK[k].ok()),hint:()=>'챕터 '+Math.min(2,Math.round(T.unEndless))+' 클리어 시 열려요'},
   pvp:{name:'PVP',ok:()=>cleared()>=T.unPvpCh&&upSum()>=T.unPvpUps,hint:()=>'챕터 '+T.unPvpCh+' 클리어 + 강화 '+T.unPvpUps+'단계 ('+Math.min(upSum(),T.unPvpUps)+'/'+T.unPvpUps+')'},
 };
-const isOpen=k=>!UNLOCK[k]||UNLOCK[k].ok();
+/* v0.94 test switch: 전체 해금 opens every menu, costume, pack and lets any chapter 1~DEV_MAXCH be picked */
+const DEV_MAXCH=60,devAll=()=>!!prog.devAll,maxStage=()=>devAll()?Math.max(prog.best,DEV_MAXCH):prog.best;
+const isOpen=k=>devAll()||!UNLOCK[k]||UNLOCK[k].ok();
 let toastT=null;
 function toast(html,ms=2200){const t=$('toast');t.innerHTML=html;t.hidden=false;t.style.animation='none';void t.offsetWidth;t.style.animation='';clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},ms)}
 function refreshLocks(){
@@ -3990,7 +3995,7 @@ function gearThumb(cv,g){if(g.slot==='hat'){drawHatThumb(cv,g.id);return}
   try{ctx=c;if(g.slot==='ball'){const k=cv.width/44;ctx.setTransform(k,0,0,k,cv.width/2,cv.height/2+4);drawPBalloon(0,0,12,{ball:g.id});return}
     const m=makeMan(0,0,1,1,COL.mint,100);m.gear=true;m.equip={[g.slot]:g.id};const P=m.points,cx=(P.head.x+P.neck.x)/2,cy=g.slot==='back'?(P.neck.y+P.hip.y)/2-6:g.slot==='neck'?P.neck.y-4:P.head.y+2,sc=cv.width/(g.slot==='back'?78:g.slot==='neck'?54:44);
     ctx.setTransform(sc,0,0,sc,cv.width/2-cx*sc,cv.height/2-cy*sc);drawMan(m)}catch(e){}finally{ctx=prev}}
-function avLocked(g){return g.lock&&cleared()<g.lock&&!prog.owned[g.id]}
+function avLocked(g){return !devAll()&&g.lock&&cleared()<g.lock&&!prog.owned[g.id]}
 function renderAvatar(){
   $('avGems').textContent='보석 '+prog.gems;
   const tabs=$('avSlots');tabs.innerHTML='';
@@ -4059,9 +4064,9 @@ function renderStore(){shopDay();
   else if(storeTab==='pack'){
     if(offerLive()){hd('기간 한정',offerLeft()+' 남음');const row=document.createElement('div');row.className='pack limited';row.innerHTML=`<b>분노 폭발 헤어<span class="tag hot">${offerLeft()} 남음</span></b><button type="button">₩1,500</button><small>찌르다 화나면 변하는 그 머리 · 치명타 +5%</small>`;row.querySelector('button').addEventListener('click',()=>offerPop(true));list.appendChild(row)}
     hd('챕터 패키지','한 번만 살 수 있어요 · 보석으로 구매');const car=document.createElement('div');car.className='chpacks';list.appendChild(car);
-    for(const k of CHPACK){const got=!!prog.chpack[k.ch],lk=cleared()<k.ch,arm=buyArm==='cp-'+k.ch;const c=document.createElement('div');c.className='chpk'+(got?' got':'')+(lk?' lock':'');
+    for(const k of CHPACK){const got=!!prog.chpack[k.ch],lk=!devAll()&&cleared()<k.ch,arm=buyArm==='cp-'+k.ch;const c=document.createElement('div');c.className='chpk'+(got?' got':'')+(lk?' lock':'');
       c.innerHTML=`<span class="eff">${k.eff} 효율</span><b>${k.ch}챕터 클리어 패키지</b><div class="pkit"><span><i class="ic-coin"></i>${k.coins.toLocaleString('ko-KR')}</span><span><i class="ic-box"></i>×${k.box}</span><span><i class="ic-en"></i>${k.en}</span></div><button type="button"${got||lk||prog.gems<k.cost?' disabled':''}>${got?'구매 완료':lk?'챕터 '+k.ch+' 클리어 시 열림':arm?'구매 확인':'보석 '+k.cost}</button>${got?'<span class="stamp">구매 완료</span>':''}`;
-      c.querySelector('button').addEventListener('click',()=>{if(prog.chpack[k.ch]||cleared()<k.ch||prog.gems<k.cost)return;if(!arm){buyArm='cp-'+k.ch;renderStore();return}buyArm=null;prog.gems-=k.cost;prog.chpack[k.ch]=1;prog.coins+=k.coins;enAdd(k.en);
+      c.querySelector('button').addEventListener('click',()=>{if(prog.chpack[k.ch]||(!devAll()&&cleared()<k.ch)||prog.gems<k.cost)return;if(!arm){buyArm='cp-'+k.ch;renderStore();return}buyArm=null;prog.gems-=k.cost;prog.chpack[k.ch]=1;prog.coins+=k.coins;enAdd(k.en);
         const items=[];for(let i=0;i<k.box;i++){const it=dropItem(Math.max(3,prog.best),0.8);if(it)items.push(it)}saveProg();SFX.clear();renderStore();updateTitle();
         if(items.length)revealReward(items,{title:k.ch+'챕터 클리어 패키지',extra:'코인 +'+k.coins.toLocaleString('ko-KR')+' · 에너지 +'+k.en});else toast('<b>패키지 구매!</b><br>코인 +'+k.coins.toLocaleString('ko-KR'))});
       car.appendChild(c)}}
@@ -4570,8 +4575,8 @@ const SWEEP_N=3;
 function sweepDay(){const k=todayKey();if(!prog.sweep||prog.sweep.day!==k)prog.sweep={day:k,left:SWEEP_N}}
 const sweepCh=()=>Math.max(1,Math.min(prog.stage,prog.best-1));
 const sweepRw=ch=>({coins:Math.round(fullClearCoins(ch)*0.8*coinMul()),xp:25+ch*3});
-function sweepRefresh(){const b=$('sweepBtn');if(!b)return;sweepDay();const ok=cleared()>=1;b.classList.toggle('off',!ok||prog.sweep.left<=0);$('sweepN').textContent=ok?prog.sweep.left:'';$('sweepN').hidden=!ok}
-function sweepPop(){if(cleared()<1){toast('<b>소탕</b> 잠김<br>챕터 1을 클리어하면 열려요');return}sweepDay();const ch=sweepCh(),r=sweepRw(ch),left=prog.sweep.left;
+function sweepRefresh(){const b=$('sweepBtn');if(!b)return;sweepDay();const ok=cleared()>=1||devAll();b.classList.toggle('off',!ok||prog.sweep.left<=0);$('sweepN').textContent=ok?prog.sweep.left:'';$('sweepN').hidden=!ok}
+function sweepPop(){if(cleared()<1&&!devAll()){toast('<b>소탕</b> 잠김<br>챕터 1을 클리어하면 열려요');return}sweepDay();const ch=sweepCh(),r=sweepRw(ch),left=prog.sweep.left;
   popup('소탕',`<div class="swbox"><span class="swch">챕터 ${ch}</span><p class="sub">이미 깬 챕터를 바로 끝내고 보상을 받아요</p><div class="rwds"><span class="rwd"><i class="ic-coin"></i><b>${r.coins.toLocaleString('ko-KR')}</b>코인</span><span class="rwd"><i class="ic-xp"></i><b>${r.xp}</b>경험치</span><span class="rwd"><i class="ic-box"></i><b>30%</b>장비</span></div><p class="sub">오늘 남은 횟수 <b style="color:#ffd166">${left} / ${SWEEP_N}</b> · 매일 0시 충전</p></div>`,
     [[left>0?'소탕하기 ⚡'+EN_COST:'오늘 소탕 끝',()=>{if(prog.sweep.left<=0)return true;closePop(true);spendEn(()=>doSweep(ch));return true},null,left<=0],['닫기',null,'ghost']])}
 function doSweep(ch){sweepDay();if(prog.sweep.left<=0)return;prog.sweep.left--;const r=sweepRw(ch);ecoCtx='소탕';prog.coins+=r.coins;const up=gainAcct(r.xp);const it=Math.random()<0.3?dropItem(ch,0):null;msAdd&&msAdd('play');saveProg();SFX.clear&&SFX.clear();updateTitle();
@@ -4581,7 +4586,7 @@ $('sweepBtn').addEventListener('click',sweepPop);
 $('againBtn').addEventListener('click',()=>afterResult(()=>spendEn(()=>startGame(false),resFail)));
 
 $('chPrev').addEventListener('click',()=>{if(prog.stage>1){prog.stage--;saveProg();updateTitle()}});
-$('chNext').addEventListener('click',()=>{if(prog.stage<prog.best){prog.stage++;saveProg();updateTitle()}});
+$('chNext').addEventListener('click',()=>{if(prog.stage<maxStage()){prog.stage++;saveProg();updateTitle()}});
 $('clearAgain').addEventListener('click',()=>afterResult(()=>spendEn(()=>{prog.stage=Math.max(1,prog.stage-1);saveProg();startGame(false,'chapter')},resFail)));
 $('nextBtn').addEventListener('click',()=>afterResult(()=>spendEn(()=>startGame(false,'chapter'),resFail)));
 updateTitle();try{setLobbyTab(null)}catch(e){}
@@ -4603,8 +4608,12 @@ let resetArm=0;
 $('setReset').addEventListener('click',()=>{const b=$('setReset');
   if(!resetArm||performance.now()-resetArm>4000){resetArm=performance.now();b.classList.add('armed');b.textContent='한 번 더 누르면 초기화';setTimeout(()=>{if(resetArm&&performance.now()-resetArm>=3900){resetArm=0;b.classList.remove('armed');b.textContent='처음부터 시작'}},4000);return}
   resetArm=0;b.classList.remove('armed');b.textContent='처음부터 시작';
-  resetProg();lobbyMan=null;lobby.anim=null;updateTitle();
+  resetProg();lobbyMan=null;lobby.anim=null;updateTitle();unlockUI();
   $('setResetInfo').textContent='초기화했어요. 신규 유저 상태로 시작합니다.';SFX.clear&&SFX.clear()});
+function unlockUI(){const b=$('setUnlock');if(!b)return;b.textContent=devAll()?'해금 끄기 (원래대로)':'모든 콘텐츠 열기';b.classList.toggle('on',devAll())}
+$('setUnlock').addEventListener('click',()=>{prog.devAll=!prog.devAll;if(prog.devAll&&prog.tut<9)prog.tut=9;if(!prog.devAll&&prog.stage>prog.best)prog.stage=prog.best;for(const k in UNLOCK)if(UNLOCK[k].ok())prog.unlocked[k]=1;saveProg();refreshLocks();updateTitle();unlockUI();
+  toast(prog.devAll?'<b>전체 해금 켜짐</b><br>모든 메뉴가 열리고 챕터 1~'+DEV_MAXCH+'을 고를 수 있어요':'<b>전체 해금 꺼짐</b><br>원래 진행대로 잠겨요',2400)});
+setTimeout(unlockUI,0);
 /* v0.79: full wipe for testing — every key this game stores on the device, then a fresh start */
 $('setWipe').addEventListener('click',()=>{popup('완전 초기화','<p class="sub">이 기기에 저장된 <b style="color:#ff9b9b">모든 게임 데이터</b>를 지워요.<br>진행, 구매 기록, 광고 제거, 소리·화질, 게임 조정 값까지 모두 처음 설치한 상태로 돌아가요.<br><br>되돌릴 수 없어요.</p>',
   [[['모두 지우고 다시 시작',()=>{wipeAll();return true},'danger'],['취소',null,'ghost']]])});
