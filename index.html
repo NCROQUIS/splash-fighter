@@ -1766,6 +1766,11 @@ const TUNE=[
    On: build with SF_RELEASE=1 (tools/build_pages.py sets window.SF_RELEASE) or open with ?release=1. ?dev=1 forces them back. */
 const SF_RELEASE=(()=>{try{const q=location.search||'';if(/[?&]dev=1/.test(q))return false;if(/[?&]release=1/.test(q))return true}catch(e){}try{return window.SF_RELEASE===true}catch(e){return false}})();
 try{document.documentElement.classList.toggle('release',SF_RELEASE)}catch(e){}
+/* Android app (구글플레이, splash-fighter/android/tools/build_web.py sets window.__ANDROID__): 홀컵·큐비 앱처럼 광고·유료 상품이 없어요.
+   NO_MONEY hides the banner, interstitials, rewarded-ad buttons, the 충전 (real-money gem) tab and the limited ₩ offer.
+   The web and artifact builds are unchanged. */
+const SF_APP=(()=>{try{return !!window.__ANDROID__}catch(e){return false}})(),NO_MONEY=SF_APP;
+try{document.documentElement.classList.toggle('app',SF_APP)}catch(e){}
 const T={};for(const t of TUNE)if(t.k)T[t.k]=t.d;
 const FEEL=TUNE.filter(t=>t.k&&t.tab==='feel').map(t=>t.k);
 function loadOldFeel(){let n=0;try{
@@ -3829,14 +3834,14 @@ const CUM={kill100:()=>(prog.stat.kills||0)>=100,kill500:()=>(prog.stat.kills||0
   flawless3:()=>(prog.stat.flawless||0)>=3,clutch3:()=>(prog.stat.clutch||0)>=3,h_dun5:()=>(prog.dun.wins||0)>=5};
 function chkTitles(){for(const id in CUM)if(!prog.titles[id]&&CUM[id]())award(id)}
 function titleCards(el){chkTitles();el.innerHTML=run.newTitles.map(id=>{const t=TITLE[id];return `<div class="newtitle"><span>새 칭호 획득 · 보석 +${Math.round(t.gem*T.gemTitle)}</span><b>「${t.name}」</b><span>${t.cond}</span></div>`}).join('')}
-function showRevive(){state='revive';aim=null;$('adBox').hidden=true;$('adBtn').hidden=false;$('giveUpBtn').hidden=false;{const gb=$('gemRevBtn');gb.hidden=false;gb.disabled=prog.gems<30;gb.textContent='보석 30으로 부활'}
+function showRevive(){state='revive';aim=null;$('adBox').hidden=true;$('adBtn').hidden=NO_MONEY;$('giveUpBtn').hidden=false;{const gb=$('gemRevBtn');gb.hidden=false;gb.disabled=prog.gems<30;gb.textContent='보석 30으로 부활'}
   {let t=8;const el=$('rvCount'),draw=()=>{el.textContent=Math.max(0,Math.ceil(t));el.setAttribute('style','background:radial-gradient(closest-side,#262b66 74%,transparent 77% 100%),conic-gradient(#ff7a6b '+Math.max(0,t/8*360).toFixed(1)+'deg,#3b3f72 0)')};draw();
    clearInterval(rvIv);rvIv=setInterval(()=>{if(state!=='revive'){clearInterval(rvIv);return}if(!$('adBox').hidden)return;t-=0.1;draw();if(t<=0){clearInterval(rvIv);reviveOv.hidden=true;gameOver()}},100)}
   
   $('reviveInfo').textContent=(mode==='dungeon'?'보스 던전 Lv '+prog.dun.tier:mode==='endless'?'웨이브 '+(stageIdx+1):'챕터 '+prog.stage+' · 웨이브 '+(stageIdx+1)+'/'+stageN())+' · 한 판에 한 번 이어서 할 수 있어요';reviveOv.hidden=false;SFX.lose()}
 /* ---------- ads: replace these three with the real ad SDK calls ---------- */
 const ADS={
-  on:null,banner(show){const b=$('banner');if(!b||this.on===show)return;this.on=show;b.hidden=!show;if(typeof resize==='function')requestAnimationFrame(resize)},
+  on:null,banner(show){if(NO_MONEY)show=false;const b=$('banner');if(!b||this.on===show)return;this.on=show;b.hidden=!show;if(typeof resize==='function')requestAnimationFrame(resize)},
   rewarded(onDone){$('adBtn').hidden=true;$('giveUpBtn').hidden=true;$('gemRevBtn').hidden=true;$('adBox').hidden=false;const dur=T.rewardSec*1000,t0=performance.now();
     clearInterval(adTimer);adTimer=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/dur);$('adBar').style.width=(k*100)+'%';$('adSec').textContent=Math.ceil(T.rewardSec*(1-k));
       if(k>=1){clearInterval(adTimer);onDone()}},100)},
@@ -3844,7 +3849,7 @@ const ADS={
     const iv=setInterval(()=>{left--;if(left>0)x.textContent=left+'초';else{clearInterval(iv);x.disabled=false;x.textContent='닫기 ✕'}},1000);
     x.onclick=()=>{if(x.disabled)return;ad.hidden=true;onClose()}},
 };
-const needInter=()=>!prog.adFree&&prog.plays>T.adNewbie&&(prog.plays-T.adNewbie)%Math.round(T.adEvery)===0&&prog.lastInter!==prog.plays;
+const needInter=()=>!NO_MONEY&&!prog.adFree&&prog.plays>T.adNewbie&&(prog.plays-T.adNewbie)%Math.round(T.adEvery)===0&&prog.lastInter!==prog.plays;
 function afterResult(go){
   if(!needInter()){go();return}
   prog.lastInter=prog.plays;saveProg();
@@ -3945,7 +3950,7 @@ function closePanel(ov,fromPop){if(!ov||ov.hidden)return;if(ov===avatarOv){avPre
   if(pgHist&&!fromPop&&!Object.values(PANELS).some(o=>!o.hidden&&o.classList.contains('page'))){pgHist=false;try{history.back()}catch(e){}}}
 let pgHist=false;
 addEventListener('popstate',()=>{if(!pgHist)return;pgHist=false;const o=Object.values(PANELS).find(o=>!o.hidden&&o.classList.contains('page'));if(o)closePanel(o,true)});
-$('fsBtn').addEventListener('click',()=>FS.toggle());if(FS.standalone())$('fsBtn').hidden=true;
+$('fsBtn').addEventListener('click',()=>FS.toggle());if(SF_APP||FS.standalone())$('fsBtn').hidden=true;
 document.querySelectorAll('.closeBtn,.xBtn').forEach(b=>b.id!=='popX'&&b.id!=='pauseX'&&b.addEventListener('click',()=>b.classList.contains('closeBtn')?pageBack(b.closest('.overlay')):closePanel(b.closest('.overlay'))));
 /* v0.91: 모험 (home) · 내 정보 tabs and the 내 정보 sub tabs */
 function openPage(){return Object.values(PANELS).find(o=>!o.hidden&&o.classList.contains('page'))}
@@ -4009,7 +4014,7 @@ function renderAvatar(){
   for(const [id,nm] of SLOTS){const b=document.createElement('button');b.type='button';b.className='tab small';b.textContent=nm+(prog.equip[id]?' •':'');b.setAttribute('aria-selected',avSlot===id);b.addEventListener('click',()=>{avSlot=id;avPrev=null;avPreviewApply();renderAvatar()});tabs.appendChild(b)}
   {const n=ownedCount();$('avBonus').innerHTML='<span>보유 효과 · '+n+'개</span><b>공격 +'+(n*0.5).toFixed(1).replace('.0','')+'%</b><b>체력 +'+n+'</b>'}
   const list=$('avList');list.innerHTML='';
-  for(const g of GEAR.filter(g=>g.slot===avSlot&&(!g.iap||prog.owned[g.id]||prog.offer&&prog.offer.id===g.id))){
+  for(const g of GEAR.filter(g=>g.slot===avSlot&&(!g.iap||prog.owned[g.id]||!NO_MONEY&&prog.offer&&prog.offer.id===g.id))){
     const own=!!prog.owned[g.id],on=prog.equip[g.slot]===g.id,lk=avLocked(g);
     const card=document.createElement('button');card.type='button';card.className='ccard'+(own?' own':'')+(on?' on':'')+(lk?' lock':'')+(avPrev===g.id?' sel':'');card.dataset.g=g.id;
     card.innerHTML=`${own?'<i class="chk">✓</i>':''}<canvas width="128" height="128" aria-hidden="true"></canvas><b>${g.name}</b><small>${g.bd}</small><span class="cp">${on?'장착 중':own?'보유':g.iap?'₩'+g.iap.toLocaleString('ko-KR'):g.price+' 보석'}</span>${lk?'<em class="lkb">챕터 '+g.lock+' 클리어</em>':''}`;
@@ -4043,7 +4048,7 @@ const PACKS=[
 ];
 /* v0.86 store: 일일 상점 (pinned cards, daily limits, reset timer, sold-out stamp) · 패키지 (chapter milestones) · 충전 */
 const GEMSHOP=[{id:'free',name:'오늘의 선물',cost:0,lim:1,ic:'ic-en',desc:'에너지 10 · 매일 무료'},{id:'en',name:'에너지 30',cost:50,lim:1,ic:'ic-en',desc:'바로 여섯 판 더'},{id:'coin',name:'코인 꾸러미',cost:60,lim:2,ic:'ic-coin',desc:''},
-  {id:'box',name:'장비 상자',cost:150,lim:3,ic:'ic-box',desc:'희귀 이상이 잘 나와요 · <u data-odds="1">확률</u>'},{id:'pvp',name:'PVP 티켓 3장',cost:30,lim:3,ic:'ic-tk',desc:'무료·광고 도전을 다 썼을 때'}];
+  {id:'box',name:'장비 상자',cost:150,lim:3,ic:'ic-box',desc:'희귀 이상이 잘 나와요 · <u data-odds="1">확률</u>'},{id:'pvp',name:'PVP 티켓 3장',cost:30,lim:3,ic:'ic-tk',desc:NO_MONEY?'무료 도전을 다 썼을 때':'무료·광고 도전을 다 썼을 때'}];
 const CHPACK=[{ch:2,cost:100,runs:6,box:1,en:30,eff:'300%'},{ch:4,cost:150,runs:6,box:1,en:30,eff:'300%'},{ch:6,cost:200,runs:6,box:2,en:30,eff:'350%'},{ch:10,cost:300,runs:6,box:2,en:30,eff:'350%'}];
 CHPACK.forEach(k=>Object.defineProperty(k,'coins',{get(){return Math.round(fullClearCoins(k.ch)*k.runs/50)*50}}));
 let buyArm=null,storeTab='daily',storeIv=null;
@@ -4053,9 +4058,9 @@ function giveGem(id){if(id==='free'){enAdd(10);toast('<b>에너지 +10</b><br>�
   else if(id==='pvp'){pvpDay();prog.pvp.bought+=PVP_PACK.n;toast('<b>PVP 티켓 +'+PVP_PACK.n+'</b><br>PVP에서 바로 쓸 수 있어요')}
   else{const pw=power(baseStats()),it=dropItem(Math.max(3,prog.best),0.8);shopDay();const g=GEMSHOP.find(x=>x.id==='box'),more=(prog.shop.b.box||0)<g.lim&&prog.gems>=g.cost;
     if(it)revealReward([it],{title:'장비 상자',powerFrom:pw,again:more?{label:'한 번 더 · 보석 '+g.cost}:null,onAgain:()=>{shopDay();if((prog.shop.b.box||0)>=g.lim||prog.gems<g.cost)return;prog.gems-=g.cost;prog.shop.b.box=(prog.shop.b.box||0)+1;giveGem('box');saveProg();if(!storeOv.hidden)renderStore();updateTitle()}});else toast('가방이 꽉 차서 코인으로 바꿨어요')}}
-function renderStore(){shopDay();
+function renderStore(){shopDay();if(NO_MONEY&&storeTab==='charge')storeTab='daily';
   $('storeGems').textContent='보석 '+prog.gems+(prog.adFree?' · 광고 제거됨':'');const list=$('storeList');list.innerHTML='';list.className='packs st-'+storeTab;
-  {const tb=$('storeTabs');tb.innerHTML='';for(const [k,nm] of [['daily','일일 상점'],['pack','패키지'],['charge','충전']]){const b=document.createElement('button');b.type='button';b.textContent=nm;b.setAttribute('aria-selected',storeTab===k);
+  {const tb=$('storeTabs');tb.innerHTML='';for(const [k,nm] of [['daily','일일 상점'],['pack','패키지'],...(NO_MONEY?[]:[['charge','충전']])]){const b=document.createElement('button');b.type='button';b.textContent=nm;b.setAttribute('aria-selected',storeTab===k);
     if(k==='daily'&&!prog.shop.b.free)b.classList.add('dot');b.addEventListener('click',()=>{storeTab=k;buyArm=null;renderStore();const c=storeOv.querySelector('.card');if(c)c.scrollTop=0});tb.appendChild(b)}}
   $('storeNote').hidden=storeTab!=='charge';
   const hd=(t,sub)=>{const p=document.createElement('div');p.className='sthd';p.innerHTML='<b></b>'+(sub?'<span></span>':'');p.querySelector('b').textContent=t;if(sub)p.querySelector('span').textContent=sub;list.appendChild(p);return p};
@@ -4069,7 +4074,7 @@ function renderStore(){shopDay();
       grid.appendChild(c)}
     clearInterval(storeIv);storeIv=setInterval(()=>{if(storeOv.hidden||storeTab!=='daily'){clearInterval(storeIv);return}const e=$('stReset');if(e){const sp=e.querySelector('span');if(sp)sp.textContent='⏱ '+untilReset()+' 후 초기화'}if(prog.shop.day!==todayKey())renderStore()},1000)}
   else if(storeTab==='pack'){
-    if(offerLive()){hd('기간 한정',offerLeft()+' 남음');const row=document.createElement('div');row.className='pack limited';row.innerHTML=`<b>분노 폭발 헤어<span class="tag hot">${offerLeft()} 남음</span></b><button type="button">₩1,500</button><small>찌르다 화나면 변하는 그 머리 · 치명타 +5%</small>`;row.querySelector('button').addEventListener('click',()=>offerPop(true));list.appendChild(row)}
+    if(!NO_MONEY&&offerLive()){hd('기간 한정',offerLeft()+' 남음');const row=document.createElement('div');row.className='pack limited';row.innerHTML=`<b>분노 폭발 헤어<span class="tag hot">${offerLeft()} 남음</span></b><button type="button">₩1,500</button><small>찌르다 화나면 변하는 그 머리 · 치명타 +5%</small>`;row.querySelector('button').addEventListener('click',()=>offerPop(true));list.appendChild(row)}
     hd('챕터 패키지','한 번만 살 수 있어요 · 보석으로 구매');const car=document.createElement('div');car.className='chpacks';list.appendChild(car);
     for(const k of CHPACK){const got=!!prog.chpack[k.ch],lk=!devAll()&&cleared()<k.ch,arm=buyArm==='cp-'+k.ch;const c=document.createElement('div');c.className='chpk'+(got?' got':'')+(lk?' lock':'');
       c.innerHTML=`<span class="eff">${k.eff} 효율</span><b>${k.ch}챕터 클리어 패키지</b><div class="pkit"><span><i class="ic-coin"></i>${k.coins.toLocaleString('ko-KR')}</span><span><i class="ic-box"></i>×${k.box}</span><span><i class="ic-en"></i>${k.en}</span></div><button type="button"${got||lk||prog.gems<k.cost?' disabled':''}>${got?'구매 완료':lk?'챕터 '+k.ch+' 클리어 시 열림':arm?'구매 확인':'보석 '+k.cost}</button>${got?'<span class="stamp">구매 완료</span>':''}`;
@@ -4095,10 +4100,10 @@ const power=st=>Math.round(st.hp*st.dmg*(1+st.crit)/Math.max(0.15,st.cool)*0.6);
 const tierOf=r=>r<1100?'브론즈':r<1250?'실버':r<1400?'골드':r<1600?'플래티넘':'다이아';
 function myPvp(){return{...baseStats(),equip:{...prog.equip},title:prog.title||'',rating:prog.pvp.rating}}
 function pvpDay(){const k=todayKey(),p=prog.pvp;if(p.day!==k||p.left<0){p.day=k;p.left=Math.round(T.pvpTickets);p.ads=0;saveProg()}if(p.ads==null)p.ads=0;if(p.bought==null)p.bought=0}
-const PVP_ADS=2,PVP_PACK={n:3,cost:30};
+const PVP_ADS=NO_MONEY?0:2,PVP_PACK={n:3,cost:30};
 const pvpHave=()=>{pvpDay();return prog.pvp.left+prog.pvp.bought};
 function pvpUse(){const p=prog.pvp;if(p.left>0)p.left--;else if(p.bought>0)p.bought--;else return false;saveProg();return true}
-function pvpTicketTxt(){const p=prog.pvp;return '무료 '+p.left+'/'+Math.round(T.pvpTickets)+' · 광고 '+(PVP_ADS-p.ads)+'/'+PVP_ADS+(p.bought?' · 구매 티켓 '+p.bought:'')}
+function pvpTicketTxt(){const p=prog.pvp;return '무료 '+p.left+'/'+Math.round(T.pvpTickets)+(PVP_ADS?' · 광고 '+(PVP_ADS-p.ads)+'/'+PVP_ADS:'')+(p.bought?' · 구매 티켓 '+p.bought:'')}
 const BOTN=['물풍선 초보','옥상 고수','간식 도둑','젖은 양말','바람 읽는 자','사과 수집가','지붕 위 고양이','점심 내기왕'];
 function makeBot(){const me=baseStats(),k=rand(0.82,1.15),eq={};for(const [sl] of SLOTS)if(Math.random()<0.55){const opts=GEAR.filter(g=>g.slot===sl&&!g.iap);eq[sl]=opts[Math.floor(Math.random()*opts.length)].id}
   const tl=Math.random()<0.6?TITLES[Math.floor(Math.random()*TITLES.length)].id:'';
@@ -4412,9 +4417,9 @@ return{draw(c,w,h,t,lk,ltxt,tapT){const s=Math.min(w/W,h/H),ox=(w-W*s)/2,oy=(h-H
 const OFFER_MS=24*3600*1000;
 const offerLive=()=>!!(prog.offer&&prog.offer.id==='rage'&&!prog.owned.rage&&Date.now()<prog.offer.until);
 function offerLeft(){if(!prog.offer)return '';const ms=Math.max(0,prog.offer.until-Date.now()),h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),sc=Math.floor(ms%60000/1000);return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0')}
-function offerTick(){const b=$('sbOffer');if(!b)return;const live=offerLive();b.hidden=!live;if(live){const L=offerLeft();$('offerT').textContent=L.slice(0,5);const ot=$('popOfferT');if(ot)ot.textContent=L+' 남음'}}
+function offerTick(){const b=$('sbOffer');if(!b)return;const live=!NO_MONEY&&offerLive();b.hidden=!live;if(live){const L=offerLeft();$('offerT').textContent=L.slice(0,5);const ot=$('popOfferT');if(ot)ot.textContent=L+' 남음'}}
 let offerArm=false;
-function offerPop(fromMenu){if(prog.owned.rage){toast('이미 가지고 있어요');return}
+function offerPop(fromMenu){if(NO_MONEY)return;if(prog.owned.rage){toast('이미 가지고 있어요');return}
   if(!prog.offer){prog.offer={id:'rage',until:Date.now()+OFFER_MS};saveProg()}
   if(!offerLive()){toast('판매 기간이 끝났어요');return}
   offerArm=false;
@@ -4425,7 +4430,7 @@ function offerPop(fromMenu){if(prog.owned.rage){toast('이미 가지고 있어�
   const cv2=$('offerCv');if(cv2)drawHatThumb(cv2,'rage');offerTick()}
 $('sbOffer').addEventListener('click',()=>offerPop(true));
 $('dunGo').addEventListener('click',()=>{dunDay();if(prog.dun.left<=0)return;prog.dun.left--;saveProg();closePanel(dunOv);startGame(true,'dungeon')});
-$('gemChip').addEventListener('click',()=>{if(!isOpen('store'))return;storeTab='charge';buyArm=null;setTimeout(()=>{if(!storeOv.hidden)renderStore()},0)});
+$('gemChip').addEventListener('click',()=>{if(!isOpen('store'))return;storeTab=NO_MONEY?'daily':'charge';buyArm=null;setTimeout(()=>{if(!storeOv.hidden)renderStore()},0)});
 $('pauseX').addEventListener('click',()=>resumeGame());
 /* ---------- v0.45: lobby ops · popups · equipment UI · pause · boot ---------- */
 const PAUSEBTN=$('pauseBtn');
@@ -4484,7 +4489,7 @@ const rwText=r=>{const a=[];if(r.gems)a.push('보석 '+r.gems);if(r.coins)a.push
 /* energy */
 function enPopup(go,fail){const v=enNow(),nx=enLeft();
   popup(go?'에너지 부족':'에너지',`<div class="enbig">${v} / ${EN_MAX}</div><p class="sub">한 판에 에너지 ${EN_COST} · 5분마다 1씩 차요${nx?' · 다음 충전 '+nx:''}</p><p class="sub">계정 레벨이 오르면 5씩 차요</p>`,
-    [[['광고 보고 +15',()=>{adPop(()=>{enAdd(15);toast('<b>에너지 +15</b>');closePop(true);if(go)spendEn(go,fail)},fail);return true}],
+    [[...(NO_MONEY?[]:[['광고 보고 +15',()=>{adPop(()=>{enAdd(15);toast('<b>에너지 +15</b>');closePop(true);if(go)spendEn(go,fail)},fail);return true}]]),
       ['보석 30 · 가득',()=>{if(prog.gems<30){toast('보석이 모자라요');return true}prog.gems-=30;enTick();prog.en.v=Math.max(prog.en.v,EN_MAX);prog.en.t=Date.now();saveProg();toast('<b>에너지 가득!</b>');closePop(true);if(go)spendEn(go,fail);return true},'gemrev',prog.gems<30]],
      ['닫기',null,'ghost']],fail)}
 function spendEn(go,fail){enTick();if(prog.en.v<EN_COST){enPopup(go,fail);return}const full=prog.en.v>=EN_MAX;prog.en.v-=EN_COST;if(full&&prog.en.v<EN_MAX)prog.en.t=Date.now();saveProg();go()}
@@ -4503,7 +4508,7 @@ function claimPatrol(k){const r=patrolReward();if(r.coins<1)return;prog.coins+=r
   toast('<b>순찰 보상!</b><br>코인 +'+(r.coins*k).toLocaleString('ko-KR')+(up?' · 계정 레벨 업!':''));updateTitle()}
 function patrolPop(){const r=patrolReward(),sc=patrolSec(),p=Math.round(sc/PATROL_CAP*100);const lines=['비둘기를 쫓아내는 중…','옆 지붕 빨래를 지켜보는 중…','물풍선 재고 세는 중…','낮잠… 아니, 잠복 근무 중…'];
   popup('순찰 보상',`<p class="sub">${lines[Math.floor(Date.now()/60000)%lines.length]}</p><div class="ptime">${fmtHM(sc)}</div><div class="pbar"><i style="width:${p}%"></i></div><p class="sub">최대 8시간까지 쌓여요 · 분당 코인 ${patrolRate().toFixed(1)}</p><div class="rwds"><span class="rwd"><i class="ic-coin"></i><b>${r.coins.toLocaleString('ko-KR')}</b>코인</span><span class="rwd"><i class="ic-xp"></i><b>${r.xp}</b>EXP</span></div>`,
-    [[['받기',()=>{claimPatrol(1)},null,r.coins<1],['광고 보고 ×2',()=>{adPop(()=>{claimPatrol(2);closePop(true)});return true},'gemrev',r.coins<1]],['닫기',null,'ghost']])}
+    [[['받기',()=>{claimPatrol(1)},null,r.coins<1],...(NO_MONEY?[]:[['광고 보고 ×2',()=>{adPop(()=>{claimPatrol(2);closePop(true)});return true},'gemrev',r.coins<1]])],['닫기',null,'ghost']])}
 $('sbMail').addEventListener('click',mailPop);$('sbAttend').addEventListener('click',attendPop);$('sbMission').addEventListener('click',()=>missionPop('d'));$('sbEvent').addEventListener('click',eventPop);$('sbPatrol').addEventListener('click',patrolPop);
 /* chapter chests · info */
 function chestRw(c,w){return w==='clear'?{gems:5,item:1}:{coins:60+40*c,gems:2}}
@@ -4746,6 +4751,32 @@ function frame(now){
 resize();reset();floats=[];state='title';eRoof.t=0.6;eRoof.y=eRoof.ty;enemy.ay=eRoof.y;
 for(const k of NAMES){const t=targets(enemy)[k],p=enemy.points[k];p.x=p.px=t.x;p.y=p.py=t.y}
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{});
+/* Android app: 뒤로가기·종료 확인·백그라운드 일시정지 (MainActivity calls window.__sfBack(); 'true' = handled).
+   Order: 보상·팝업 닫기 → 일시정지 메뉴는 계속하기 → 스킬 고르기·부활은 그대로(직접 골라요) → 결과 화면은 로비로 →
+   열린 메뉴 페이지는 돌아가기 → 플레이 중이면 일시정지 → 로비·시작 화면에서는 '게임을 종료할까요?' 팝업('종료'로 앱 닫기). */
+if(SF_APP){
+  const vis=id=>{const e=$(id);return !!e&&!e.hidden},tap=e=>{if(!e)return false;e.click();return true};
+  const exitPop=()=>{const ov=$('popOv');ov.style.zIndex=vis('bootOv')?'31':'';   /* 시작 화면(z-index 30) 위에도 보이게 */
+    popup('게임을 종료할까요?','<p class="sub">진행 상황은 이 기기에 저장돼요.</p>',
+      [[['계속하기',null,'ghost'],['종료',()=>{try{SFAndroid.close()}catch(e){}return true}]]],()=>{ov.style.zIndex=''})};
+  window.__sfBack=()=>{try{
+    if(vis('revealOv'))return tap($('rvOk'))||true;
+    if(vis('popOv')){if(!tap($('popX')))closePop();return true}
+    if(vis('tuneOv'))return tap($('closeTune'))||true;
+    if(vis('interOv'))return true;
+    if(vis('pauseOv'))return tap($('resumeBtn'))||true;
+    if(vis('pickOv')||vis('reviveOv'))return true;
+    for(const id of ['clearOv','overOv','pvpResOv'])if(vis(id))return tap($(id).querySelector('.homeBtn'))||true;
+    for(const id of ['setOv','storeOv','shopOv','avatarOv','titlesOv','rankOv','chalOv','dunOv','pvpOv'])if(vis(id)){const o=$(id);return tap(o.querySelector('.closeBtn'))||tap(o.querySelector('.xBtn'))||true}
+    if(state==='play'||state==='intro'){pauseGame();return true}
+    if(state!=='title'&&!vis('bootOv'))return true;
+    exitPop();return true}catch(e){return false}};
+  /* 홈으로 나가면: 플레이 중이면 일시정지, 소리 멈춤(돌아와서 화면을 누르면 다시 나요) */
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)return;try{if(state==='play'||state==='intro')pauseGame()}catch(e){}try{if(AU.c&&AU.c.state==='running')AU.c.suspend()}catch(e){}});
+  /* 광고·유료 안내 문구: 부활 화면의 리워드 비디오 설명, 코스튬의 '보석은 나중에 유료로…' */
+  for(const n of [...document.querySelectorAll('#reviveOv p.sub')].filter(n=>/리워드/.test(n.textContent)).concat($('avList')?[$('avList').nextElementSibling]:[]))
+    if(n&&/리워드|유료/.test(n.textContent))n.style.display='none';
+}
 requestAnimationFrame(frame);
 })();
 </script>
