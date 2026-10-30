@@ -3455,9 +3455,9 @@ function drawFoeCard(){const c=foeCard;if(!c)return;c.t+=1/60;const L=2.1;if(c.t
   ctx.textAlign='left';ctx.font='11px '+FONT;ctx.fillStyle=c.boss?'#ff9b9b':'#8ff0d6';ctx.fillText(c.boss?'BOSS':'NEXT',x+22,y+18);
   ctx.font='19px '+FONT;ctx.lineWidth=4;ctx.strokeStyle='#15122b';ctx.strokeText(c.name,x+22,y+37);ctx.fillStyle=c.boss?'#ffb3b3':'#ffe27a';ctx.fillText(c.name,x+22,y+37);
   ctx.font='13px '+FONT;ctx.fillStyle='#dcdef8';ctx.fillText(c.desc,x+22,y+51);ctx.restore()}
-function receipt(el){const L=(run.wet*0.35).toFixed(1),acc=run.shots?Math.round(run.hits/run.shots*100):0,k=run.killer;
+function receipt(el){const hits=run.hits||0,L=(run.wet*0.35).toFixed(1),acc=run.shots?Math.round(hits/run.shots*100):0,k=run.killer;
   const causes=['자존심','방심','손가락 미끄러짐','바람 탓 (진짜임)','과도한 자신감','점심 메뉴 고민'];
-  const rows=[['오늘 맞은 물',L+'L',(L>=2?'하루 권장량 초과':'아직 목마름')],['던진 물풍선',run.shots+'개','명중률 '+acc+'%'],['하늘에 뿌린 물',Math.max(0,run.shots-run.hits)+'개','비 온다고 착각한 사람 다수'],
+  const rows=[['오늘 맞은 물',L+'L',(L>=2?'하루 권장량 초과':'아직 목마름')],['던진 물풍선',run.shots+'개','명중률 '+acc+'%'],['하늘에 뿌린 물',Math.max(0,run.shots-hits)+'개','비 온다고 착각한 사람 다수'],
     ['예상 세탁비',(run.wet*3500).toLocaleString('ko-KR')+'원','드라이 별도'],['사망 원인',pick(causes),k?'+ '+k[0]:'']];
   el.innerHTML='<div class="rc-h">오늘의 피해 영수증</div>'+rows.map(r=>`<div class="rc-r"><span>${r[0]}</span><b>${r[1]}</b>${r[2]?`<small>${r[2]}</small>`:''}</div>`).join('')+(k?`<div class="rc-k">나를 이긴 적 · <b>${k[0]}</b> <span>(${k[1]})</span></div>`:'')+'<div class="rc-f">*** 감사합니다. 또 젖으러 오세요 ***</div>'}
 
@@ -3962,8 +3962,8 @@ const CH_SVG={dungeon:'<path d="M4 21V9l3-2V4h3v2h4V4h3v3l3 2v12z"/><path d="M10
 function chalCards(){dunDay();pvpDay();const p=prog.pvp,d=prog.dun;return [
   {k:'dungeon',n:'보스 던전',bg:'#ff9a7a',d:'물탱크 거인 Lv '+d.tier+' · 이기면 보석과 장비',p:['입장권 '+d.left+'/'+DUN_TICKETS],go:d.left>0?'입장':'오늘 끝'},
   {k:'endless',n:'무한 모드',bg:'#7fd0ff',d:'끝없이 몰려오는 적을 최대한 오래 버티기',p:['최고 '+(prog.bestWave||0)+'웨이브'],go:'⚡'+EN_COST},
-  {k:'pvp',n:'PVP 대결',bg:'#c6a8ff',d:'다른 플레이어가 키운 캐릭터와 겨뤄요',p:[tierOf(p.rating)+' · '+p.rating+'점','무료 '+p.left+'/'+Math.round(T.pvpTickets)],go:'대결'},
-  {k:'rank',n:'랭킹',bg:'#ffd166',d:'오늘 격파 · 최고 챕터 · 무한 모드 순위',p:[],go:'보기'}]}
+  {k:'pvp',n:'PVP 대결',bg:'#c6a8ff',d:SF_APP?'연습 상대와 1:1로 겨뤄요':'다른 플레이어가 키운 캐릭터와 겨뤄요',p:[tierOf(p.rating)+' · '+p.rating+'점','무료 '+p.left+'/'+Math.round(T.pvpTickets)],go:'대결'},
+  {k:'rank',n:'랭킹',bg:'#ffd166',d:SF_APP?'오늘 격파 · 최고 한 방 · 무한 모드 내 기록':'오늘 격파 · 최고 챕터 · 무한 모드 순위',p:[],go:'보기'}]}
 function renderChal(){const L=$('chalList');L.innerHTML=chalCards().map(c=>{const ok=isOpen(c.k),h=UNLOCK[c.k]&&UNLOCK[c.k].hint,hint=typeof h==='function'?h():h;
   return `<div class="chc${ok?'':' locked'}">${ok&&prog.fresh[c.k]?'<span class="new">NEW</span>':''}<span class="art" style="background:${c.bg}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">${ok?CH_SVG[c.k]:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'}</svg></span><span class="txt"><b>${c.n}</b><small>${ok?c.d:hint}</small>${ok&&c.p.length?'<span class="pills">'+c.p.map(x=>'<i>'+x+'</i>').join('')+'</span>':''}</span><button type="button" class="go" data-ck="${c.k}"${ok?'':' aria-disabled="true"'}>${ok?c.go:'잠김'}</button></div>`}).join('');
   L.querySelectorAll('[data-ck]').forEach(b=>b.addEventListener('click',()=>chalGo(b.dataset.ck)))}
@@ -4123,7 +4123,7 @@ async function renderPvp(){
   whoCard($('pvpMe'),baseStats(),'나',prog.title,prog.pvp.rating);
   if(!pvpOpp)await pickOpp();
   whoCard($('pvpOpp'),pvpOpp,pvpOpp.name+(pvpOpp.bot?' (연습)':''),pvpOpp.title,pvpOpp.rating);
-  const p=prog.pvp,have=pvpHave();$('pvpInfo').textContent='오늘 '+pvpTicketTxt()+(pvpOpp.bot?' · 아직 다른 플레이어 기록이 없어 연습 상대가 나와요':'');
+  const p=prog.pvp,have=pvpHave();$('pvpInfo').textContent='오늘 '+pvpTicketTxt()+(pvpOpp.bot&&!SF_APP?' · 아직 다른 플레이어 기록이 없어 연습 상대가 나와요':'');
   const g=$('pvpGo');g.disabled=false;g.classList.toggle('adgo',!have&&p.ads<PVP_ADS);
   g.textContent=have?'대결 시작':p.ads<PVP_ADS?'▶ 광고 보고 대결 '+(PVP_ADS-p.ads)+'/'+PVP_ADS:'티켓 구매';
 }
@@ -4193,7 +4193,7 @@ async function drawRank(){
     if(r.title&&TITLE[r.title]){const sm=document.createElement('small');sm.textContent='「'+TITLE[r.title].name+'」';td2.appendChild(sm)}
     const td3=document.createElement('td');td3.textContent=(r[field]||0)+(field==='bestWave'?'웨이브':field==='dayKills'?'명':field==='pvpRating'?'점':'');
     tr.append(td1,td2,td3);body.appendChild(tr)});
-  $('rankNote').textContent=rdb?'이 페이지를 연 사람들끼리의 순위예요. 오늘 격파는 매일 0시에 초기화돼요.':'이 기기의 내 기록만 보여요. 순위는 공유된 페이지에서 로그인한 상태로 열면 함께 집계돼요.';
+  $('rankNote').textContent=rdb?'이 페이지를 연 사람들끼리의 순위예요. 오늘 격파는 매일 0시에 초기화돼요.':SF_APP?'이 기기에 저장된 내 기록이에요. 오늘 격파는 매일 0시에 초기화돼요.':'이 기기의 내 기록만 보여요. 순위는 공유된 페이지에서 로그인한 상태로 열면 함께 집계돼요.';
 }
 /* ---------- boot key art (from approved draft 1-A) ---------- */
 const BOOTART=(()=>{
@@ -4776,6 +4776,12 @@ if(SF_APP){
   /* 광고·유료 안내 문구: 부활 화면의 리워드 비디오 설명, 코스튬의 '보석은 나중에 유료로…' */
   for(const n of [...document.querySelectorAll('#reviveOv p.sub')].filter(n=>/리워드/.test(n.textContent)).concat($('avList')?[$('avList').nextElementSibling]:[]))
     if(n&&/리워드|유료/.test(n.textContent))n.style.display='none';
+  /* PVP 설명: 앱은 인터넷 없이 연습 상대와만 겨뤄요(다른 플레이어 기록을 주고받지 않아요) */
+  {const s=document.querySelector('#pvpOv .card > p.sub');if(s&&/다른 플레이어/.test(s.textContent))s.textContent='연습 대전 · 앱 안의 연습 상대와 1:1로 겨뤄요'}
+  /* 진 캐릭터의 대사 중 광고 이야기('광고 보면 살 수 있대…')는 빼요 — 앱에는 광고가 없어요 */
+  LAST.me=LAST.me.filter(t=>!/광고/.test(t));
+  /* 보석 칩은 앱에서 일일 상점을 열어요(충전 탭 없음) */
+  $('gemChip').setAttribute('aria-label','보석 상점');
 }
 requestAnimationFrame(frame);
 })();
