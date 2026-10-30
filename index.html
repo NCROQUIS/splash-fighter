@@ -275,6 +275,7 @@ button.chip .plus{display:inline-grid;place-items:center;width:16px;height:16px;
 @keyframes legend{50%{box-shadow:0 5px 0 var(--edge),0 0 30px rgba(255,182,39,.95),inset 0 2px 0 rgba(255,255,255,.2)}}
 @media (prefers-reduced-motion:reduce){.skill.rar-l{animation:none}}
 .setrows .ver{margin:4px 0 0;text-align:center;font-size:11px;color:var(--muted);opacity:.7}
+.legal{margin:2px 0 0;text-align:center;font-size:13px}.legal a{display:inline-block;padding:6px 12px;color:#8ff0d6;text-decoration:underline;text-underline-offset:3px}
 .footbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.fsbtn{display:inline-flex;align-items:center;gap:6px}.fsbtn svg{width:16px;height:16px}.fsbtn .fs-out{display:none}:root.is-fs .fsbtn .fs-in{display:none}:root.is-fs .fsbtn .fs-out{display:block}
 #copyBox{width:100%;box-sizing:border-box;font-size:12px;background:#12142e;color:var(--ink);border:1px solid #3b3f72;border-radius:8px;padding:6px}
 
@@ -1027,6 +1028,7 @@ b,strong{font-weight:700}
             <div class="setrow col reset devonly"><span>전체 해금 <i class="tst">테스트용</i></span><div class="devbtns"><button type="button" id="setUnlock">모든 콘텐츠 열기</button><button type="button" class="ghost" id="setCash">테스트 재화 받기</button></div><small id="setUnlockInfo">모든 메뉴(상점·성장·코스튬·장비·도전·던전·무한·PVP·랭킹·소탕)와 코스튬·챕터 패키지를 열고, 챕터를 1~60 중 마음대로 고를 수 있어요. 진행 기록은 그대로이고, 끄면 튜토리얼 상태도 되돌려요. 테스트 재화는 누를 때마다 코인 10,000 · 보석 1,000 · 에너지 60을 받아요.</small></div>
             <div class="setrow col reset devonly"><span>완전 초기화 <i class="tst">테스트용</i></span><button type="button" class="danger" id="setWipe">모든 데이터 지우기</button><small>진행·구매 기록·광고 제거·소리·화질·게임 조정 값까지 이 기기에 저장된 데이터를 전부 지우고, 처음 설치한 상태로 다시 시작해요.</small></div>
             <p class="ver">스플래쉬 맨 v0.95 · 2026-10-29</p>
+            <p class="legal"><a id="privacyLink" href="https://ncroquis.github.io/splash-fighter/privacy.html" target="_blank" rel="noopener">개인정보처리방침</a></p>
             <div class="setrow col"><span>캐릭터 스타일</span><div class="seg two" id="setStyle" role="radiogroup" aria-label="캐릭터 스타일"><button type="button" data-st="plus">물풍선 F+</button><button type="button" data-st="classic">클래식</button></div><small>다음 판부터 적에게도 적용돼요</small></div>
           </div>
           <button type="button" class="closeBtn">돌아가기</button>
