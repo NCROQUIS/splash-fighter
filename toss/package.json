@@ -1,0 +1,22 @@
+{
+  "name": "splash-man-toss",
+  "private": true,
+  "version": "0.96.0",
+  "description": "스플래쉬 맨 앱인토스(Apps in Toss) 빌드",
+  "type": "module",
+  "scripts": {
+    "build:web": "node build.mjs",
+    "build": "node build.mjs && ait build",
+    "build:dev": "TOSS_DEV=1 node build.mjs && ait build",
+    "deploy": "ait deploy"
+  },
+  "dependencies": {
+    "@apps-in-toss/web-framework": "3.9.0"
+  },
+  "devDependencies": {
+    "@fontsource/black-han-sans": "^5.2.5",
+    "@fontsource/jua": "^5.2.5",
+    "@fontsource/noto-sans-kr": "^5.2.5",
+    "esbuild": "^0.25.0"
+  }
+}

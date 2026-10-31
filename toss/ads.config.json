@@ -1,0 +1,13 @@
+{
+  "_note": "개발 중에는 반드시 테스트 ID를 써요(실제 ID로 개발하면 정책 위반). 콘솔에서 광고 그룹을 만든 뒤 출시 빌드 때만 release 값을 채워요.",
+  "test": {
+    "interstitial": "ait-ad-test-interstitial-id",
+    "rewarded": "ait-ad-test-rewarded-id",
+    "banner": "ait-ad-test-banner-id"
+  },
+  "release": {
+    "interstitial": "",
+    "rewarded": "",
+    "banner": ""
+  }
+}
