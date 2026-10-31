@@ -4,11 +4,12 @@
 // openLeaderboard(), haptic(type), exit(), userKey. 게임은 window.SF_GAME = { back(), save() }를 내놓아요.
 import {
   loadFullScreenAd, showFullScreenAd, TossAds, Game, User, generateHapticFeedback,
-  graniteEvent, Screen, SafeArea, Storage, setDeviceOrientation,
+  graniteEvent, Screen, SafeArea, Storage, setDeviceOrientation, IAP,
 } from '@apps-in-toss/web-framework';
 
-/* global __ADS__, __SCRIPTS__ */
+/* global __ADS__, __SCRIPTS__, __IAP__ */
 const ADS = __ADS__;
+const IAP_ITEMS = __IAP__; // 게임 상품 id → { sku, price, name }
 const SCRIPTS = __SCRIPTS__;
 // 토스 앱 안에서는 호스트가 상수를 미리 넣어 둬요. 일반 브라우저(개발 미리보기·자동 테스트)에서는 흉내 모드로 돌아가요.
 const REAL = typeof window.__appsInTossConstants === 'object' && window.__appsInTossConstants !== null;
@@ -126,11 +127,95 @@ function mockAd(kind, done) {
   log('mock', kind);
   const d = document.createElement('div');
   d.id = 'tossMockAd';
-  d.textContent = (kind === 'reward' ? '보상형' : '전면') + ' 광고 (앱인토스 흉내)';
+  d.textContent = kind === 'pay' ? '토스 결제창 (앱인토스 흉내)' : (kind === 'reward' ? '보상형' : '전면') + ' 광고 (앱인토스 흉내)';
   d.style.cssText = 'position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#111;color:#fff;font:700 20px sans-serif';
   document.body.appendChild(d);
   setTimeout(() => { d.remove(); done(kind === 'reward' ? 'reward' : 'shown'); }, 1000);
 }
+
+/* ---------- 인앱 결제: 결제창 → processProductGrant에서 게임이 지급 → 성공. 시작할 때 대기·완료·환불 주문을 맞춰요 ---------- */
+const SKU2ID = Object.fromEntries(Object.entries(IAP_ITEMS).map(([id, p]) => [p.sku, id]));
+const IAP_MSG = {
+  PAYMENT_PENDING: '결제 승인을 기다리고 있어요. 잠시 뒤 다시 확인해 주세요.',
+  NETWORK_ERROR: '잠시 문제가 생겼어요. 다시 시도해 주세요.',
+  INTERNAL_ERROR: '잠시 문제가 생겼어요. 다시 시도해 주세요.',
+  ITEM_ALREADY_OWNED: '이미 가지고 있는 상품이에요.',
+  INVALID_PRODUCT_ID: '지금은 살 수 없는 상품이에요.',
+  INVALID_USER_ENVIRONMENT: '이 기기나 계정에서는 살 수 없는 상품이에요.',
+  KOREAN_ACCOUNT_ONLY: '한국 계정에서만 살 수 있어요.',
+  APP_MARKET_VERIFICATION_FAILED: '결제는 됐지만 확인에 실패했어요. 게임을 다시 열면 지급돼요. 계속 안 되면 고객센터로 문의해 주세요.',
+  TOSS_SERVER_VERIFICATION_FAILED: '결제는 됐지만 확인에 실패했어요. 게임을 다시 열면 지급돼요. 계속 안 되면 고객센터로 문의해 주세요.',
+  PRODUCT_NOT_GRANTED_BY_PARTNER: '상품을 지급하지 못했어요. 게임을 다시 열면 다시 지급해요.',
+  UNSUPPORTED_APP_VERSION: '토스 앱을 최신 버전으로 업데이트해 주세요.',
+};
+const prices = {};
+function loadPrices() {
+  if (!REAL || !tryRun(() => IAP.getProductItemList.isSupported(), false)) return;
+  call(() => IAP.getProductItemList()).then((r) => {
+    for (const p of (r && r.products) || []) { const id = SKU2ID[p.sku]; if (id && p.displayAmount) prices[id] = p.displayAmount; }
+  }).catch((e) => log('product list failed', e && e.message));
+}
+let buying = false;
+function iapBuy(id, grant, done) {
+  const item = IAP_ITEMS[id];
+  if (!item || buying) { done({ ok: false, msg: buying ? '결제가 진행 중이에요.' : '지금은 살 수 없는 상품이에요.' }); return; }
+  if (!REAL) { // 흉내: 1초 뒤 결제 완료, 실제 앱과 같은 순서로 지급 → 성공
+    buying = true; mockAd('pay', () => { buying = false; const orderId = 'mock-' + Date.now(); const ok = tryRun(() => grant(orderId), false); done(ok ? { ok: true, orderId } : { ok: false, code: 'PRODUCT_NOT_GRANTED_BY_PARTNER', msg: IAP_MSG.PRODUCT_NOT_GRANTED_BY_PARTNER }); });
+    return;
+  }
+  if (!tryRun(() => IAP.createOneTimePurchaseOrder.isSupported(), false)) { done({ ok: false, code: 'UNSUPPORTED_APP_VERSION', msg: IAP_MSG.UNSUPPORTED_APP_VERSION }); return; }
+  buying = true; let cleanup = null; let fin = false;
+  const end = (r) => { if (fin) return; fin = true; buying = false; tryRun(() => cleanup && cleanup()); done(r); };
+  try {
+    cleanup = IAP.createOneTimePurchaseOrder({
+      options: { sku: item.sku, processProductGrant: ({ orderId }) => !!tryRun(() => grant(orderId), false) },
+      onEvent: (e) => { if (e && e.type === 'success') end({ ok: true, orderId: e.data && e.data.orderId }); },
+      onError: (err) => { const code = err && (err.code || err.errorCode); log('purchase error', code); end({ ok: false, code, msg: IAP_MSG[code] || '결제하지 못했어요.' }); },
+    });
+  } catch (e) { const code = e && e.code; end({ ok: false, code, msg: IAP_MSG[code] || '결제하지 못했어요.' }); }
+}
+async function iapRestore({ grant, refund, known, done }) {
+  const n = { granted: 0, refunded: 0 };
+  if (!REAL) { // 흉내: window.__mockIap = { pending: [{orderId, sku}], history: [{orderId, sku, status}] } 로 복구 흐름을 시험해요
+    const m = window.__mockIap || {};
+    for (const o of m.pending || []) { const id = SKU2ID[o.sku]; const had = id && !!known()[o.orderId]; if (id && tryRun(() => grant(id, o.orderId, true), false) && !had) n.granted++; }
+    for (const o of m.history || []) {
+      const id = SKU2ID[o.sku]; if (!id) continue; const k = known();
+      if (o.status === 'COMPLETED' && !k[o.orderId]) { if (tryRun(() => grant(id, o.orderId, true), false)) n.granted++; }
+      else if (o.status === 'REFUNDED' && k[o.orderId] && k[o.orderId].st !== 'refund') { if (tryRun(() => refund(o.orderId), false)) n.refunded++; }
+    }
+    tryRun(() => done(n)); return;
+  }
+  // 1) 결제는 됐는데 지급하지 못한 주문 → 지급하고 완료 알림
+  if (tryRun(() => IAP.getPendingOrders.isSupported(), false)) {
+    const p = await call(() => IAP.getPendingOrders()).catch(() => null);
+    for (const o of (p && p.orders) || []) {
+      const id = SKU2ID[o.sku]; if (!id) continue;
+      const had = !!known()[o.orderId];
+      if (tryRun(() => grant(id, o.orderId, true), false)) {
+        if (!had) n.granted++;
+        await call(() => IAP.completeProductGrant({ params: { orderId: o.orderId } })).catch((e) => log('complete grant failed', e && e.message));
+      }
+    }
+  }
+  // 2) 완료·환불 내역: 이 기기에 없는 완료 주문은 다시 지급(기기 변경), 환불된 주문은 회수
+  if (tryRun(() => IAP.getCompletedOrRefundedOrders.isSupported(), false)) {
+    let key = null; let pages = 0;
+    do {
+      const r = await call(() => IAP.getCompletedOrRefundedOrders(key ? { key } : undefined)).catch(() => null);
+      if (!r) break;
+      for (const o of r.orders || []) {
+        const id = SKU2ID[o.sku]; if (!id) continue;
+        const k = known();
+        if (o.status === 'COMPLETED' && !k[o.orderId]) { if (tryRun(() => grant(id, o.orderId, true), false)) n.granted++; }
+        else if (o.status === 'REFUNDED' && k[o.orderId] && k[o.orderId].st !== 'refund') { if (tryRun(() => refund(o.orderId), false)) n.refunded++; }
+      }
+      key = r.hasNext ? r.nextKey : null;
+    } while (key && ++pages < 20);
+  }
+  tryRun(() => done(n));
+}
+const IAP_ON = !REAL || tryRun(() => IAP.createOneTimePurchaseOrder.isSupported(), false);
 
 window.SF_PLAT = {
   name: 'toss',
@@ -159,6 +244,7 @@ window.SF_PLAT = {
     call(() => Game.openLeaderboard()).catch((e) => log('leaderboard failed', e && e.message));
   },
   haptic(type) { if (REAL) call(() => generateHapticFeedback({ type })).catch(() => {}); },
+  iap: IAP_ON ? { buy: iapBuy, restore: iapRestore, price: (id) => prices[id] || null } : null,
   exit() { if (REAL) call(() => Screen.close()).catch(() => {}); else { log('mock exit'); window.__tossExit = 1; } },
 };
 
@@ -195,6 +281,7 @@ function start() { if (started) return; started = true; tryRun(mirrorWrites); lo
     call(() => User.getAnonymousKey()).then((r) => {
       if (r && r.hash) { window.SF_PLAT.userKey = r.hash; call(() => Storage.setItem('sf_userkey', r.hash)).catch(() => {}); }
     }).catch((e) => log('user key failed', e && e.message));
+    tryRun(loadPrices);
     tryRun(inter.load);
     setTimeout(() => tryRun(reward.load), 1500); // 안드로이드 구버전은 광고를 하나씩 불러야 해요
   }

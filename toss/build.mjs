@@ -18,6 +18,8 @@ const DEV = process.env.TOSS_DEV === '1';
 const adsCfg = JSON.parse(fs.readFileSync(path.join(HERE, 'ads.config.json'), 'utf8'));
 const pick = (k) => (!DEV && adsCfg.release[k]) ? adsCfg.release[k] : adsCfg.test[k];
 const ADS = { interstitial: pick('interstitial'), rewarded: pick('rewarded'), banner: pick('banner') };
+const iapCfg = JSON.parse(fs.readFileSync(path.join(HERE, 'iap.config.json'), 'utf8')).products;
+const IAP_ITEMS = Object.fromEntries(Object.entries(iapCfg).map(([id, p]) => [id, { sku: p.sku, price: p.price, name: p.name }]));
 const usingTestAds = Object.keys(ADS).some((k) => ADS[k] === adsCfg.test[k]);
 
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -57,6 +59,12 @@ html = html
 if (html.includes('fonts.googleapis.com')) throw new Error('구글 폰트 링크가 남아 있어요');
 if (html.length === before) throw new Error('폰트 링크를 찾지 못했어요');
 
+// --- 결제 금액 검사: 게임에 보이는 가격과 iap.config.json(콘솔에 등록할 가격)이 같아야 해요
+for (const [id, p] of Object.entries(IAP_ITEMS)) {
+  const m = id === 'rage' ? (html.includes("price:1500,once:true") ? ['', '1500'] : null) : html.match(new RegExp(`\\{id:'${id}',[^}]*?price:(\\d+)`));
+  if (!m) throw new Error(`게임에서 상품 ${id}의 가격을 찾지 못했어요`);
+  if (+m[1] !== p.price) throw new Error(`상품 ${id} 가격이 달라요: 게임 ${m[1]}원, iap.config.json ${p.price}원`);
+}
 // --- scripts → files
 const scripts = [];
 html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, code) => {
@@ -72,7 +80,7 @@ await build({
   entryPoints: [path.join(HERE, 'src', 'bridge.js')],
   bundle: true, format: 'iife', target: ['es2019'], minify: !DEV,
   outfile: path.join(OUT, 'bridge.js'),
-  define: { __ADS__: JSON.stringify(ADS), __SCRIPTS__: JSON.stringify(scripts) },
+  define: { __ADS__: JSON.stringify(ADS), __SCRIPTS__: JSON.stringify(scripts), __IAP__: JSON.stringify(IAP_ITEMS) },
   logLevel: 'warning',
 });
 

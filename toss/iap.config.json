@@ -1,0 +1,12 @@
+{
+  "_note": "앱인토스 콘솔 > 인앱 결제 > 상품에 아래 SKU로 상품을 등록해요. 가격은 price와 같게(결제창 금액 = 게임에 보이는 금액). adfree·rage는 비소모성, 나머지는 소모성이에요.",
+  "products": {
+    "adfree": { "sku": "splash_adfree", "type": "NON_CONSUMABLE", "price": 15000, "name": "광고 제거 패키지" },
+    "g1": { "sku": "splash_gem_60", "type": "CONSUMABLE", "price": 1200, "name": "보석 한 줌" },
+    "g2": { "sku": "splash_gem_330", "type": "CONSUMABLE", "price": 5900, "name": "보석 주머니" },
+    "g3": { "sku": "splash_gem_720", "type": "CONSUMABLE", "price": 12000, "name": "보석 상자" },
+    "g4": { "sku": "splash_gem_2100", "type": "CONSUMABLE", "price": 33000, "name": "보석 금고" },
+    "g5": { "sku": "splash_gem_4500", "type": "CONSUMABLE", "price": 65000, "name": "보석 트럭" },
+    "rage": { "sku": "splash_hair_rage", "type": "NON_CONSUMABLE", "price": 1500, "name": "분노 폭발 헤어" }
+  }
+}
